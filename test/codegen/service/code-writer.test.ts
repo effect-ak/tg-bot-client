@@ -1,7 +1,7 @@
 import { describe, assert } from "vitest";
 import { Effect } from "effect";
 
-import { fixture } from "../fixture";
+import { fixture } from "../fixture.js";
 
 describe("code writer service", () => {
 

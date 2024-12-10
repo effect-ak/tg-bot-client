@@ -1,7 +1,7 @@
 import { describe, expect, it, assert } from "vitest"
 import { Either } from "effect"
 
-import { NormalType } from "#scrape/normal-type/_model";
+import { NormalType } from "#scrape/normal-type/_model.js";
 
 describe("normal type", () => {
 

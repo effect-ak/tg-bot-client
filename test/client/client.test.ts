@@ -1,7 +1,7 @@
 import { describe, expect, assert, vi } from "vitest";
 
-import { fixture } from "./fixture";
-import { MESSAGE_EFFECTS } from "#/client/const";
+import { fixture } from "./fixture.js";
+import { MESSAGE_EFFECTS } from "#/client/const.js";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 

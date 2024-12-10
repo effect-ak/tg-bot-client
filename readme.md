@@ -1,4 +1,6 @@
-### What is it?
+![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)
+
+### What is it? 
 
 This is a client for interacting with the Telegram Bot API.  
 The main reason for creating this package is that Telegram does not provide an SDK for working with their API.
@@ -6,22 +8,22 @@ The main reason for creating this package is that Telegram does not provide an S
 They only provide documentation in the form of a massive HTML page, which is very inconvenient for navigating and understanding what the Telegram Bot API offers.
 
 ## Features:
-- **Comprehensive API Coverage**: The entire API is generated from the official documentation [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
 - **Pure TypeScript Client**: This is a clean client written in TypeScript with no abstractions.
+- **Complete**: The entire API is generated from the official documentation [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
 - **Inline Documentation**: No need to read lengthy official documentation. All types and comments are available in JS DOC, allowing you to develop your bot without leaving your IDE.
 - **Type Mapping**: Types from the documentation are converted to TypeScript types. For example, `Integer` becomes `number`, `True` becomes `boolean`, `String or Number` becomes `string | number`, and so on.
 - **Readable Method Names**: Method names, such as `SetChatAdministratorCustomTitleInput`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 
-### Example Usage
+### Usage example
 
 #### Install
 
-`npm i @effect-ak/client-tg-bot`
+`npm i @effect-ak/tg-bot-client`
 
 #### Creating a Client
 
 ```typescript
-import { makeTgBotClient } from "effect-ak/client-tg-bot"
+import { makeTgBotClient } from "effect-ak/tg-bot-client"
 
 const client = makeTgBotClient({
   token: "" //your token from bot father
@@ -33,7 +35,7 @@ Now, `client` is an object that has an `execute` method. This method takes two a
 #### 1. Sending a Message with an Effect
 
 ```typescript
-import { MESSAGE_EFFECTS } from "effect-ak/client-tg-bot"
+import { MESSAGE_EFFECTS } from "effect-ak/tg-bot-client"
 
 await client.execute("send_message", {
   chat_id: "???", // replace ??? with the chat number

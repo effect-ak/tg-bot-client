@@ -1,9 +1,9 @@
 import { Effect, Logger, LogLevel } from "effect";
 import { test } from "vitest";
 
-import { withConfig } from "#codegen/config";
-import { DocPage } from "#scrape/doc-page/_model";
-import { CodeWriterService, PageProviderService } from "#codegen/service";
+import { withConfig } from "#codegen/config.js";
+import { DocPage } from "#scrape/doc-page/_model.js";
+import { CodeWriterService, PageProviderService } from "#codegen/service/index.js";
 
 type Fixture = {
   readonly page: DocPage,

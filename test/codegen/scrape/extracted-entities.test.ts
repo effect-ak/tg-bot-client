@@ -1,7 +1,7 @@
 import { describe, expect, assert } from "vitest"
 
-import { fixture } from "../fixture";
-import { ExtractedEntities } from "#scrape/extracted-entities/_model";
+import { fixture } from "../fixture.js";
+import { ExtractedEntities } from "#scrape/extracted-entities/_model.js";
 
 describe("extracted entities", () => {
 
