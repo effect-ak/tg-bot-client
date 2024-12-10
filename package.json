@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -18,7 +18,7 @@
     "telegram bot api"
   ],
   "repository": {
-    "url": "https://github.com/kondaurovDev/effect-ak/tg-bot-client"
+    "url": "https://github.com/effect-ak/tg-bot-client"
   },
   "license": "MIT",
   "main": "./dist/cjs/index.js",
