@@ -1,0 +1,5 @@
+src/specification
+node_modules
+dist
+config.json
+*.html

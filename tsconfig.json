@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "isolatedModules": true,
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "types": [ "node" ],
+    "target": "ES2022",
+    "module": "NodeNext",
+    "lib": ["ESNext"],
+    "moduleResolution": "NodeNext", 
+    "moduleDetection": "force",
+    "baseUrl": ".",
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "paths": {
+      "#/*": ["./src/*"],
+      "#codegen/*": ["./codegen/*"],
+      "#scrape/*": ["./codegen/scrape/*"],
+    }
+  }
+}
