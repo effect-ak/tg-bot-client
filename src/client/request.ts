@@ -1,15 +1,3 @@
-export const methodPath =
-  (methodName: string) =>
-    methodName
-      .split("_")
-      .reduce((result, word, step) => {
-        if (step == 0) {
-          return word
-        } else {
-          return result + word.at(0)?.toUpperCase() + word.slice(1);
-        }
-      }, "");
-
 type FileProps = { file_content: Uint8Array, file_name: string }
 
 const hasFileContent =

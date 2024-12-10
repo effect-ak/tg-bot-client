@@ -67,6 +67,23 @@ await client.execute("send_document", {
 })
 ```
 
+
+#### 4. Getting a file
+
+In order to download file from Telegram server we need to send two http requests:
+1. execute `get_file` and get `remote_path`
+2. get file content via GET request with different url
+
+`client.getFile` does exactly that. It returns [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File)
+
+```typescript
+const file = 
+  await client.getFile({ 
+    file_id: fileId
+  });
+// file is File
+```
+
 ---
 
 ### Summary

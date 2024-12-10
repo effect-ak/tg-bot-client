@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -39,8 +39,9 @@
     "node-html-parser": "^6.1.13",
     "ts-morph": "^24.0.0",
     "tsc-alias": "^1.8.10",
+    "type-fest": "^4.30.0",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.1.8"
   }
 }

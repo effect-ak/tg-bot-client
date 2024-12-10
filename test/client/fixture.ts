@@ -1,6 +1,6 @@
 import { test } from "vitest";
 
-import { makeTgBotClient, TgBotClient } from "#/client/factory.js";
+import { makeTgBotClient, TgBotClient } from "#/client/_client.js";
 
 type Fixture = {
   readonly client: TgBotClient

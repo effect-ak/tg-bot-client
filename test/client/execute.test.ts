@@ -5,7 +5,7 @@ import { MESSAGE_EFFECTS } from "#/client/const.js";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 
-describe("telegram bot client", () => {
+describe("telegram bot client, execute method", () => {
 
   fixture("send dice", async ({ client, chat_id, skip }) => {
 
@@ -80,7 +80,9 @@ describe("telegram bot client", () => {
           file_name: "hello.txt"
         },
         caption: "simple text file"
-      })
+      });
+
+    expect(response.result?.document?.file_id).toBeDefined();
 
     expect(response.result?.chat.id).toBeDefined();
 
