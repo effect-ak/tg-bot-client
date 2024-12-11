@@ -13,7 +13,7 @@ export const writeMethods =
       const typeNamespace = "T";
 
       src.addImportDeclaration({
-        moduleSpecifier: "./types",
+        moduleSpecifier: "./types.js",
         namespaceImport: typeNamespace
       })
 
@@ -40,6 +40,7 @@ export const writeMethods =
 
         src.addInterface({
           name: interfaceName,
+          isExported: true,
           extends: [ "Record<string, unknown>" ],
           ...(method.parameters == null ? undefined : {
             properties:

@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -25,6 +25,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/dts/index.d.ts",
   "scripts": {
+    "gen": "bun run codegen/main",
     "build": "pnpm build-esm && pnpm build-cjs",
     "build-esm": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "build-cjs": "babel dist/esm --out-dir dist/cjs"
