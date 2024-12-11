@@ -23,7 +23,7 @@ export const makeTgBotClient =
     const file = makeDownloadFile(config, execute);
 
     return {
-      execute,
+      ...execute,
       ...file
     } as const;
 

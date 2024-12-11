@@ -6,11 +6,23 @@ export type TgBotApiResponse<O> = {
 }
 
 export const isTgBotApiResponse = 
-  <O>(input: Record<string, unknown>): input is TgBotApiResponse<O> => {
-    return (
-      ("ok" in input && typeof input.ok == "boolean") &&
-      (typeof input.error_code === 'undefined' || typeof input.error_code === 'number') &&
-      (typeof input.description === 'undefined' || typeof input.description === 'string') &&
-      (typeof input.result === 'undefined' || typeof input.result === 'object')
-    )
+  <O>(input: unknown): input is TgBotApiResponse<O> => {
+
+    if (typeof input !== "object" || input == null) {
+      return false;
+    }
+
+    if (!("ok" in input && typeof input.ok == "boolean")) {
+      return false;
+    }
+
+    if ("error_code" in input && typeof input.error_code != "number") {
+      return false;
+    }
+
+    if ("description" in input && typeof input.description != "string") {
+      return false;
+    }
+
+    return true;
   };

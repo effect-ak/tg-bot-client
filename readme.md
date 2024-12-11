@@ -23,14 +23,23 @@ They only provide documentation in the form of a massive HTML page, which is ver
 #### Creating a Client
 
 ```typescript
-import { makeTgBotClient } from "effect-ak/tg-bot-client"
+import { makeTgBotClient } from "@effect-ak/tg-bot-client"
 
 const client = makeTgBotClient({
   token: "" //your token from bot father
 });
 ```
 
-Now, `client` is an object that has an `execute` method. This method takes two arguments: the first is the API method, and the second is an object containing the arguments for that method.
+#### Executing api methods, typesafety
+
+`client` has an `execute` method which requires two arguments
+
+- the first is the API method, e.g. `send_message`
+- the second is an object containing the arguments for that method, e.g. `text`
+
+`execute` never returns failed promise, instead, it gives an object with two fields, `success`, `error`.
+
+if you want, you can use unsafe alternative, `unsafeExecute`, which gives you the result of method or throws an Error
 
 #### 1. Sending a Message with an Effect
 

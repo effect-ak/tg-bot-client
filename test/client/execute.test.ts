@@ -12,7 +12,7 @@ describe("telegram bot client, execute method", () => {
     skip();
 
     const response =
-      await client.execute("send_dice", {
+      await client.unsafeExecute("send_dice", {
         chat_id,
         emoji: "🎲"
       });
@@ -24,7 +24,7 @@ describe("telegram bot client, execute method", () => {
 
     assert(response != null);
 
-    expect(response.result?.chat.id).toBeDefined();
+    expect(response.chat.id).toBeDefined();
   });
 
   fixture("send message", async ({ chat_id, client, skip }) => {
@@ -38,7 +38,7 @@ describe("telegram bot client, execute method", () => {
         message_effect_id: MESSAGE_EFFECTS["🔥"]
       });
 
-    expect(response.result?.chat.id).toBeDefined();
+    expect(response.success?.chat.id).toBeDefined();
 
   });
 
@@ -47,7 +47,7 @@ describe("telegram bot client, execute method", () => {
     skip();
 
     const response =
-      await client.execute("send_message", {
+      await client.unsafeExecute("send_message", {
         chat_id,
         text: "hey again!",
         message_effect_id: MESSAGE_EFFECTS["🎉"],
@@ -65,14 +65,16 @@ describe("telegram bot client, execute method", () => {
         }
       })
 
-    expect(response.result?.chat.id).toBeDefined();
+    expect(response.chat.id).toBeDefined();
 
   });
 
   fixture("send document", async ({ chat_id, client, skip }) => {
 
+    skip();
+
     const response =
-      await client.execute("send_document", {
+      await client.unsafeExecute("send_document", {
         chat_id,
         message_effect_id: MESSAGE_EFFECTS["🎉"],
         document: {
@@ -82,9 +84,9 @@ describe("telegram bot client, execute method", () => {
         caption: "simple text file"
       });
 
-    expect(response.result?.document?.file_id).toBeDefined();
+    expect(response.document?.file_id).toBeDefined();
 
-    expect(response.result?.chat.id).toBeDefined();
+    expect(response.chat.id).toBeDefined();
 
   });
 

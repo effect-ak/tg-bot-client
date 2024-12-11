@@ -41,7 +41,6 @@ export const writeMethods =
         src.addInterface({
           name: interfaceName,
           isExported: true,
-          extends: [ "Record<string, unknown>" ],
           ...(method.parameters == null ? undefined : {
             properties:
               method.parameters.map(field => ({

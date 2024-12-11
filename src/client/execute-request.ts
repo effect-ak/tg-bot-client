@@ -1,9 +1,15 @@
 import type { BotConfig } from "./_client.js";
 import type { Api } from "../specification/api.js";
 import { makePayload } from "./request.js";
-import { isTgBotApiResponse, TgBotApiResponse } from "./response.js";
+import { isTgBotApiResponse } from "./response.js";
+import { TgBotClientError } from "./errors.js";
 
 export type ExecuteRequest = ReturnType<typeof makeExecute>
+
+type SafeExecuteResult<M extends keyof Api> = {
+  success?: ReturnType<Api[M]>,
+  error?: TgBotClientError
+}
 
 export const makeExecute =
   (config: BotConfig) => {
@@ -11,29 +17,69 @@ export const makeExecute =
     const execute = async <M extends keyof Api>(
       method: M,
       input: Parameters<Api[M]>[0]
-    ): Promise<TgBotApiResponse<ReturnType<Api[M]>>> => {
+    ): Promise<SafeExecuteResult<M>> => {
 
-      const httpResponse =
-        await fetch(
-          `${config.baseUrl}/bot${config.token}/${snakeToCamel(method)}`, {
-          body: makePayload(input) ?? null,
-          method: "POST"
-        }).then(_ => _.json() as Promise<Record<string, unknown>>);
+      try {
+        const httpResponse =
+          await fetch(
+            `${config.baseUrl}/bot${config.token}/${snakeToCamel(method)}`, {
+            body: makePayload(input) ?? null,
+            method: "POST",
+          });
 
-      if (!isTgBotApiResponse<ReturnType<Api[M]>>(httpResponse))
-        throw new Error("Not valid response", {
-          cause: httpResponse
-        });
+        const response = await httpResponse.json();
 
-      if (httpResponse.ok == false) {
-        console.warn(httpResponse)
+        if (!isTgBotApiResponse(response)) {
+          return {
+            error: new TgBotClientError({
+              type: "UnexpectedResponse",
+              response
+            })
+          }
+        }
+
+        if (!httpResponse.ok) {
+          return {
+            error: new TgBotClientError({
+              type: "NotOkResponse",
+              ...(response.error_code ? { errorCode: response.error_code } : undefined),
+              ...(response.description ? { details: response.description } : undefined)
+            })
+          };
+        }
+
+        return {
+          success: response.result as ReturnType<Api[M]>
+        }
+
+      } catch (cause) {
+        return {
+          error: new TgBotClientError({
+            type: "ClientInternalError", cause
+          })
+        };
       }
-
-      return httpResponse;
 
     }
 
-    return execute;
+    const unsafeExecute = async <M extends keyof Api>(
+      method: M,
+      input: Parameters<Api[M]>[0]
+    ): Promise<ReturnType<Api[M]>> => {
+
+      const result = await execute(method, input);
+
+      if (result.error) throw result.error
+
+      if (!("success" in result)) throw TgBotClientError.missingSuccess;
+
+      return result.success
+
+    }
+
+    return {
+      execute, unsafeExecute
+    } as const;
 
   }
 

@@ -7,7 +7,7 @@ const hasFileContent =
     ("file_name" in input && typeof input.file_name === "string" && input.file_name.length > 0)
 
 export const makePayload = (
-  body: Record<string, unknown>
+  body: object
 ): FormData | undefined => {
 
   const entries = Object.entries(body);

@@ -7,7 +7,7 @@ describe("telegram bot client, download file", () => {
   fixture("get file content", async ({ client, chat_id, skip }) => {
 
     const document =
-      await client.execute("send_document", {
+      await client.unsafeExecute("send_document", {
         chat_id,
         document: {
           file_content: Buffer.from("Hello!"),
@@ -15,14 +15,14 @@ describe("telegram bot client, download file", () => {
         }
       });
 
-    const fileId = document.result?.document?.file_id;
+    const fileId = document.document?.file_id;
 
     assert(fileId, "file id is null");
 
     const response =
       await client.getFile({ file_id: fileId });
 
-    expect(response).toBeDefined();
+    expect(response.success).toBeDefined();
   });
 
 })
