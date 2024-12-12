@@ -1,6 +1,7 @@
-import { Config, Effect, Either, pipe } from "effect";
-import * as TsMorph from "ts-morph"
+import { Config, Effect } from "effect";
 
+import { writeFile } from "fs/promises"
+import { makeOpenApiDocument } from "./document.js";
 import * as Path from "path";
 
 export class OpenapiWriterService
@@ -11,8 +12,22 @@ export class OpenapiWriterService
         const writeToDir =
           yield* Config.array(Config.nonEmptyString(), "client-out-dir");
 
-        
+        const writeSpecification =
+          (...input: Parameters<typeof makeOpenApiDocument>) => {
 
-        return {}
+            const doc = makeOpenApiDocument(...input);
 
-      }) }) {}
+            const pathTo = Path.join(...writeToDir, "openapi.json");
+
+            return Effect.tryPromise(() => 
+              writeFile(pathTo, JSON.stringify(doc, undefined, 2))
+            )
+
+          }
+
+        return {
+          writeSpecification
+        }
+
+      })
+  }) { }

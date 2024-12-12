@@ -4,10 +4,12 @@ import { test } from "vitest";
 import { withConfig } from "#codegen/config.js";
 import { DocPage } from "#scrape/doc-page/_model.js";
 import { CodeWriterService, PageProviderService } from "#codegen/service/index.js";
+import { OpenapiWriterService } from "#codegen/service/openapi-writer/_service.js";
 
 type Fixture = {
-  readonly page: DocPage,
-  readonly codeWriter: CodeWriterService,
+  readonly page: DocPage
+  readonly codeWriter: CodeWriterService
+  readonly openApiWriter: OpenapiWriterService
 };
 
 const makeFixture =
@@ -17,12 +19,14 @@ const makeFixture =
 
     const { page } = yield* PageProviderService;
     const codeWriter = yield* CodeWriterService;
+    const openApiWriter = yield* OpenapiWriterService;
 
-    return { page, codeWriter } as const;
+    return { page, codeWriter, openApiWriter } as const;
   }).pipe(
     Effect.provide([
       PageProviderService.Default,
       CodeWriterService.Default,
+      OpenapiWriterService.Default,
       Logger.pretty
     ]),
     Effect.withConfigProvider(
@@ -50,5 +54,9 @@ export const fixture = test.extend<Fixture>(({
   codeWriter: async ({}, use) => {
     const page  = await fixturePromise;
     use(page.codeWriter);
-  }
+  },
+  openApiWriter: async ({}, use) => {
+    const page  = await fixturePromise;
+    use(page.openApiWriter);
+  },
 }));

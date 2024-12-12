@@ -1,21 +1,15 @@
-import { assert, describe, expect, it } from "vitest";
+// import { assert, describe, expect, it } from "vitest";
 
-import { fixture } from "../fixture.js";
-import { makeMethodRequestSchema, makePaths } from "#codegen/service/openapi-writer/paths.js";
+// import { fixture } from "../fixture.js";
+// import { makeMethodRequest, makePaths } from "#codegen/service/openapi-writer/paths.js";
 
-describe("openapi", () => {
+// describe("openapi", () => {
 
-  fixture("generate path object", ({ page }) => {
+//   fixture("write", ({ page }) => {
 
-    const method = page.getMethod("banChatMember");
+//     const 
 
-    assert(method._tag == "Right");
-
-    const schema = makeMethodRequestSchema(method.right);
-
-    expect(schema)
-
-  })
+//   })
 
 
-})
+// })

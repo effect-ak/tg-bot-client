@@ -13,7 +13,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
     expect(entity.right.entityName).toEqual("InputFile");
 
-    assert(entity.right.type.type == "normalType");
+    assert(entity.right.type._tag == "NormalType");
 
     // expect(entity.right.type.normalType.getTsType()).toEqual("File");
 
@@ -29,7 +29,7 @@ describe("extracted-entity", () => {
     expect(entity.right.entityName).toEqual("sendMediaGroup");
     expect(entity.right.entityDescription.returns?.typeNames).toEqual(["Message[]"]);
 
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
     const field1 = entity.right.type.fields.find(_ => _.name == "media");
 
     expect(field1?.type.getTsType()).toEqual(
@@ -95,7 +95,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
     expect(entity.right.entityName).toEqual("ReplyKeyboardMarkup");
     expect(entity.right.entityDescription.returns).toBeUndefined();
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
 
     const field1 = entity.right.type.fields.find(_ => _.name == "keyboard");
     
@@ -112,7 +112,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
     expect(entity.right.entityName).toEqual("User");
     expect(entity.right.entityDescription.returns).toBeUndefined();
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
     expect(entity.right.type.fields.map(_ => _.name)).containSubset(["id", "is_bot", "username"]);
 
   });
@@ -141,7 +141,7 @@ describe("extracted-entity", () => {
     expect(entity.right.entityName).toEqual("Chat");
     expect(entity.right.entityDescription.lines[0]).toEqual("This object represents a chat");
 
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
     expect(entity.right.type.fields.length).greaterThan(1);
 
     const titleField = entity.right.type.fields.find(_ => _.name == "title");
@@ -165,7 +165,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("Message");
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
 
     expect(entity.right.type.fields.length).greaterThan(80);
 
@@ -180,7 +180,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("getMyCommands");
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
 
     expect(entity.right.type.fields).toHaveLength(2);
     expect(entity.right.entityDescription.returns?.typeNames).toEqual(["BotCommand[]"]);
@@ -194,9 +194,9 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("logOut");
-    assert(entity.right.type.type == "normalType");
+    assert(entity.right.type._tag == "NormalType");
 
-    expect(entity.right.type.normalType.getTsType()).toEqual("never");
+    expect(entity.right.type.getTsType()).toEqual("never");
     expect(entity.right.entityDescription.returns?.typeNames).toEqual(["boolean"]);
 
   });
@@ -208,9 +208,9 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("getMe");
-    assert(entity.right.type.type == "normalType");
+    assert(entity.right.type._tag == "NormalType");
 
-    expect(entity.right.type.normalType.getTsType()).toEqual("never")
+    expect(entity.right.type.getTsType()).toEqual("never")
 
   });
 
@@ -221,7 +221,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("sendChatAction");
-    expect(entity.right.type.type).toEqual("fields");
+    expect(entity.right.type._tag).toEqual("EntityFields");
 
   });
 
@@ -231,9 +231,9 @@ describe("extracted-entity", () => {
 
     assert(entity._tag == "Right");
 
-    assert(entity.right.type.type == "normalType");
+    assert(entity.right.type._tag == "NormalType");
 
-    expect(entity.right.type.normalType.getTsType()).toEqual("never");
+    expect(entity.right.type.getTsType()).toEqual("never");
 
     // expect(entity.right.entityName).toEqual("forumTopicClosed");
     // expect(entity.right.type.type).toEqual("fields");
@@ -249,7 +249,7 @@ describe("extracted-entity", () => {
 
     expect(entity.right.entityDescription.lines[0]).match(/^This object contains full.*/);
 
-    assert(entity.right.type.type == "fields");
+    assert(entity.right.type._tag == "EntityFields");
 
     const field1 = entity.right.type.fields.find(_ => _.name == "accent_color_id");
 

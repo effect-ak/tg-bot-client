@@ -1,7 +1,7 @@
 import { Either, Array } from "effect";
 
 import { HtmlElement } from "#codegen/types.js";
-import { EntityField } from "#codegen/scrape/entity-fields/_model.js";
+import { EntityFields } from "#codegen/scrape/entity-fields/_model.js";
 import { NormalType } from "#scrape/normal-type/_model.js";
 import { ExtractEntityError } from "./errors.js";
 import { ExtractedEntityShape } from "./_model.js";
@@ -13,7 +13,7 @@ export const extractType = (
 ): Either.Either<ExtractedEntityShape["type"], ExtractEntityError> => {
   if (node.tagName == "TABLE") {
 
-    const fields: EntityField[] = [];
+    const fields = new EntityFields({ fields: [] });
 
     const rows = node.querySelectorAll("tbody tr");
 
@@ -22,8 +22,8 @@ export const extractType = (
 
       const fieldName = all.at(0)?.text;
       if (!fieldName) return ExtractEntityError.left("NoColumn", { columnName: "name", entityName });
-      const specType = all.at(1)?.text;
-      if (!specType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });
+      const pseudoType = all.at(1)?.text;
+      if (!pseudoType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });
       const descriptionNode = all.at(all.length - 1); // description is the last column
       if (!descriptionNode) return ExtractEntityError.left("NoColumn", { columnName: "description", entityName });
 
@@ -45,25 +45,22 @@ export const extractType = (
       };
 
       const normalType =
-        NormalType.makeFrom({ entityName, fieldName, specType });
+        NormalType.makeFrom({ entityName, fieldName, pseudoType  });
 
       if (Either.isLeft(normalType)) {
         console.warn(normalType.left)
         continue;
       }
 
-      fields.push(
-        new EntityField({
+      fields.fields.push(
+        {
           name: fieldName, description, required,
           type: normalType.right
-        })
+        }
       )
     };
     
-    return Either.right({
-      type: "fields",
-      fields
-    });
+    return Either.right(fields);
 
   }
 
@@ -78,10 +75,7 @@ export const extractType = (
     }
 
     if (Array.isNonEmptyArray(oneOf)) {
-      return Either.right({
-        type: "normalType",
-        normalType: new NormalType({ typeNames: oneOf })
-      })
+      return Either.right(new NormalType({ typeNames: oneOf }));
     }
 
     return ExtractEntityError.left("NoTypes");

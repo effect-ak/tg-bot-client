@@ -29,10 +29,7 @@ export const extractFromNode = (
       return Either.right({
         entityName,
         entityDescription: entityDescription.right,
-        type: {
-          type: "normalType",
-          normalType: new NormalType({ typeNames: [ typeName ]})
-        }
+        type: new NormalType({ typeNames: [ typeName ]})
       })
     };
     return Either.left({

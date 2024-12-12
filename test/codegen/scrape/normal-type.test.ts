@@ -49,7 +49,7 @@ describe("normal type", () => {
     });
 
     check(["Chat"], {
-      $ref: "#/components/Chat"
+      $ref: "#/components/schemas/Chat"
     });
 
   })

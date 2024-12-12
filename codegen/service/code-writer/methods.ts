@@ -43,7 +43,7 @@ export const writeMethods =
           isExported: true,
           ...(method.parameters == null ? undefined : {
             properties:
-              method.parameters.map(field => ({
+              method.parameters.fields.map(field => ({
                 name: field.name,
                 type: field.type.getTsType(typeNamespace),
                 hasQuestionToken: !field.required,

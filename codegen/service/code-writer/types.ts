@@ -7,11 +7,11 @@ export const writeTypes =
     (types: ExtractedTypeShape[]) => {
       for (const type of types) {
 
-        if (type.type.type == "fields") {
+        if (type.type._tag == "EntityFields") {
           src.addInterface({
             name: type.typeName,
             isExported: true,
-            ...(type.type.type == null ? undefined : {
+            ...(type.type == null ? undefined : {
               properties:
                 type.type.fields.map(field => ({
                   name: field.name,
@@ -25,7 +25,7 @@ export const writeTypes =
           src.addTypeAlias({
             name: type.typeName,
             isExported: true,
-            type: type.type.normalType.getTsType()
+            type: type.type.getTsType()
           })
         };
       }

@@ -47,7 +47,7 @@ const makeTypeOrReference =
   (input: string): OpenAPIV3_1.ReferenceObject | OpenAPIV3_1.SchemaObject => {
     if (isComplexType(input)) {
       return {
-        $ref: `#/components/${input}`
+        $ref: `#/components/schemas/${input}`
       }
     }
 

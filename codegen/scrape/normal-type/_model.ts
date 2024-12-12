@@ -17,7 +17,7 @@ const union = (
 export class NormalType
   extends Data.TaggedClass("NormalType")<NormalTypeShape> {
 
-  getOpenApiType() {
+  getJsonSchema() {
     return makeOpenApiType(this.typeNames);
   }
 

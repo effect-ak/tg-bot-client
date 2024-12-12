@@ -1,24 +1,10 @@
 import type { OpenAPIV3_1 } from "openapi-types";
 
-import type { ExtractedMethod } from "#codegen/scrape/extracted-method/_model.js";
+import type { ExtractedMethodShape } from "#codegen/scrape/extracted-method/_model.js";
 import { errorResponseNames } from "./components.js";
 
-export const makePaths =
-  (methods: ExtractedMethod[]) => {
-
-    const paths =
-      methods.map(m => ({
-        [m.methodName]: makeMethodRequest(m),
-      } as OpenAPIV3_1.PathsObject));
-
-    return {
-      paths
-    } as const
-
-  };
-
-export const makeMethodRequest =
-  (method: ExtractedMethod): OpenAPIV3_1.PathItemObject => {
+export const makePath =
+  (method: ExtractedMethodShape): OpenAPIV3_1.PathItemObject => {
 
     const inputSchema = method.parameters?.getJsonSchema();
 
@@ -28,7 +14,7 @@ export const makeMethodRequest =
         requestBody: {
           content: {
             "application-json": {
-              ...(inputSchema ? { schema: inputSchema }: undefined)
+              ...(inputSchema ? { schema: inputSchema as any }: undefined)
             }
           }
         },
