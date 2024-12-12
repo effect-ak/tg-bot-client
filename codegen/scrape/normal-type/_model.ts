@@ -1,12 +1,13 @@
 import { Data, Either, Array } from "effect";
 
-
 import { makeFrom } from "./factory.js"
 import { mapPseudoTypeToTsType } from "./pseudo-type.js";
 import { makeOpenApiType } from "./openapi-type.js";
+import { OpenAPIV3_1 } from "openapi-types";
 
 export type NormalTypeShape = {
-  typeNames: [ string, ...string[] ],
+  typeNames: [ string, ...string[] ]
+  openApiType?: OpenAPIV3_1.SchemaObject 
   isOverridden?: boolean
 }
 
@@ -17,8 +18,8 @@ const union = (
 export class NormalType
   extends Data.TaggedClass("NormalType")<NormalTypeShape> {
 
-  getJsonSchema() {
-    return makeOpenApiType(this.typeNames);
+  getOpenApiType() {
+    return makeOpenApiType(this);
   }
 
   getTsType(typeNamespace?: string) {

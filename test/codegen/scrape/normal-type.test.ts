@@ -3,6 +3,7 @@ import { OpenAPIV3_1 } from "openapi-types";
 
 import { makeNormalTypeFromPseudoTypes } from "#codegen/scrape/normal-type/pseudo-type.js";
 import { makeOpenApiType } from "#codegen/scrape/normal-type/openapi-type.js";
+import { NormalTypeShape } from "#codegen/scrape/normal-type/_model.js";
 
 describe("normal type", () => {
 
@@ -27,30 +28,34 @@ describe("normal type", () => {
   it("make openapi type", () => {
 
     const check =
-      (types: [string, ...string[]], expected: OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject) => {
+      (types: Pick<NormalTypeShape, "typeNames" | "openApiType">, expected: OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject) => {
         const schema = makeOpenApiType(types);
         expect(schema).toEqual(expected);
       }
 
-    check(["string"], {
+    check({ typeNames: ["string"] }, {
       type: "string"
     });
 
-    check(["string", "number"], {
+    check({ typeNames: ["string", "number"] } , {
       oneOf: [{ type: "string" }, { type: "number" }]
     });
     
-    check(["string[][][]"], {
+    check({ typeNames: ["string[][][]"] }, {
       type: "array", items: { type: "array", items: { type: "array", items: { type: "string" } } }
     });
 
-    check(["string[][][]"], {
+    check({ typeNames: ["string[][][]"] }, {
       type: "array", items: { type: "array", items: { type: "array", items: { type: "string" } } }
     });
 
-    check(["Chat"], {
+    check({ typeNames: ["Chat"] }, {
       $ref: "#/components/schemas/Chat"
     });
+
+    check({ typeNames: ["Blaa"], openApiType: { type: "integer" }}, {
+      type: "integer"
+    })
 
   })
 

@@ -24,7 +24,7 @@ export const makeOpenApiDocument =
     Object.fromEntries(
       input.types.map(t => [
         t.typeName,
-        t.type.getJsonSchema()
+        t.type.getOpenApiType()
       ])
     )
 

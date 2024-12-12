@@ -6,7 +6,7 @@ import { errorResponseNames } from "./components.js";
 export const makePath =
   (method: ExtractedMethodShape): OpenAPIV3_1.PathItemObject => {
 
-    const inputSchema = method.parameters?.getJsonSchema();
+    const inputSchema = method.parameters?.getOpenApiType();
 
     return {
       description: method.methodDescription.join("\n"),

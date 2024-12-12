@@ -2,13 +2,17 @@ import type { OpenAPIV3_1 } from "openapi-types";
 import type { NormalTypeShape } from "./_model.js";
 
 export const makeOpenApiType = (
-  types: NormalTypeShape["typeNames"]
+  input: Pick<NormalTypeShape, "typeNames" | "openApiType">
 ): OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject => {
 
-  if (types.length == 1) return fromSingleType(types[0])
+  if (input.openApiType) {
+    return input.openApiType;
+  }
+
+  if (input.typeNames.length == 1) return fromSingleType(input.typeNames[0]);
 
   return {
-    oneOf: types.map(fromSingleType)
+    oneOf: input.typeNames.map(fromSingleType)
   }
 
 }
@@ -19,11 +23,8 @@ const fromSingleType =
     const dimension = [...typeName.matchAll(/\[\]/g)].length;
 
     if (dimension == 0) {
-
       return makeTypeOrReference(typeName);
-
     } else {
-
       const baseType = typeName.slice(0, typeName.length - 2 * dimension);
 
       let result = {

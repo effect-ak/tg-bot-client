@@ -15,6 +15,12 @@ describe("extracted-entity", () => {
 
     assert(entity.right.type._tag == "NormalType");
 
+    const jsonSchema = entity.right.type.getOpenApiType();
+
+    assert("$ref" in jsonSchema)
+
+    assert(jsonSchema.$ref);
+
     // expect(entity.right.type.normalType.getTsType()).toEqual("File");
 
   });

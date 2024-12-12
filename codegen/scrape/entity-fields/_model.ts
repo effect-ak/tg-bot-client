@@ -15,14 +15,14 @@ export class EntityFields
     fields: EntityField[]
   }> {
 
-    getJsonSchema(): OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject {
+    getOpenApiType(): OpenAPIV3_1.SchemaObject | OpenAPIV3_1.ReferenceObject {
 
       const properties =
         Object.fromEntries(
           this.fields.map(field => [
             field.name,
             {
-              ...field.type.getJsonSchema(),
+              ...field.type.getOpenApiType(),
               description: field.description.join("\n")
             }
           ])

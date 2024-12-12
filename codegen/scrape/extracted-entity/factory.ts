@@ -25,11 +25,15 @@ export const extractFromNode = (
 
   if (Either.isLeft(detailsNode)) {
     if (detailsNode.left.error == "TypeDefinition:StopTagEncountered") {
-      const typeName = typeAliasOverrides[entityName] ?? "never";
+      const overridden = typeAliasOverrides[entityName];
       return Either.right({
         entityName,
         entityDescription: entityDescription.right,
-        type: new NormalType({ typeNames: [ typeName ]})
+        type: 
+          new NormalType({
+            typeNames: [ overridden?.tsType ?? "never" ],
+            openApiType: overridden?.openApi
+          })
       })
     };
     return Either.left({
