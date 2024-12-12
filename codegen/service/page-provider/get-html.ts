@@ -2,6 +2,8 @@ import { Effect } from "effect";
 
 import { writeFile, readFile } from "fs/promises"
 
+export const telegramApiDocs = "https://core.telegram.org/bots/api";
+
 export const getPageHtml =
   (pagePath: string) =>
     Effect.tryPromise(async () => {
@@ -13,7 +15,7 @@ export const getPageHtml =
       }
 
       const content = 
-        await fetch("https://core.telegram.org/bots/api").then(_ => _.text());
+        await fetch(telegramApiDocs).then(_ => _.text());
 
       await writeFile(pagePath, content);
 

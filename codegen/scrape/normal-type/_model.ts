@@ -1,10 +1,12 @@
 import { Data, Either, Array } from "effect";
 
+
 import { makeFrom } from "./factory.js"
-import { mapType } from "./map-type.js";
+import { mapPseudoTypeToTsType } from "./pseudo-type.js";
+import { makeOpenApiType } from "./openapi-type.js";
 
 export type NormalTypeShape = {
-  typeNames: [string, ...string[]],
+  typeNames: [ string, ...string[] ],
   isOverridden?: boolean
 }
 
@@ -14,6 +16,10 @@ const union = (
 
 export class NormalType
   extends Data.TaggedClass("NormalType")<NormalTypeShape> {
+
+  getOpenApiType() {
+    return makeOpenApiType(this.typeNames);
+  }
 
   getTsType(typeNamespace?: string) {
 
@@ -27,7 +33,7 @@ export class NormalType
 
   static makeFromNames(...names: [string, ...string[]]) {
     return new NormalType({
-      typeNames: Array.map(names, mapType)
+      typeNames: Array.map(names, mapPseudoTypeToTsType)
     })
   }
 

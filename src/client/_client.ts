@@ -1,13 +1,12 @@
 import type { SetOptional} from "type-fest"
 import { makeExecute } from "./execute-request.js";
 import { makeDownloadFile } from "./download-file.js";
+import { defaultBaseUrl } from "./const.js";
 
 export type BotConfig = {
   token: string,
   baseUrl: string,
 }
-
-const defaultBaseUrl = "https://api.telegram.org";
 
 export type TgBotClient = ReturnType<typeof makeTgBotClient>
 

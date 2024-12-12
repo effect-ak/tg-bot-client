@@ -2,7 +2,7 @@ import { Data, Either } from "effect"
 
 import type { HtmlElement } from "#codegen/types.js"
 import { NormalType, NormalTypeShape } from "#scrape/normal-type/_model.js"
-import type { EntityField } from "#scrape/entity-field/_model.js"
+import type { EntityFields } from "#codegen/scrape/entity-fields/_model.js"
 import { extractFromNode } from "./factory.js"
 
 export type ExtractedEntityShape = {
@@ -11,13 +11,7 @@ export type ExtractedEntityShape = {
     lines: string[],
     returns: NormalTypeShape | undefined
   },
-  type: {
-    type: "normalType",
-    normalType: NormalType
-  } | {
-    type: "fields",
-    fields: EntityField[]
-  }
+  type: NormalType | EntityFields
 }
 
 export class ExtractedEntity

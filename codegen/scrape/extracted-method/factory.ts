@@ -11,8 +11,8 @@ export const makeFrom = (
 
   let parameters: ExtractedMethodShape["parameters"] | undefined;
 
-  if (entity.type.type == "fields")
-    parameters = entity.type.fields;
+  if (entity.type._tag == "EntityFields")
+    parameters = entity.type;
 
   const returnType = entity.entityDescription.returns;
 

@@ -1,3 +1,5 @@
+export const defaultBaseUrl = "https://api.telegram.org";
+
 export const MESSAGE_EFFECTS = {
   "🔥": "5104841245755180586",
   "👍": "5107584321108051014",

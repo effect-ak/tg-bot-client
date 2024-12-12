@@ -1,7 +1,7 @@
 import { Either, Array } from "effect";
 
 import { HtmlElement } from "#codegen/types.js";
-import { EntityField } from "#scrape/entity-field/_model.js";
+import { EntityField } from "#codegen/scrape/entity-fields/_model.js";
 import { NormalType } from "#scrape/normal-type/_model.js";
 import { ExtractEntityError } from "./errors.js";
 import { ExtractedEntityShape } from "./_model.js";

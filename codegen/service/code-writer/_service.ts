@@ -7,7 +7,7 @@ import { writeMethods } from "./methods.js";
 
 export class CodeWriterService
   extends Effect.Service<CodeWriterService>()("CodeWriterService", {
-    scoped:
+    effect:
       Effect.gen(function* () {
 
         const writeToDir =

@@ -2,7 +2,7 @@ import { Array, Either, pipe, Option } from "effect";
 
 import type { HtmlElement } from "#codegen/types.js";
 import type { ExtractedEntityShape } from "./_model.js";
-import { mapType } from "#scrape/normal-type/map-type.js";
+import { mapPseudoTypeToTsType } from "#codegen/scrape/normal-type/pseudo-type.js";
 import { new_entity_tag_set, returnTypeOverrides } from "./const.js";
 import { ExtractEntityError } from "./errors.js";
 
@@ -51,7 +51,7 @@ export const extractEntityDescription = (
               if (originName.at(0)?.toUpperCase() != originName.at(0)) {
                 return Option.none();
               }
-              const name = mapType(originName);
+              const name = mapPseudoTypeToTsType(originName);
               const isArray = plainLine.toLowerCase().includes(`an array of ${name.toLowerCase()}`);
               return Option.some(`${name}${isArray ? "[]" : ""}`);
             })
