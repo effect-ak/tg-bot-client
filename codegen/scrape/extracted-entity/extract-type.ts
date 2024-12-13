@@ -27,12 +27,12 @@ export const extractType = (
       const descriptionNode = all.at(all.length - 1); // description is the last column
       if (!descriptionNode) return ExtractEntityError.left("NoColumn", { columnName: "description", entityName });
 
-      const description = extractFieldDescription(descriptionNode.text);
+      const description = extractFieldDescription(descriptionNode);
 
       let required = false;
 
       if (all.length == 3) {
-        const isOptional = description[0].startsWith(optional_field_label);
+        const isOptional = description[0].includes(optional_field_label);
         if (isOptional) description.shift();
         required = isOptional == false;
       } else {

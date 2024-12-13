@@ -23,7 +23,7 @@ export class EntityFields
             field.name,
             {
               ...field.type.getOpenApiType(),
-              description: field.description.join("\n")
+              description: field.description.join("<br/>")
             }
           ])
         );

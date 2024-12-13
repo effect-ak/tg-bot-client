@@ -4,6 +4,21 @@ import { fixture } from "../fixture.js";
 
 describe("extracted-entity", () => {
 
+  fixture("ReactionTypeEmoji", ({ page }) => {
+
+    const entity = page.getEntity("ReactionTypeEmoji");
+
+    if (entity._tag == "Left") console.log(entity.left);
+
+    assert(entity._tag == "Right");
+    assert(entity.right.type._tag == "EntityFields");
+
+    const field1 = entity.right.type.fields.find(_ => _.name == "emoji");
+
+    expect(field1?.type.typeNames[0]).equals("\"👍\"")
+
+  });
+
   fixture("answerCallbackQuery", ({ page }) => {
 
     const entity = page.getEntity("answerCallbackQuery");

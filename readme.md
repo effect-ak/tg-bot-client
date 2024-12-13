@@ -1,5 +1,7 @@
 ![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)
 
+[OpenApi Specification](https://effect-ak.github.io/telegram-bot-api/)
+
 ### What is it? 
 
 This is a client for interacting with the Telegram Bot API.  
@@ -10,8 +12,15 @@ They only provide documentation in the form of a massive HTML page, which is ver
 ## Features:
 - **Pure TypeScript Client**: This is a clean client written in TypeScript with no abstractions.
 - **Complete**: The entire API is generated from the official documentation [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
-- **Inline Documentation**: No need to read lengthy official documentation. All types and comments are available in JS DOC, allowing you to develop your bot without leaving your IDE.
-- **Type Mapping**: Types from the documentation are converted to TypeScript types. For example, `Integer` becomes `number`, `True` becomes `boolean`, `String or Number` becomes `string | number`, and so on.
+- ~~**Inline Documentation**: No need to read lengthy official documentation. All types and comments are available in JS DOC, allowing you to develop your bot without leaving your IDE.~~
+  - Codegenerator produces TypeScript code and OpenApi specification now! Documentation was removed from TypeScript interfaces in order to keep npm package smaller.
+
+- **Type Mapping**: Types from the documentation are converted to TypeScript types:
+  - `Integer` becomes `number`
+  - `True` becomes `boolean`
+  - `String or Number` becomes `string | number`
+  - Enumerated types, such as `Type of the chat, can be either “private”, “group”, “supergroup” or “channel”` becomes a standard union of literal types `"private"| "group" | "supergroup" | "channel"`
+  - And so on
 - **Readable Method Names**: Method names, such as `SetChatAdministratorCustomTitleInput`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 
 ### Usage example
@@ -44,7 +53,7 @@ if you want, you can use unsafe alternative, `unsafeExecute`, which gives you th
 #### 1. Sending a Message with an Effect
 
 ```typescript
-import { MESSAGE_EFFECTS } from "effect-ak/tg-bot-client"
+import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
 
 await client.execute("send_message", {
   chat_id: "???", // replace ??? with the chat number

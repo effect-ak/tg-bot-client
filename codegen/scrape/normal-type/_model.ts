@@ -26,7 +26,7 @@ export class NormalType
   getTsType(typeNamespace?: string) {
 
     if (this.isOverridden) return this.typeNames[0];
-    if (this.openApiType?.enum) return this.typeNames[0];
+    if (this.openApiType?.enum) return union(this.typeNames);
     if (!typeNamespace) return union(this.typeNames);
     const prefixed = 
       Array.map(this.typeNames, _ => isComplexType(_) ? `${typeNamespace}.${_}` : _);

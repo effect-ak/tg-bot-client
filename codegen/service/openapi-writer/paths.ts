@@ -17,6 +17,10 @@ export const makePath =
         tags: method.groupName ? [ method.groupName ] : [],
         summary: String.camelToSnake(method.methodName),
         description: method.methodDescription.map(removeHtmlTags).join("<br/>"),
+        externalDocs: {
+          url: `https://core.telegram.org/bots/api#${method.methodName.toLowerCase()}`,
+          description: "telegram documentation"
+        },
         requestBody: {
           content: {
             "application/json": {

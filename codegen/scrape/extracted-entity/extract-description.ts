@@ -100,18 +100,25 @@ export const extractEntityDescription = (
 }
 
 export const extractFieldDescription =
-  (input: string) => {
+  (input: HtmlElement) => {
 
-    const lines = [] as string[];
+    const splitted = input.innerHTML.split(description_split_regex);
 
-    for (const line of input.split(description_split_regex)) {
+    const result = [] as string[];
+
+    for (const line of splitted) {
 
       if (!line || !contains_letters_regex.test(line)) continue;
 
-      lines.push(line);
+      result.push(replaceImgWithAlt(line));
 
     }
 
-    return lines
+    return result
 
   }
+
+function replaceImgWithAlt(text: string): string {
+  const imgTagRegex = /<img[^>]*alt="([^"]*)"[^>]*>/g;
+  return text.replace(imgTagRegex, '$1').replaceAll("&quot;", "\"");
+}

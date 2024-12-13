@@ -39,8 +39,7 @@ export const makeOpenApiDocument =
         url: "https://github.com/effect-ak/tg-bot-client"
       },
       summary: [
-        "![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)",
-        "If you use TypeScript and want to build an integration with telegram bot api, then take a look at this client"
+        "![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client) **TypeScript http client**"
       ].join("<br/>")
     },
     servers: [
