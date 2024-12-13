@@ -6,12 +6,13 @@ import type { EntityFields } from "#codegen/scrape/entity-fields/_model.js"
 import { extractFromNode } from "./factory.js"
 
 export type ExtractedEntityShape = {
-  entityName: string,
+  entityName: string
   entityDescription: {
-    lines: string[],
+    lines: string[]
     returns: NormalTypeShape | undefined
   },
   type: NormalType | EntityFields
+  groupName?: string
 }
 
 export class ExtractedEntity

@@ -2,7 +2,7 @@ import { Data, Either } from "effect";
 
 type ErrorShape = {
   error: [
-    "Failed", "ReturnTypeSentenceNotFound", "EmptyType"
+    "Failed", "ReturnTypeSentenceNotFound", "EmptyType", "NoEnumFound"
   ][number],
   details: {
     entityName?: string,

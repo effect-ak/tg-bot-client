@@ -9,6 +9,9 @@ const run =
   Effect.gen(function* () {
 
     const { page } = yield* PageProviderService;
+
+    const apiVersion = yield* Effect.fromNullable(page.getLatestVersion());
+
     const codeWriter = yield* CodeWriterService;
     const openapiWriter = yield* OpenapiWriterService;
     const entities = yield* ExtractedEntities.make(page);
@@ -16,7 +19,10 @@ const run =
     codeWriter.writeTypes(entities.types);
     codeWriter.writeMethods(entities.methods);
 
-    yield* openapiWriter.writeSpecification(entities);
+    yield* openapiWriter.writeSpecification({
+      ...entities,
+      apiVersion
+    });
 
     yield* codeWriter.saveFiles;
 

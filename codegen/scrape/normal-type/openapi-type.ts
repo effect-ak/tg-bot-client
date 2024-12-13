@@ -1,4 +1,5 @@
 import type { OpenAPIV3_1 } from "openapi-types";
+import { isComplexType } from "#scrape/types.js";
 import type { NormalTypeShape } from "./_model.js";
 
 export const makeOpenApiType = (
@@ -7,6 +8,13 @@ export const makeOpenApiType = (
 
   if (input.openApiType) {
     return input.openApiType;
+  }
+
+  if (input.typeNames[0] == "never") {
+    return {
+      type: "object",
+      additionalProperties: false
+    }
   }
 
   if (input.typeNames.length == 1) return fromSingleType(input.typeNames[0]);
@@ -56,8 +64,3 @@ const makeTypeOrReference =
       type: input as any
     }
   }
-
-const isComplexType =
-  (input: string) =>
-    input.length > 0 &&
-    input.at(0)?.toUpperCase() == input.at(0);

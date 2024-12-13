@@ -6,8 +6,9 @@ import { ExtractedType } from "#codegen/scrape/extracted-type/_model.js";
 import { responsesObject } from "./components.js";
 import { makePath } from "./paths.js";
 
-export const makeOpenApiDocument = 
+export const makeOpenApiDocument =
   (input: {
+    apiVersion: string,
     types: ExtractedType[]
     methods: ExtractedMethod[],
   }): OpenAPIV3_1.Document => {
@@ -15,7 +16,7 @@ export const makeOpenApiDocument =
   const paths = 
     Object.fromEntries(
       input.methods.map(m => [
-        m.methodName,
+        `/${m.methodName}`,
         makePath(m)
       ])
     );
@@ -33,11 +34,24 @@ export const makeOpenApiDocument =
     info: {
       title: "Telegram bot api",
       description: "Generated from official Telegram documentation",
-      version: "8.2",
+      version: input.apiVersion,
+      contact: {
+        url: "https://github.com/effect-ak/tg-bot-client"
+      },
+      summary: [
+        "![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)",
+        "If you use TypeScript and want to build an integration with telegram bot api, then take a look at this client"
+      ].join("<br/>")
     },
     servers: [
       {
-        url: defaultBaseUrl
+        url: `${defaultBaseUrl}/bot{bot-token}`,
+        variables: {
+          "bot-token": {
+            default: "put-your-token",
+            description: "take from bot father"
+          }
+        }
       }
     ],
     tags: [],

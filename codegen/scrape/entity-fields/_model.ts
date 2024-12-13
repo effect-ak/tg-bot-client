@@ -27,14 +27,14 @@ export class EntityFields
             }
           ])
         );
-
+      
       const required = 
         Array.filterMap(this.fields, _ => _.required ? Option.some(_.name) : Option.none());
 
       return {
         type: "object",
         properties,
-        required 
+        ...(required.length > 0 ? { required } : undefined)
       }
     }
 

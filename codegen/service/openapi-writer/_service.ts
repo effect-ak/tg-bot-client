@@ -21,7 +21,7 @@ export class OpenapiWriterService
 
             return Effect.tryPromise(() => 
               writeFile(pathTo, JSON.stringify(doc, undefined, 2))
-            )
+            );
 
           }
 

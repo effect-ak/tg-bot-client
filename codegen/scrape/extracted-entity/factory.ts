@@ -33,7 +33,7 @@ export const extractFromNode = (
           new NormalType({
             typeNames: [ overridden?.tsType ?? "never" ],
             openApiType: overridden?.openApi
-          })
+          }),
       })
     };
     return Either.left({
@@ -51,7 +51,7 @@ export const extractFromNode = (
   return Either.right({
     entityName,
     entityDescription: entityDescription.right,
-    type: type.right
+    type: type.right,
   });
 
 }

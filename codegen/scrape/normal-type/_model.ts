@@ -1,9 +1,10 @@
 import { Data, Either, Array } from "effect";
 
+import type { OpenAPIV3_1 } from "openapi-types";
+import { ExtractedEntityField, isComplexType } from "#scrape/types.js";
 import { makeFrom } from "./factory.js"
 import { mapPseudoTypeToTsType } from "./pseudo-type.js";
 import { makeOpenApiType } from "./openapi-type.js";
-import { OpenAPIV3_1 } from "openapi-types";
 
 export type NormalTypeShape = {
   typeNames: [ string, ...string[] ]
@@ -25,9 +26,10 @@ export class NormalType
   getTsType(typeNamespace?: string) {
 
     if (this.isOverridden) return this.typeNames[0];
+    if (this.openApiType?.enum) return this.typeNames[0];
     if (!typeNamespace) return union(this.typeNames);
     const prefixed = 
-      Array.map(this.typeNames, _ => _.at(0)?.toUpperCase() == _.at(0) ? `${typeNamespace}.${_}` : _);
+      Array.map(this.typeNames, _ => isComplexType(_) ? `${typeNamespace}.${_}` : _);
     return union(prefixed);
  
   }
@@ -38,7 +40,7 @@ export class NormalType
     })
   }
 
-  static makeFrom(input: Parameters<typeof makeFrom>[0]) {
+  static makeFrom(input: ExtractedEntityField) {
     return makeFrom(input).pipe(Either.andThen(_ => new NormalType(_)))
   };
 

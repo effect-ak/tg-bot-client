@@ -3,8 +3,8 @@ import { Data } from "effect"
 import { type ExtractedEntityShape } from "#scrape/extracted-entity/_model.js"
 
 export type ExtractedTypeShape = {
-  typeName: string,
-  description: string[],
+  typeName: string
+  description: string[]
   type: ExtractedEntityShape["type"]
 }
 

@@ -4,6 +4,16 @@ import { fixture } from "../fixture.js";
 
 describe("extracted-entity", () => {
 
+  fixture("answerCallbackQuery", ({ page }) => {
+
+    const entity = page.getEntity("answerCallbackQuery");
+
+    if (entity._tag == "Left") console.log(entity.left);
+
+    assert(entity._tag == "Right");
+
+  });
+
   fixture("InputFile", ({ page }) => {
 
     const entity = page.getEntity("InputFile");
@@ -17,11 +27,7 @@ describe("extracted-entity", () => {
 
     const jsonSchema = entity.right.type.getOpenApiType();
 
-    assert("$ref" in jsonSchema)
-
-    assert(jsonSchema.$ref);
-
-    // expect(entity.right.type.normalType.getTsType()).toEqual("File");
+    expect(jsonSchema).toEqual({ type: "string", format: "binary" })
 
   });
 
@@ -145,7 +151,7 @@ describe("extracted-entity", () => {
     assert(entity._tag == "Right");
 
     expect(entity.right.entityName).toEqual("Chat");
-    expect(entity.right.entityDescription.lines[0]).toEqual("This object represents a chat");
+    expect(entity.right.entityDescription.lines[0]).toEqual("This object represents a chat.");
 
     assert(entity.right.type._tag == "EntityFields");
     expect(entity.right.type.fields.length).greaterThan(1);

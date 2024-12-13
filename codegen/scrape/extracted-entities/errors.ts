@@ -1,7 +1,7 @@
 import { Data } from "effect";
 
 type ErrorCode = [
-  "NodesNotFound"
+  "NodesNotFound", "GroupNameNotDefined"
 ][number];
 
 export class ExtractedEntitiesError

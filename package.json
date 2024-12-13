@@ -25,10 +25,11 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/dts/index.d.ts",
   "scripts": {
-    "gen": "bun run codegen/main",
+    "gen": "bun run ./codegen/main",
     "build": "pnpm build-esm && pnpm build-cjs",
     "build-esm": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "build-cjs": "babel dist/esm --out-dir dist/cjs"
+    "build-cjs": "babel dist/esm --out-dir dist/cjs",
+    "gen-html": "redocly build-docs src/specification/openapi.json"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
@@ -44,6 +45,7 @@
     "type-fest": "^4.30.0",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "@redocly/cli": "^1.26.0"
   }
 }

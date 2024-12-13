@@ -5,8 +5,9 @@ import type { ExtractedEntityShape } from "./_model.js";
 import { mapPseudoTypeToTsType } from "#codegen/scrape/normal-type/pseudo-type.js";
 import { new_entity_tag_set, returnTypeOverrides } from "./const.js";
 import { ExtractEntityError } from "./errors.js";
+import { isComplexType } from "../types.js";
 
-const description_split_regex = /(\.\s{0,}|\.$)/g;
+const description_split_regex = /(\.\s{1,})|(\.<br>)/g;
 const contains_letters_regex = /\w{1,}/;
 const type_tags_regex = /\w+(?=\<\/(a|em)>)/g;
 const html_tags_regex = /<\/?[^>]+>/g;
@@ -17,8 +18,8 @@ const isReturnSentence =
     _.endsWith("is returned") ||
     _.startsWith("Returns ");
 
-const removeHtmlTags =
-  (input: string) => input.replace(html_tags_regex, "")
+export const removeHtmlTags =
+  (input: string) => input.replaceAll(html_tags_regex, "")
 
 export const extractEntityDescription = (
   node: HtmlElement, entityName: string
@@ -36,9 +37,11 @@ export const extractEntityDescription = (
 
     if (!currentNode || new_entity_tag_set.has(currentNode.tagName)) break;
 
-    for (const line of currentNode.innerHTML.split(description_split_regex)) {
+    const splittedDescription = currentNode.innerHTML.split(description_split_regex);
 
-      if (!contains_letters_regex.test(line)) continue;
+    for (const line of splittedDescription) {
+
+      if (!line || !contains_letters_regex.test(line)) continue;
 
       const plainLine = removeHtmlTags(line);
 
@@ -48,7 +51,7 @@ export const extractEntityDescription = (
             Array.fromIterable(line.matchAll(type_tags_regex)),
             Array.filterMap(_ => {
               const originName = _[0];
-              if (originName.at(0)?.toUpperCase() != originName.at(0)) {
+              if (!isComplexType(originName)) {
                 return Option.none();
               }
               const name = mapPseudoTypeToTsType(originName);
@@ -103,7 +106,7 @@ export const extractFieldDescription =
 
     for (const line of input.split(description_split_regex)) {
 
-      if (!contains_letters_regex.test(line)) continue;
+      if (!line || !contains_letters_regex.test(line)) continue;
 
       lines.push(line);
 

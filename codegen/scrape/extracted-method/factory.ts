@@ -1,8 +1,8 @@
 import { Either } from "effect";
 
 import type { ExtractedEntityShape } from "#scrape/extracted-entity/_model.js";
-import type { ExtractedMethodShape } from "./_model.js";
 import { NormalType } from "#scrape/normal-type/_model.js";
+import type { ExtractedMethodShape } from "./_model.js";
 import { ExtractMethodError } from "./errors.js";
 
 export const makeFrom = (
@@ -24,6 +24,7 @@ export const makeFrom = (
     methodDescription: entity.entityDescription.lines,
     returnType: new NormalType({ typeNames: returnType.typeNames }),
     parameters,
+    ...(entity.groupName ? { groupName: entity.groupName } : undefined )
   });
 
 }

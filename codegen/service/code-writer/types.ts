@@ -17,7 +17,7 @@ export const writeTypes =
                   name: field.name,
                   type: field.type.getTsType(),
                   hasQuestionToken: !field.required,
-                  docs: [field.description.join("\n")]
+                  // docs: [field.description.join("\n")]
                 } as PropertySignatureStructure))
             })
           })

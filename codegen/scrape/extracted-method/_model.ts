@@ -6,10 +6,11 @@ import type { ExtractedEntityShape } from "../extracted-entity/_model.js"
 import { makeFrom } from "./factory.js"
 
 export type ExtractedMethodShape = {
-  methodName: string,
-  returnType: NormalType,
-  methodDescription: string[],
+  methodName: string
+  returnType: NormalType
+  methodDescription: string[]
   parameters: EntityFields | undefined
+  groupName?: string
 }
 
 export class ExtractedMethod

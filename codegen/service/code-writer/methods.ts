@@ -24,7 +24,6 @@ export const writeMethods =
           methods.map(method => ({
             name: String.camelToSnake(method.methodName),
             returnType: method.returnType.getTsType(typeNamespace),
-            docs: [ method.methodDescription.join("\n") ],
             parameters: [
               {
                 name: "_",
@@ -47,7 +46,6 @@ export const writeMethods =
                 name: field.name,
                 type: field.type.getTsType(typeNamespace),
                 hasQuestionToken: !field.required,
-                docs: [field.description.join("\n")]
               } as PropertySignatureStructure))
           })
 

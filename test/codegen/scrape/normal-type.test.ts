@@ -4,6 +4,7 @@ import { OpenAPIV3_1 } from "openapi-types";
 import { makeNormalTypeFromPseudoTypes } from "#codegen/scrape/normal-type/pseudo-type.js";
 import { makeOpenApiType } from "#codegen/scrape/normal-type/openapi-type.js";
 import { NormalTypeShape } from "#codegen/scrape/normal-type/_model.js";
+import { extractEnumFromTypeDescription } from "#codegen/scrape/normal-type/enum.js";
 
 describe("normal type", () => {
 
@@ -56,6 +57,44 @@ describe("normal type", () => {
     check({ typeNames: ["Blaa"], openApiType: { type: "integer" }}, {
       type: "integer"
     })
+
+  });
+
+  it("extract enum from type description", () => {
+
+    const check =
+      (description: string[], expected: string[]) => {
+        const actual = extractEnumFromTypeDescription(description);
+        expect(actual).toEqual(expected);
+      }
+
+    check([
+      "Type of the reaction, always “paid”"
+    ], [ "paid" ]);
+
+    check([
+      "Format of the sticker, must be one of “static”, “animated”, “video”"
+    ], [ "static", "animated", "video" ]);
+
+    check([
+      "MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or “video/mp4”."
+    ], [ "image/jpeg", "image/gif", "video/mp4" ]);
+
+    check([
+      "Type of the result, must be gif"
+    ], [ "gif" ]);
+
+    check([
+      "The member's status in the chat, always “restricted”"
+    ], [ "restricted" ]);
+
+    check([
+      "Nothing"
+    ], []),
+
+    check([
+      `Currently, it can be one of "👍", "👎", "❤"`
+    ], ["👍", "👎", "❤" ])
 
   })
 

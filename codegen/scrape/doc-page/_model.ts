@@ -43,4 +43,8 @@ export class DocPage
     )
   }
 
+  getLatestVersion() {
+    return this.node.querySelector("p > strong")?.text?.split(" ").at(-1);
+  }
+
 }

@@ -1,0 +1,11 @@
+extends:
+  - recommended
+
+apis:
+  telegram-bot:
+    root: ./src/specification/openapi.json
+
+theme:
+  openapi:
+    hideRequestPayloadSample: true
+    sortTagsAlphabetically: true

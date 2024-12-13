@@ -45,7 +45,7 @@ export const extractType = (
       };
 
       const normalType =
-        NormalType.makeFrom({ entityName, fieldName, pseudoType  });
+        NormalType.makeFrom({ entityName, fieldName, pseudoType, description });
 
       if (Either.isLeft(normalType)) {
         console.warn(normalType.left)
@@ -57,8 +57,10 @@ export const extractType = (
           name: fieldName, description, required,
           type: normalType.right
         }
-      )
+      );
     };
+
+    fields.fields.sort((a, b) => (b.required ? 1 : 0) - (a.required ? 1 : 0));
     
     return Either.right(fields);
 
