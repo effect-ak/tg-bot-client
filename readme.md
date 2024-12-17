@@ -11,9 +11,9 @@ They only provide documentation in the form of a massive HTML page, which is ver
 
 ## Features:
 - **Pure TypeScript Client**: This is a clean client written in TypeScript with no abstractions.
-- **Complete**: The entire API is generated from the official documentation [https://core.telegram.org/bots/api](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
+- **Complete**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
 - ~~**Inline Documentation**: No need to read lengthy official documentation. All types and comments are available in JS DOC, allowing you to develop your bot without leaving your IDE.~~
-  - Codegenerator produces TypeScript code and OpenApi specification now! Documentation was removed from TypeScript interfaces in order to keep npm package smaller.
+  - Codegenerator produces TypeScript code and [OpenApi specification](./codegen/service/openapi-writer/_service.ts) now! Documentation was removed from TypeScript interfaces in order to keep npm package smaller.
 
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
   - `Integer` becomes `number`
@@ -39,16 +39,12 @@ const client = makeTgBotClient({
 });
 ```
 
-#### Executing api methods, typesafety
+#### Executing api methods
 
 `client` has an `execute` method which requires two arguments
 
 - the first is the API method, e.g. `send_message`
 - the second is an object containing the arguments for that method, e.g. `text`
-
-`execute` never returns failed promise, instead, it gives an object with two fields, `success`, `error`.
-
-if you want, you can use unsafe alternative, `unsafeExecute`, which gives you the result of method or throws an Error
 
 #### 1. Sending a Message with an Effect
 

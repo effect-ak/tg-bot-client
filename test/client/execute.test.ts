@@ -2,20 +2,24 @@ import { describe, expect, assert, vi } from "vitest";
 
 import { fixture } from "./fixture.js";
 import { MESSAGE_EFFECTS } from "#/client/const.js";
+import { Micro } from "effect";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 
 describe("telegram bot client, execute method", () => {
 
-  fixture("send dice", async ({ client, chat_id, skip }) => {
+  fixture("send dice", async ({ execute, chat_id, skip }) => {
 
-    skip();
+    // skip();
 
     const response =
-      await client.unsafeExecute("send_dice", {
+      await execute("send_dice", {
         chat_id,
-        emoji: "🎲"
-      });
+        emoji: "🎲",
+        message_effect_id: MESSAGE_EFFECTS["🔥"]
+      }).pipe(Micro.runPromiseExit);
+
+    assert(response._tag == "Success");
 
     const url = fetchSpy.mock.calls[0][0] as string;
     const lastPath = url.split('/').pop();
@@ -24,7 +28,7 @@ describe("telegram bot client, execute method", () => {
 
     assert(response != null);
 
-    expect(response.chat.id).toBeDefined();
+    expect(response.value.chat.id).toBeDefined();
   });
 
   fixture("send message", async ({ chat_id, client, skip }) => {
@@ -38,7 +42,7 @@ describe("telegram bot client, execute method", () => {
         message_effect_id: MESSAGE_EFFECTS["🔥"]
       });
 
-    expect(response.success?.chat.id).toBeDefined();
+    expect(response.chat.id).toBeDefined();
 
   });
 
@@ -47,7 +51,7 @@ describe("telegram bot client, execute method", () => {
     skip();
 
     const response =
-      await client.unsafeExecute("send_message", {
+      await client.execute("send_message", {
         chat_id,
         text: "hey again!",
         message_effect_id: MESSAGE_EFFECTS["🎉"],
@@ -74,7 +78,7 @@ describe("telegram bot client, execute method", () => {
     skip();
 
     const response =
-      await client.unsafeExecute("send_document", {
+      await client.execute("send_document", {
         chat_id,
         message_effect_id: MESSAGE_EFFECTS["🎉"],
         document: {

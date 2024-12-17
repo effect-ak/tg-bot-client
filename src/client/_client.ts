@@ -1,29 +1,38 @@
-import type { SetOptional} from "type-fest"
-import { makeExecute } from "./execute-request.js";
-import { makeDownloadFile } from "./download-file.js";
-import { defaultBaseUrl } from "./const.js";
+import * as Micro from "effect/Micro";
 
-export type BotConfig = {
-  token: string,
-  baseUrl: string,
-}
+import { makeTgBotClientConfig, TgBotClientConfig } from "./config.js";
+import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault } from "./execute-request/_service.js";
+import { ClientFileService, ClientFileServiceInterface, ClientFileServiceDefault } from "./file/_service.js";
+import { Api } from "#/specification/api.js";
+import type { TgBotClientSettingsInput } from "./guards.js";
 
-export type TgBotClient = ReturnType<typeof makeTgBotClient>
+export type TgBotClient = ReturnType<typeof makeTgBotClient>;
 
 export const makeTgBotClient =
-  (inputConfig: SetOptional<BotConfig, "baseUrl">) => {
+  (input: TgBotClientSettingsInput) => {
 
-    const config: BotConfig = {
-      ...inputConfig,
-      baseUrl: inputConfig.baseUrl ?? defaultBaseUrl
-    }
+    const config = makeTgBotClientConfig(input);
 
-    const execute = makeExecute(config);
-    const file = makeDownloadFile(config, execute);
+    const client =
+      Micro.gen(function* () {
 
-    return {
-      ...execute,
-      ...file
-    } as const;
+        const execute = yield* Micro.service(ClientExecuteRequestService);
+        const file = yield* Micro.service(ClientFileService);
+
+        return {
+          execute: <M extends keyof Api>(method: M, input: Parameters<Api[M]>[0]) =>
+            execute.execute(method, input).pipe(Micro.runPromise),
+          getFile: (input: Parameters<ClientFileServiceInterface["getFile"]>[0]) =>
+            file.getFile(input).pipe(Micro.runPromise)
+        }
+
+      }).pipe(
+        Micro.provideServiceEffect(ClientExecuteRequestService, ClientExecuteRequestServiceDefault),
+        Micro.provideServiceEffect(ClientFileService, ClientFileServiceDefault),
+        Micro.provideService(TgBotClientConfig, config),
+        Micro.runSync
+      );
+
+    return client;
 
   }

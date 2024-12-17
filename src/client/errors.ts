@@ -1,3 +1,5 @@
+import * as Data from "effect/Data";
+
 type ErrorReason = {
   readonly type: "NotOkResponse"
   readonly errorCode?: number
@@ -13,19 +15,17 @@ type ErrorReason = {
   readonly cause: unknown
 }
 
-export class TgBotClientError extends Error {
-  readonly _tag = "TgBotClientError"
+export class TgBotClientError
+  extends Data.TaggedError("TgBotClientError")<{
+    reason: ErrorReason
+  }> {
 
-  constructor(
-    readonly reason: ErrorReason,
-  ) {
-    super()
-  }
-
-  static readonly missingSuccess = 
+  static readonly missingSuccess =
     new TgBotClientError({
-      type: "ClientInternalError",
-      cause: "Expected 'success' to be defined"
+      reason: {
+        type: "ClientInternalError",
+        cause: "Expected 'success' to be defined"
+      },
     });
 
 }

@@ -25,11 +25,11 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/dts/index.d.ts",
   "scripts": {
-    "gen": "bun run ./codegen/main",
+    "gen": "tsx ./codegen/main",
+    "run-bot": "tsx ./src/bot/run",
     "build": "pnpm build-esm && pnpm build-cjs",
     "build-esm": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "build-cjs": "babel dist/esm --out-dir dist/cjs",
-    "gen-html": "redocly build-docs --output ../effect-ak.github.io/telegram-bot-api/index.html"
+    "build-cjs": "babel dist/esm --out-dir dist/cjs"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
@@ -37,15 +37,16 @@
     "@babel/plugin-transform-export-namespace-from": "^7.25.9",
     "@babel/plugin-transform-modules-commonjs": "^7.26.3",
     "@types/node": "^22.10.1",
-    "effect": "^3.11.4",
     "node-html-parser": "^6.1.13",
-    "openapi-types": "^12.1.3",
     "ts-morph": "^24.0.0",
     "tsc-alias": "^1.8.10",
     "type-fest": "^4.30.0",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^2.1.8",
-    "@redocly/cli": "^1.26.0"
+    "tsx": "^4.19.2"
+  },
+  "dependencies": {
+    "effect": "^3.4.0"
   }
 }
