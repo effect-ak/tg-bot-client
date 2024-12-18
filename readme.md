@@ -13,7 +13,7 @@ They only provide documentation in the form of a massive HTML page, which is ver
 - **Pure TypeScript Client**: This is a clean client written in TypeScript with no abstractions.
 - **Complete**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts).
 - ~~**Inline Documentation**: No need to read lengthy official documentation. All types and comments are available in JS DOC, allowing you to develop your bot without leaving your IDE.~~
-  - Codegenerator produces TypeScript code and [OpenApi specification](./codegen/service/openapi-writer/_service.ts) now! Documentation was removed from TypeScript interfaces in order to keep npm package smaller.
+  - Codegenerator produces TypeScript code and [OpenApi specification](./openapi/openapi.yaml) now! Documentation was removed from TypeScript interfaces in order to keep npm package smaller.
 
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
   - `Integer` becomes `number`

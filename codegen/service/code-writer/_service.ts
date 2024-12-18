@@ -11,7 +11,7 @@ export class CodeWriterService
       Effect.gen(function* () {
 
         const writeToDir =
-          yield* Config.array(Config.nonEmptyString(), "client-out-dir");
+          yield* Config.array(Config.nonEmptyString(), "scrapper-out-dir");
 
         const project = new TsMorph.Project();
 

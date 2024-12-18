@@ -11,5 +11,6 @@ export const withConfig =
   }) =>
     ConfigProvider.fromJson({
       "page-path": input.pagePath,
-      "client-out-dir": [ currentPath, "..", "src", "specification" ]
+      "scrapper-out-dir": [ currentPath, "..", "src", "specification" ],
+      "openapi-out-dir": [ currentPath, "..", "openapi" ],
     });

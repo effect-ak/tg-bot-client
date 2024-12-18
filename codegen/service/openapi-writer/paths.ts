@@ -12,7 +12,6 @@ export const makePath =
     const outputSchema = method.returnType.getOpenApiType();
 
     return {
-      description: "hello",
       post: {
         tags: method.groupName ? [ method.groupName ] : [],
         summary: String.camelToSnake(method.methodName),
