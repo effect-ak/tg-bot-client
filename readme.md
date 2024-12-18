@@ -1,4 +1,8 @@
 ![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)
+![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client)
+![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40effect-ak%2Ftg-bot-client)
+
+
 
 [OpenApi Specification](https://effect-ak.github.io/telegram-bot-api/)
 
