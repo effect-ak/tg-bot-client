@@ -2,7 +2,7 @@ import * as Micro from "effect/Micro";
 import * as Context from "effect/Context";
 
 import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault } from "#/client/execute-request/_service.js";
-import { BotMessageHandlerSettings } from "#/bot/message-handler/_service.js";
+import { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
 import { handleUntilFirstHandlerError } from "./poll-and-handle.js";
 
 export type BotUpdatePollerServiceInterface =
@@ -38,7 +38,9 @@ export const BotUpdatesPollerServiceDefault =
           state.isActive = false;
         });
 
-        console.log("Reading bot's updates...")
+        console.log("Reading bot's updates...");
+
+        return fiber;
         
       });
 

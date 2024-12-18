@@ -17,7 +17,6 @@ servers:
 tags: []
 paths:
   /addStickerToSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -62,7 +61,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /answerCallbackQuery:
-    description: hello
     post:
       tags:
         - available-methods
@@ -129,7 +127,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /answerInlineQuery:
-    description: hello
     post:
       tags:
         - inline-mode
@@ -193,7 +190,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /answerPreCheckoutQuery:
-    description: hello
     post:
       tags:
         - payments
@@ -246,7 +242,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /answerShippingQuery:
-    description: hello
     post:
       tags:
         - payments
@@ -303,7 +298,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /answerWebAppQuery:
-    description: hello
     post:
       tags:
         - inline-mode
@@ -341,7 +335,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /approveChatJoinRequest:
-    description: hello
     post:
       tags:
         - available-methods
@@ -383,7 +376,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /banChatMember:
-    description: hello
     post:
       tags:
         - available-methods
@@ -442,7 +434,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /banChatSenderChat:
-    description: hello
     post:
       tags:
         - available-methods
@@ -487,7 +478,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /close:
-    description: hello
     post:
       tags:
         - available-methods
@@ -515,7 +505,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /closeForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -560,7 +549,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /closeGeneralForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -598,7 +586,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /copyMessage:
-    description: hello
     post:
       tags:
         - available-methods
@@ -710,7 +697,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /copyMessages:
-    description: hello
     post:
       tags:
         - available-methods
@@ -791,7 +777,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /createChatInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -848,7 +833,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /createChatSubscriptionInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -905,7 +889,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /createForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -960,7 +943,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /createInvoiceLink:
-    description: hello
     post:
       tags:
         - payments
@@ -1120,7 +1102,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /createNewStickerSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -1189,7 +1170,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /declineChatJoinRequest:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1231,7 +1211,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteChatPhoto:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1269,7 +1248,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteChatStickerSet:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1309,7 +1287,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1354,7 +1331,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteMessage:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -1405,7 +1381,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteMessages:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -1451,7 +1426,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteMyCommands:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1492,7 +1466,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteStickerFromSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -1523,7 +1496,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteStickerSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -1554,7 +1526,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /deleteWebhook:
-    description: hello
     post:
       tags:
         - getting-updates
@@ -1585,7 +1556,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editChatInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1645,7 +1615,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editChatSubscriptionInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1689,7 +1658,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1746,7 +1714,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editGeneralForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -1789,7 +1756,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editMessageCaption:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -1870,7 +1836,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editMessageLiveLocation:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -1963,7 +1928,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editMessageMedia:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -2033,7 +1997,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editMessageReplyMarkup:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -2091,7 +2054,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editMessageText:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -2171,7 +2133,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /editUserStarSubscription:
-    description: hello
     post:
       tags:
         - payments
@@ -2217,7 +2178,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /exportChatInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2256,7 +2216,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /forwardMessage:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2321,7 +2280,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /forwardMessages:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2395,7 +2353,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getAvailableGifts:
-    description: hello
     post:
       tags:
         - stickers
@@ -2420,7 +2377,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getBusinessConnection:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2453,7 +2409,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getChat:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2489,7 +2444,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getChatAdministrators:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2529,7 +2483,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getChatMember:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2572,7 +2525,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getChatMemberCount:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2608,7 +2560,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getChatMenuButton:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2641,7 +2592,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getCustomEmojiStickers:
-    description: hello
     post:
       tags:
         - stickers
@@ -2680,7 +2630,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getFile:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2718,7 +2667,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getForumTopicIconStickers:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2745,7 +2693,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getGameHighScores:
-    description: hello
     post:
       tags:
         - games
@@ -2801,7 +2748,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMe:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2826,7 +2772,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMyCommands:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2865,7 +2810,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMyDefaultAdministratorRights:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2899,7 +2843,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMyDescription:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2930,7 +2873,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMyName:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2959,7 +2901,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getMyShortDescription:
-    description: hello
     post:
       tags:
         - available-methods
@@ -2990,7 +2931,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getStarTransactions:
-    description: hello
     post:
       tags:
         - payments
@@ -3025,7 +2965,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getStickerSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -3056,7 +2995,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getUpdates:
-    description: hello
     post:
       tags:
         - getting-updates
@@ -3123,7 +3061,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getUserChatBoosts:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3164,7 +3101,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getUserProfilePhotos:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3205,7 +3141,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getWebhookInfo:
-    description: hello
     post:
       tags:
         - getting-updates
@@ -3231,7 +3166,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /hideGeneralForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3270,7 +3204,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /leaveChat:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3306,7 +3239,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /logOut:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3335,7 +3267,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /pinChatMessage:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3391,7 +3322,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /promoteChatMember:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3511,7 +3441,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /refundStarPayment:
-    description: hello
     post:
       tags:
         - payments
@@ -3546,7 +3475,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /reopenForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3591,7 +3519,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /reopenGeneralForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3630,7 +3557,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /replaceStickerInSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -3679,7 +3605,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /restrictChatMember:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3743,7 +3668,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /revokeChatInviteLink:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3786,7 +3710,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /savePreparedInlineMessage:
-    description: hello
     post:
       tags:
         - inline-mode
@@ -3841,7 +3764,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendAnimation:
-    description: hello
     post:
       tags:
         - available-methods
@@ -3987,7 +3909,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendAudio:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4124,7 +4045,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendChatAction:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4193,7 +4113,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendContact:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4289,7 +4208,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendDice:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4384,7 +4302,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendDocument:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4516,7 +4433,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendGame:
-    description: hello
     post:
       tags:
         - games
@@ -4595,7 +4511,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendGift:
-    description: hello
     post:
       tags:
         - stickers
@@ -4656,7 +4571,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendInvoice:
-    description: hello
     post:
       tags:
         - payments
@@ -4855,7 +4769,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendLocation:
-    description: hello
     post:
       tags:
         - available-methods
@@ -4966,7 +4879,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendMediaGroup:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5054,7 +4966,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendMessage:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5155,7 +5066,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendPaidMedia:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5269,7 +5179,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendPhoto:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5390,7 +5299,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendPoll:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5547,7 +5455,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendSticker:
-    description: hello
     post:
       tags:
         - stickers
@@ -5647,7 +5554,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendVenue:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5758,7 +5664,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendVideo:
-    description: hello
     post:
       tags:
         - available-methods
@@ -5908,7 +5813,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendVideoNote:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6025,7 +5929,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendVoice:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6142,7 +6045,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatAdministratorCustomTitle:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6189,7 +6091,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatDescription:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6230,7 +6131,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatMenuButton:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6268,7 +6168,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatPermissions:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6320,7 +6219,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatPhoto:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6363,7 +6261,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatStickerSet:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6407,7 +6304,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatTitle:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6449,7 +6345,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setCustomEmojiStickerSetThumbnail:
-    description: hello
     post:
       tags:
         - stickers
@@ -6486,7 +6381,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setGameScore:
-    description: hello
     post:
       tags:
         - games
@@ -6548,7 +6442,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMessageReaction:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6608,7 +6501,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMyCommands:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6658,7 +6550,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMyDefaultAdministratorRights:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6701,7 +6592,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMyDescription:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6741,7 +6631,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMyName:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6778,7 +6667,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setMyShortDescription:
-    description: hello
     post:
       tags:
         - available-methods
@@ -6819,7 +6707,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setPassportDataErrors:
-    description: hello
     post:
       tags:
         - telegram-passport
@@ -6865,7 +6752,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerEmojiList:
-    description: hello
     post:
       tags:
         - stickers
@@ -6907,7 +6793,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerKeywords:
-    description: hello
     post:
       tags:
         - stickers
@@ -6948,7 +6833,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerMaskPosition:
-    description: hello
     post:
       tags:
         - stickers
@@ -6987,7 +6871,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerPositionInSet:
-    description: hello
     post:
       tags:
         - stickers
@@ -7024,7 +6907,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerSetThumbnail:
-    description: hello
     post:
       tags:
         - stickers
@@ -7094,7 +6976,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setStickerSetTitle:
-    description: hello
     post:
       tags:
         - stickers
@@ -7129,7 +7010,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setUserEmojiStatus:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7171,7 +7051,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setWebhook:
-    description: hello
     post:
       tags:
         - getting-updates
@@ -7259,7 +7138,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /stopMessageLiveLocation:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -7316,7 +7194,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /stopPoll:
-    description: hello
     post:
       tags:
         - updating-messages
@@ -7363,7 +7240,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unbanChatMember:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7414,7 +7290,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unbanChatSenderChat:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7456,7 +7331,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unhideGeneralForumTopic:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7494,7 +7368,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unpinAllChatMessages:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7534,7 +7407,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unpinAllForumTopicMessages:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7578,7 +7450,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unpinAllGeneralForumTopicMessages:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7616,7 +7487,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /unpinChatMessage:
-    description: hello
     post:
       tags:
         - available-methods
@@ -7668,7 +7538,6 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /uploadStickerFile:
-    description: hello
     post:
       tags:
         - stickers

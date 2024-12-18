@@ -1,6 +1,6 @@
 import * as Micro from "effect/Micro";
 
-import type { BotMessageHandlerSettings } from "#/bot/message-handler/_service.js";
+import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
 import { BotUpdatePollerService, BotUpdatesPollerServiceDefault } from "#/bot/update-poller/_service.js";
 
 export const makeBot =

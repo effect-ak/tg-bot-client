@@ -1,7 +1,8 @@
 import * as Micro from "effect/Micro";
 
-import type { BotMessageHandlerSettings } from "#/bot/message-handler/_service.js";
 import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
+import type { BotMessageHandlerSettings, BotResponse } from "#/bot/message-handler/types.js";
+import { extractUpdate } from "../message-handler/utils.js";
 
 export const handleUntilFirstHandlerError = (
   messageHandler: BotMessageHandlerSettings,
@@ -29,26 +30,53 @@ export const handleUntilFirstHandlerError = (
     let lastSuccessId = undefined as number | undefined;
     let hasError = false;
 
-    for (const update of updates) {
+    for (const updateObject of updates) {
 
-      const res = messageHandler.onUpdate(update);
+      const update = extractUpdate(updateObject);
 
-      if (!res) {
+      if (!update) {
+        console.warn("Unknown update", update);
+        hasError = true;
+        break;
+      }
+
+      const handler = messageHandler[`on_${update.type}`] as (u: typeof update) => BotResponse;;
+
+      if (!handler) {
+        console.warn("Handler for update not defined", update);
+        hasError = true;
+        break;
+      }
+
+      const handleResult = handler(update);
+
+      if ("chat" in update) {
+        const response =
+          yield* execute(`send_${handleResult.type}`, {
+            ...handleResult,
+            chat_id: update.chat.id
+          });
+        console.log("bot response", response);
+      }
+
+      if (!handleResult) {
         hasError = true;
 
-        const resp = //commit successfully handled messages
-          yield* execute("get_updates", {
-            offset: update.update_id,
-            limit: 0
-          });
-
-        console.log(resp);
+        console.log(handleResult);
 
         break;
       };
 
-      if (res) lastSuccessId = update.update_id;
+      lastSuccessId = updateObject.update_id;
 
+    }
+
+    if (hasError && lastSuccessId) {
+      const resp = //commit successfully handled messages
+        yield* execute("get_updates", {
+          offset: lastSuccessId,
+          limit: 0
+        });
     }
 
     return { updates, lastSuccessId, hasError };
@@ -63,7 +91,7 @@ export const handleUntilFirstHandlerError = (
 
         if (updates.length == 0) {
           state.emptyResponses += 1;
-          if (state.emptyResponses > 3) {
+          if (state.emptyResponses > 200) {
             console.info("too many empty responses, quitting");
             return false;
           }

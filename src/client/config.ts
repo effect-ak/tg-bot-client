@@ -1,6 +1,6 @@
 import * as Context from "effect/Context";
 
-import { defaultBaseUrl } from "./const.js";
+import { defaultBaseUrl } from "../const.js";
 import { TgBotClientSettingsInput } from "./guards.js";
 
 export type TgBotClientConfigObject =

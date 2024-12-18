@@ -1,18 +1,9 @@
-import * as Micro from "effect/Micro";
+import { Micro } from "effect";
 import { BotFactoryServiceDefault } from "./factory/_service.js";
 
-const runBot =
-  BotFactoryServiceDefault.runBot({
-    type: "fromJsonFile",
-    batchWindowSize: 10,
-    onUpdate: update => {
-      console.log("Got message", {
-        text: update.message?.text,
-        update_id: update.update_id
-      });
-      if (update.message?.text?.includes("fail")) {
-        return false;
-      }
-      return true
-    }
-  })
+export const runTgChatBot = 
+  (input: Parameters<typeof BotFactoryServiceDefault.runBot>[0]) =>
+    BotFactoryServiceDefault
+      .runBot(input)
+      .pipe(Micro.runPromise)
+      .finally(() => "Telegram chat bot has been shutdown");
