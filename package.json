@@ -2,6 +2,7 @@
   "name": "@effect-ak/tg-bot-client",
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://effect-ak.github.io/telegram-bot-client",
   "author": {
     "name": "Aleksandr Kondaurov",
     "email": "kondaurov.dev@gmail.com"
@@ -25,6 +26,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/dts/index.d.ts",
   "scripts": {
+    "docgen": "docgen",
     "gen": "tsx ./codegen/main",
     "run-bot": "tsx ./src/bot/run",
     "build": "pnpm build-esm && pnpm build-cjs",
@@ -40,11 +42,10 @@
     "node-html-parser": "^6.1.13",
     "ts-morph": "^24.0.0",
     "tsc-alias": "^1.8.10",
-    "type-fest": "^4.30.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8",
-    "tsx": "^4.19.2"
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "effect": "^3.4.0"

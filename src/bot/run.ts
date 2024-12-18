@@ -1,29 +1,18 @@
-import { BotService, BotServiceDefault } from "#/bot/_service.js";
 import * as Micro from "effect/Micro";
-import { BotMessageHandler } from "#/bot/message-handler/_service.js";
+import { BotFactoryServiceDefault } from "./factory/_service.js";
 
-export const runBotPromise = (
-  
-) =>
-  Micro.gen(function* () {
-    const bot = yield* Micro.service(BotService);
-  }).pipe(
-    Micro.provideServiceEffect(BotService, BotServiceDefault({ token: "7529626191:AAE1czY_2X5SDBGLwvpfbDoHJQC041Mxgl0" })),
-    Micro.provideService(BotMessageHandler, { 
-      batchWindowSize: 10,
-      onUpdate: msg => {
-        console.log("Got message", {
-          text: msg.message?.text,
-          update_id: msg.update_id
-        });
-        return true
+const runBot =
+  BotFactoryServiceDefault.runBot({
+    type: "fromJsonFile",
+    batchWindowSize: 10,
+    onUpdate: update => {
+      console.log("Got message", {
+        text: update.message?.text,
+        update_id: update.update_id
+      });
+      if (update.message?.text?.includes("fail")) {
+        return false;
       }
-    }),
-    Micro.tapError(error => {
-      console.error(error)
-      return Micro.void;
-    }),
-    Micro.runPromise
-  ).finally(() => console.log("DONE"));
-
-
+      return true
+    }
+  })

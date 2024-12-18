@@ -1,7 +1,7 @@
 import { test } from "vitest";
 
 import { makeTgBotClient, TgBotClient } from "#/client/_client.js";
-import { ExecuteRequestService, ExecuteRequestServiceDefault, ExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
+import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault, ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 import { Micro } from "effect";
 import { makeTgBotClientConfig, TgBotClientConfig } from "#/client/config.js";
 
@@ -9,7 +9,7 @@ type Fixture = {
   readonly token: string
   readonly client: TgBotClient
   readonly chat_id: string
-  readonly execute: ExecuteRequestServiceInterface["execute"]
+  readonly execute: ClientExecuteRequestServiceInterface["execute"]
 };
 
 export const fixture = test.extend<Fixture>(({
@@ -24,7 +24,7 @@ export const fixture = test.extend<Fixture>(({
 
     const client =
       makeTgBotClient({
-        token
+        ["bot-token"]: token
       });
     use(client);
   },
@@ -35,9 +35,9 @@ export const fixture = test.extend<Fixture>(({
   },
   execute: async ({ token }, use) => {
     const execute = 
-      await Micro.service(ExecuteRequestService).pipe(
-        Micro.provideServiceEffect(ExecuteRequestService, ExecuteRequestServiceDefault),
-        Micro.provideService(TgBotClientConfig, makeTgBotClientConfig({ token })),
+      await Micro.service(ClientExecuteRequestService).pipe(
+        Micro.provideServiceEffect(ClientExecuteRequestService, ClientExecuteRequestServiceDefault),
+        Micro.provideService(TgBotClientConfig, makeTgBotClientConfig({ "bot-token": token })),
         Micro.runPromise
       );
 

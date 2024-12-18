@@ -19,7 +19,7 @@ const isReturnSentence =
     _.startsWith("Returns ");
 
 export const removeHtmlTags =
-  (input: string) => input.replaceAll(html_tags_regex, "")
+  (input: string) => input.replaceAll(html_tags_regex, "");
 
 export const extractEntityDescription = (
   node: HtmlElement, entityName: string
@@ -110,7 +110,7 @@ export const extractFieldDescription =
 
       if (!line || !contains_letters_regex.test(line)) continue;
 
-      result.push(replaceImgWithAlt(line));
+      result.push(removeHtmlTags(replaceImgWithAlt(line)));
 
     }
 

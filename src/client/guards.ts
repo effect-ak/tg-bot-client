@@ -22,11 +22,11 @@ export const isTgBotApiResponse =
     ("ok" in input && typeof input.ok == "boolean");
 
 export type TgBotClientSettingsInput = {
-  token: string
-  baseUrl?: string
+  ["bot-token"]: string
+  ["base-url"]?: string
 }
 
 export const isTgBotClientSettingsInput = 
   (input: unknown): input is TgBotClientSettingsInput =>
     (typeof input == "object" && input != null) &&
-    ("token" in input && typeof input.token == "string");
+    ("bot-token" in input && typeof input["bot-token"] == "string");

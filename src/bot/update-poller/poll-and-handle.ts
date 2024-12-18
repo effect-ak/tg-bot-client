@@ -1,88 +1,83 @@
 import * as Micro from "effect/Micro";
 
-import { ClientExecuteRequestService } from "#/client/execute-request/_service.js";
-import { BotMessageHandler } from "#/bot/message-handler/_service.js";
+import type { BotMessageHandlerSettings } from "#/bot/message-handler/_service.js";
+import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 
-export const handleUntilFirstHandlerError =
-  Micro.gen(function* () {
+export const handleUntilFirstHandlerError = (
+  messageHandler: BotMessageHandlerSettings,
+  execute: ClientExecuteRequestServiceInterface["execute"]
+) => {
 
-    const handler = yield* Micro.service(BotMessageHandler);
+  const state = {
+    lastUpdateId: undefined as number | undefined,
+    emptyResponses: 0
+  };
 
-    const { execute } =
-      yield* Micro.service(ClientExecuteRequestService);
-    
-    const state = {
-      lastUpdateId: undefined as number | undefined,
-      emptyResponses: 0
-    };
+  return Micro.gen(function* () {
+    const updateId = state.lastUpdateId;
 
-    yield* Micro.gen(function* () {
-      const updateId = state.lastUpdateId;
+    console.info("getting updates", { updateId })
+    const updates =
+      yield* execute("get_updates", {
+        limit: 10,
+        timeout: 10,
+        ...(updateId ? { offset: updateId } : undefined)
+      }).pipe(
+        Micro.andThen(_ => _.sort(_ => _.update_id))
+      );
 
-      console.info("getting updates", { updateId })
-      const updates =
-        yield* execute("get_updates", {
-          limit: 10,
-          timeout: 10,
-          ...(updateId ? { offset: updateId } : undefined)
-        }).pipe(
-          Micro.andThen(_ => _.sort(_ => _.update_id))
-        );
+    let lastSuccessId = undefined as number | undefined;
+    let hasError = false;
 
-      let lastSuccessId = undefined as number | undefined;
-      let hasError = false;
+    for (const update of updates) {
 
-      for (const update of updates) {
+      const res = messageHandler.onUpdate(update);
 
-        const res = handler.onUpdate(update);
+      if (!res) {
+        hasError = true;
 
-        if (!res) {
-          hasError = true;
+        const resp = //commit successfully handled messages
+          yield* execute("get_updates", {
+            offset: update.update_id,
+            limit: 0
+          });
 
-          const resp = //commit successfully handled messages
-            yield* execute("get_updates", {
-              offset: update.update_id,
-              limit: 0
-            });
+        console.log(resp);
 
-          console.log(resp);
+        break;
+      };
 
-          break;
-        };
+      if (res) lastSuccessId = update.update_id;
 
-        if (res) lastSuccessId = update.update_id;
+    }
 
-      }
+    return { updates, lastSuccessId, hasError };
+  }).pipe(
+    Micro.repeat({
+      while: ({ updates, lastSuccessId, hasError }) => {
 
-      return { updates, lastSuccessId, hasError };
-    }).pipe(
-      Micro.repeat({
-        while: ({ updates, lastSuccessId, hasError }) => {
+        if (hasError) {
+          console.warn("error in handler, quitting");
+          return false;
+        }
 
-          if (hasError) {
-            console.warn("error in handler, quitting");
+        if (updates.length == 0) {
+          state.emptyResponses += 1;
+          if (state.emptyResponses > 3) {
+            console.info("too many empty responses, quitting");
             return false;
           }
+        } else {
+          state.emptyResponses = 0;
+        };
 
-          if (updates.length == 0) {
-            state.emptyResponses += 1;
-            if (state.emptyResponses > 3) {
-              console.info("too many empty responses, quitting");
-              return false;
-            }
-          } else {
-            state.emptyResponses = 0;
-          };
-
-          if (lastSuccessId) {
-            state.lastUpdateId = lastSuccessId + 1;
-          }
-
-          return true;
+        if (lastSuccessId) {
+          state.lastUpdateId = lastSuccessId + 1;
         }
-      })
-    ).pipe(
-      Micro.andThen(Micro.sleep(2000))
-    );
 
-  });
+        return true;
+      }
+    }),
+    Micro.andThen(Micro.sleep(2000))
+  )
+}

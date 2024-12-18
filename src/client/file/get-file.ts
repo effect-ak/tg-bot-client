@@ -29,7 +29,7 @@ export const getFile = (
 
     const file_name = file_path.replaceAll("/", "-");
 
-    const url = `${config.baseUrl}/file/bot${config.token}/${file_path}`;
+    const url = `${config["base-url"]}/file/bot${config["bot-token"]}/${file_path}`;
 
     const fileContent =
       yield* Micro.tryPromise({

@@ -2,6 +2,7 @@ import * as Micro from "effect/Micro";
 import * as Context from "effect/Context";
 
 import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault } from "#/client/execute-request/_service.js";
+import { BotMessageHandlerSettings } from "#/bot/message-handler/_service.js";
 import { handleUntilFirstHandlerError } from "./poll-and-handle.js";
 
 export type BotUpdatePollerServiceInterface =
@@ -13,15 +14,36 @@ export class BotUpdatePollerService
 export const BotUpdatesPollerServiceDefault =
   Micro.gen(function* () {
 
-    const fiber =
-      yield* handleUntilFirstHandlerError.pipe(Micro.forkDaemon);
+    const state = {
+      isActive: false,
+    }
 
-    fiber.addObserver((exit) => {
-      console.log("fibed was closed", exit)
-    })
+    const client = yield* Micro.service(ClientExecuteRequestService);
+
+    const runBot = (
+      messageHandler: BotMessageHandlerSettings
+    ) =>
+      Micro.gen(function* () {
+        if (state.isActive) {
+          return yield* Micro.fail("AlreadyRunning");
+        }
+  
+        const fiber =
+          yield* handleUntilFirstHandlerError(
+            messageHandler, client.execute
+          ).pipe(Micro.forkDaemon);
+
+        fiber.addObserver((exit) => {
+          console.log("bot's fiber has been closed", exit);
+          state.isActive = false;
+        });
+
+        console.log("Reading bot's updates...")
+        
+      });
 
     return {
-      fiber
+      runBot
     } as const;
 
   }).pipe(
