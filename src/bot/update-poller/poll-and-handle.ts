@@ -26,11 +26,13 @@ export const pollAndHandle = (
 
   const settings = makeSettingsFrom(input.settings);
 
-  return fetchUpdates({
-    state, settings,
-    execute: input.execute,
-    handlers: input.settings,
-  }).pipe(
+  return Micro.delay(1000)(
+    fetchUpdates({
+      state, settings,
+      execute: input.execute,
+      handlers: input.settings,
+    })
+  ).pipe(
     Micro.repeat({
       while: ({ updates, lastSuccessId, hasError }) => {
 
@@ -55,7 +57,6 @@ export const pollAndHandle = (
 
         return true;
       }
-    }),
-    Micro.andThen(Micro.sleep(2000))
+    })
   )
 }
