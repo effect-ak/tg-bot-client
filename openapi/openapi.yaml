@@ -635,7 +635,11 @@ paths:
                     New caption for media, 0-1024 characters after entities
                     parsing<br/>If not specified, the original caption is kept
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the new caption<br/>See
                     formatting options for more details.
@@ -1803,7 +1807,11 @@ paths:
                     New caption of the message, 0-1024 characters after entities
                     parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the message caption<br/>See
                     formatting options for more details.
@@ -2101,7 +2109,11 @@ paths:
                     Required if chat_id and message_id are not
                     specified<br/>Identifier of the inline message
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the message text<br/>See
                     formatting options for more details.
@@ -3839,7 +3851,11 @@ paths:
                     Animation caption (may also be used when resending animation
                     by file_id), 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the animation caption<br/>See
                     formatting options for more details.
@@ -3960,7 +3976,11 @@ paths:
                   type: string
                   description: Audio caption, 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the audio caption<br/>See
                     formatting options for more details.
@@ -4368,7 +4388,11 @@ paths:
                     Document caption (may also be used when resending documents
                     by file_id), 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the document caption<br/>See
                     formatting options for more details.
@@ -4541,7 +4565,11 @@ paths:
                     Text that will be shown along with the gift; 0-255
                     characters
                 text_parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the text<br/>See formatting
                     options for more details<br/>Entities other than “bold”,
@@ -5003,7 +5031,11 @@ paths:
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the message text<br/>See
                     formatting options for more details.
@@ -5118,7 +5150,11 @@ paths:
                   type: string
                   description: Media caption, 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the media caption<br/>See
                     formatting options for more details.
@@ -5229,7 +5265,11 @@ paths:
                     Photo caption (may also be used when resending photos by
                     file_id), 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the photo caption<br/>See
                     formatting options for more details.
@@ -5339,7 +5379,11 @@ paths:
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
                 question_parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the question<br/>See formatting
                     options for more details<br/>Currently, only custom emoji
@@ -5375,7 +5419,11 @@ paths:
                     or taps on the lamp icon in a quiz-style poll, 0-200
                     characters with at most 2 line feeds after entities parsing
                 explanation_parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the explanation<br/>See
                     formatting options for more details.
@@ -5740,7 +5788,11 @@ paths:
                     Video caption (may also be used when resending videos by
                     file_id), 0-1024 characters after entities parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the video caption<br/>See
                     formatting options for more details.
@@ -5982,7 +6034,11 @@ paths:
                     Voice message caption, 0-1024 characters after entities
                     parsing
                 parse_mode:
-                  type: string
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
                   description: >-
                     Mode for parsing entities in the voice message
                     caption<br/>See formatting options for more details.
@@ -10072,7 +10128,11 @@ components:
           type: string
           description: Caption, 0-1024 characters after entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the audio caption<br/>See formatting
             options for more details.
@@ -10118,7 +10178,11 @@ components:
           type: string
           description: Caption, 0-1024 characters after entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the audio caption<br/>See formatting
             options for more details.
@@ -10165,7 +10229,11 @@ components:
             Caption of the document to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the document caption<br/>See formatting
             options for more details.
@@ -10210,7 +10278,11 @@ components:
             Caption of the GIF file to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the caption<br/>See formatting options
             for more details.
@@ -10257,7 +10329,11 @@ components:
             Caption of the MPEG-4 file to be sent, 0-1024 characters after
             entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the caption<br/>See formatting options
             for more details.
@@ -10307,7 +10383,11 @@ components:
             Caption of the photo to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the photo caption<br/>See formatting
             options for more details.
@@ -10381,7 +10461,11 @@ components:
             Caption of the video to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the video caption<br/>See formatting
             options for more details.
@@ -10427,7 +10511,11 @@ components:
           type: string
           description: Caption, 0-1024 characters after entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the voice message caption<br/>See
             formatting options for more details.
@@ -10522,7 +10610,11 @@ components:
             Caption of the document to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the document caption<br/>See formatting
             options for more details.
@@ -10624,7 +10716,11 @@ components:
             Caption of the GIF file to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the caption<br/>See formatting options
             for more details.
@@ -10758,7 +10854,11 @@ components:
             Caption of the MPEG-4 file to be sent, 0-1024 characters after
             entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the caption<br/>See formatting options
             for more details.
@@ -10820,7 +10920,11 @@ components:
             Caption of the photo to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the photo caption<br/>See formatting
             options for more details.
@@ -10966,7 +11070,11 @@ components:
             Caption of the video to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the video caption<br/>See formatting
             options for more details.
@@ -11029,7 +11137,11 @@ components:
           type: string
           description: Caption, 0-1024 characters after entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the voice message caption<br/>See
             formatting options for more details.
@@ -11269,7 +11381,11 @@ components:
             Caption of the animation to be sent, 0-1024 characters after
             entities parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the animation caption<br/>See
             formatting options for more details.
@@ -11337,7 +11453,11 @@ components:
             Caption of the audio to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the audio caption<br/>See formatting
             options for more details.
@@ -11397,7 +11517,11 @@ components:
             Caption of the document to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the document caption<br/>See formatting
             options for more details.
@@ -11440,7 +11564,11 @@ components:
             Caption of the photo to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the photo caption<br/>See formatting
             options for more details.
@@ -11497,7 +11625,11 @@ components:
             Caption of the video to be sent, 0-1024 characters after entities
             parsing
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the video caption<br/>See formatting
             options for more details.
@@ -11613,7 +11745,11 @@ components:
           type: string
           description: Option text, 1-100 characters
         text_parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the text<br/>See formatting options for
             more details<br/>Currently, only custom emoji entities are allowed
@@ -11680,7 +11816,11 @@ components:
           type: string
           description: Text of the message to be sent, 1-4096 characters
         parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the message text<br/>See formatting
             options for more details.
@@ -13639,7 +13779,11 @@ components:
             will fail to send if the quote isn&#39;t found in the original
             message.
         quote_parse_mode:
-          type: string
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
           description: >-
             Mode for parsing entities in the quote<br/>See formatting options
             for more details.

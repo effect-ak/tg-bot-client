@@ -10,6 +10,17 @@ import { extractEnumFromTypeDescription } from "./enum.js";
 export const makeFrom =
   (input: ExtractedEntityField): Either.Either<NormalTypeShape, NormalTypeError> => {
 
+    if (input.fieldName.endsWith("parse_mode")) {
+      return Either.right({
+        typeNames: [ "HTML", "MarkdownV2" ],
+        openApiType: {
+          oneOf: [
+            { type: "string", enum: [ "HTML", "MarkdownV2" ] },
+          ]
+        }
+      })
+    }
+
     if (input.pseudoType == "String") {
       const enums = extractEnumFromTypeDescription(input.description);
 

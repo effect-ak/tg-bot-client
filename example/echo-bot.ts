@@ -34,6 +34,14 @@ runTgChatBot({
       }
     }
 
+    if (command == "/echo") {
+      return {
+        type: "message",
+        text: `<code>${JSON.stringify(msg, undefined, 2)}</code>`,
+        parse_mode: "HTML"
+      }
+    }
+
     console.log("got a message", msg.text)
 
     return {
