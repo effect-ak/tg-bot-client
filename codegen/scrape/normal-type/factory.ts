@@ -12,12 +12,13 @@ export const makeFrom =
 
     if (input.fieldName.endsWith("parse_mode")) {
       return Either.right({
-        typeNames: [ "HTML", "MarkdownV2" ],
+        typeNames: [ `"HTML" | "MarkdownV2"` ],
         openApiType: {
           oneOf: [
             { type: "string", enum: [ "HTML", "MarkdownV2" ] },
           ]
-        }
+        },
+        isOverridden: true
       })
     }
 
