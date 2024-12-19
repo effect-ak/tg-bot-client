@@ -9,8 +9,12 @@ export type BotResponse = {
     : never
 }[keyof Api];
 
-export type BotMessageHandlerSettings = {
-  readonly batchWindowSize?: number,
-} & {
+export type BotMessageHandlers = {
   [K in AvailableUpdateTypes as `on_${K}`]?: (update: NonNullable<Update[K]>) => BotResponse;
-}
+};
+
+export type BotMessageHandlerSettings = {
+  readonly batch_size?: number,
+  readonly timeout?: number,
+  readonly max_empty_responses?: number,
+} & BotMessageHandlers

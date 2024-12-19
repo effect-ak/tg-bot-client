@@ -1,17 +1,17 @@
-![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)
-![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client)
+[![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue.svg)](https://effect-ak.github.io/telegram-bot-api/)
 ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40effect-ak%2Ftg-bot-client)
+![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client)
 
 
 
-[OpenApi Specification](https://effect-ak.github.io/telegram-bot-api/)
+### What is It?
 
-### What is it? 
+This client facilitates interaction with the Telegram Bot API. It was created primarily because Telegram does not offer an official SDK for their API.
 
-This is a client for interacting with the Telegram Bot API.  
-The main reason for creating this package is that Telegram does not provide an SDK for working with their API.
+### Documentation
 
-They only provide documentation in the form of a massive HTML page, which is very inconvenient for navigating and understanding what the Telegram Bot API offers.
+The official documentation is available as a comprehensive [HTML page](https://core.telegram.org/bots/api), providing basic navigation. While functional, relying solely on this format can be somewhat inconvenient during bot development.
 
 ## Features:
 - **Pure TypeScript Client**: This is a clean client written in TypeScript with no abstractions.
@@ -25,7 +25,7 @@ They only provide documentation in the form of a massive HTML page, which is ver
   - `String or Number` becomes `string | number`
   - Enumerated types, such as `Type of the chat, can be either “private”, “group”, “supergroup” or “channel”` becomes a standard union of literal types `"private"| "group" | "supergroup" | "channel"`
   - And so on
-- **Readable Method Names**: Method names, such as `SetChatAdministratorCustomTitleInput`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
+- **Readable Method Names**: Method names, such as `setChatAdministratorCustomTitle`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 
 ### Usage example
 
