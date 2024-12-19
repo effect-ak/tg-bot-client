@@ -1,52 +1,20 @@
-import { runTgChatBot } from "../src/index.js"
+import { MESSAGE_EFFECTS, runTgChatBot } from "../src/index.js"
 
 runTgChatBot({
   type: "fromJsonFile",
   on_message: (msg) => {
 
-    // 2+10+4+5
-
-    if (msg.text?.includes("+")) {
-      const numbers = msg.text.split("+");
-      let result = 0;
-      for (const num of numbers) {
-        result += parseInt(num);
-      }
-      return {
-        type: "document",
-        caption: "sum result",
-        document: {
-          file_content: Buffer.from(`your sum is ${result}`),
-          file_name: "hello.txt"
-        }
-      }
-    }
-
-    const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
-    const command = msg.text?.slice(commandEntity?.offset, commandEntity?.length);
-
-    console.log("command", command);
-
-    if (command == "/bye") {
+    if (msg?.text == "bye") {
       return {
         type: "message",
-        text: "See you later!"
+        text: "see you later!",
+        message_effect_id: MESSAGE_EFFECTS["❤️"]
       }
     }
-
-    if (command == "/echo") {
-      return {
-        type: "message",
-        text: `<code>${JSON.stringify(msg, undefined, 2)}</code>`,
-        parse_mode: "HTML"
-      }
-    }
-
-    console.log("got a message", msg.text)
 
     return {
       type: "message",
-      text: "hey :)"
+      text: "I'm a simple bot"
     }
   }
 })
