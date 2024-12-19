@@ -90,11 +90,15 @@ describe("normal type", () => {
 
     check([
       "Nothing"
-    ], []),
+    ], []);
 
     check([
       `Currently, it can be one of "👍", "👎", "❤"`
-    ], ["👍", "👎", "❤" ])
+    ], ["👍", "👎", "❤" ]);
+
+    check([
+      `Type of the chat, can be either “private”, “group”, “supergroup” or “channel”`
+    ], ["private", "group", "supergroup", "channel" ]);
 
   })
 

@@ -8210,6 +8210,11 @@ components:
             float type are safe for storing this identifier.
         type:
           type: string
+          enum:
+            - private
+            - group
+            - supergroup
+            - channel
           description: >-
             Type of the chat, can be either “private”, “group”, “supergroup” or
             “channel”
@@ -8463,6 +8468,11 @@ components:
             float type are safe for storing this identifier.
         type:
           type: string
+          enum:
+            - private
+            - group
+            - supergroup
+            - channel
           description: >-
             Type of the chat, can be either “private”, “group”, “supergroup” or
             “channel”
@@ -9961,9 +9971,6 @@ components:
           description: Offset of the results to be returned, can be controlled by the bot
         chat_type:
           type: string
-          enum:
-            - known f
-            - requests sent from official clients and most third-party clients
           description: >-
             Type of the chat from which the inline query was sent<br/>Can be
             either “sender” for a private chat with the inline query sender,
@@ -10789,8 +10796,6 @@ components:
           description: Unique identifier for this result, 1-64 bytes
         photo_url:
           type: string
-          enum:
-            - in JPEG format
           description: >-
             A valid URL of the photo<br/>Photo must be in JPEG format<br/>Photo
             size must not exceed 5MB
@@ -11987,11 +11992,6 @@ components:
       properties:
         url:
           type: string
-          enum:
-            - >-
-              check the hash of the received data to verify the authentication
-              and the integrity of the data as described in Checking
-              authorization
           description: >-
             An HTTPS URL to be opened with user authorization data added to the
             query string when the button is pressed<br/>If the user refuses to
@@ -12006,8 +12006,6 @@ components:
           description: New text of the button in forwarded messages.
         bot_username:
           type: string
-          enum:
-            - the same as the domain linked with the bot
           description: >-
             Username of a bot, which will be used for user authorization<br/>See
             Setting up a bot for more details<br/>If not specified, the current
@@ -12491,6 +12489,26 @@ components:
       properties:
         type:
           type: string
+          enum:
+            - mention
+            - hashtag
+            - cashtag
+            - bot_command
+            - url
+            - email
+            - phone_number
+            - bold
+            - italic
+            - underline
+            - strikethrough
+            - spoiler
+            - blockquote
+            - expandable_blockquote
+            - code
+            - pre
+            - text_link
+            - text_mention
+            - custom_emoji
           description: >-
             Type of the entity<br/>Currently, can be “mention” (@username),
             “hashtag” (#hashtag or #hashtag@chatusername), “cashtag” ($USD or
@@ -13183,6 +13201,9 @@ components:
           description: True, if the poll is anonymous
         type:
           type: string
+          enum:
+            - regular
+            - quiz
           description: Poll type, currently can be “regular” or “quiz”
         allows_multiple_answers:
           type: boolean
@@ -13610,8 +13631,6 @@ components:
             behalf of a business account.
         quote:
           type: string
-          enum:
-            - an exact substring of the message to be replied to
           description: >-
             Quoted part of the message to be replied to; 0-1024 characters after
             entities parsing<br/>The quote must be an exact substring of the

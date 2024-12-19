@@ -9,7 +9,7 @@ describe("entity fields", () => {
 
     const check =
       (fields: EntityField[], expected: OpenAPIV3_1.SchemaObject) => {
-        const schema = new EntityFields({ fields }).getJsonSchema();
+        const schema = new EntityFields({ fields }).getOpenApiType();
         expect(schema).toEqual(expected);
       }
 

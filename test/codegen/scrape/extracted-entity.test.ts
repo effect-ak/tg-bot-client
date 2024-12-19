@@ -180,6 +180,7 @@ describe("extracted-entity", () => {
     const typeField = entity.right.type.fields.find(_ => _.name == "type");
     
     expect(typeField?.description.at(0)).toEqual("Type of the chat, can be either “private”, “group”, “supergroup” or “channel”")
+    expect(typeField?.type.getTsType()).toEqual(`"private" | "group" | "supergroup" | "channel"`)
 
   });
 

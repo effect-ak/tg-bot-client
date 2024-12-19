@@ -2,17 +2,37 @@ import { runTgChatBot } from "../src/index.js"
 
 runTgChatBot({
   type: "fromJsonFile",
-  batchWindowSize: 10,
-  on_edited_message: (edited) => {
-
-    console.log("you have just edited the message", edited.text);
-
-    return {
-      type: "message",
-      text: "fixed!"
-    }
-  },
   on_message: (msg) => {
+
+    // 2+10+4+5
+
+    if (msg.text?.includes("+")) {
+      const numbers = msg.text.split("+");
+      let result = 0;
+      for (const num of numbers) {
+        result += parseInt(num);
+      }
+      return {
+        type: "document",
+        caption: "sum result",
+        document: {
+          file_content: Buffer.from(`your sum is ${result}`),
+          file_name: "hello.txt"
+        }
+      }
+    }
+
+    const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
+    const command = msg.text?.slice(commandEntity?.offset, commandEntity?.length);
+
+    console.log("command", command);
+
+    if (command == "/bye") {
+      return {
+        type: "message",
+        text: "See you later!"
+      }
+    }
 
     console.log("got a message", msg.text)
 
