@@ -100,7 +100,7 @@ Take a look at [example](./example/echo-bot.ts)
 
 The Telegram bot supports both push and pull notification models for messages. This package uses the **pull** model for several reasons:
 
-- **Flexibility in Handler Deployment:** Allows you to run the bot handler anywhere, such as within a playground environment using web workers.
+- **Flexibility in Handler Deployment:** Allows you to run the bot handler on any JS platform (NodeJs, Browser) 
 - **Sequential Message Processing:** Messages in the queue are read one by one, and the handler is invoked for each message. If an error occurs in the handler, the next message remains in the queue, and the bot stops running. When the handler successfully processes a message, it proceeds to the next one.
 
 ### Setup Instructions
