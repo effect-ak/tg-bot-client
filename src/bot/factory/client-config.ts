@@ -1,6 +1,5 @@
 import * as Micro from "effect/Micro";
 
-import { readFileSync } from "fs";
 import { makeTgBotClientConfig } from "#/client/config.js";
 import { isTgBotClientSettingsInput } from "#/client/guards.js";
 import type { RunBotInput } from "./_service.js";
@@ -14,9 +13,11 @@ export const makeClientConfigFrom =
       }
 
       const config =
-        yield* Micro.try({
-          try: () =>
-            JSON.parse(readFileSync("config.json").toString("utf-8")),
+        yield* Micro.tryPromise({
+          try: async () => {
+            const { readFile } = await import("fs/promises");
+            return JSON.parse(await readFile("config.json", "utf-8"))
+          },
           catch: error => {
             console.warn(error);
             return "ReadingConfigError";
