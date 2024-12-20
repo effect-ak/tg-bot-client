@@ -7,6 +7,7 @@ export const makeSettingsFrom = (
 ) => {
   let limit = input.batch_size ?? 10;
   let timeout = input.timeout ?? 10;
+  let max_empty_responses = input.max_empty_responses;
 
   if (limit < 10 || limit > 100) {
     console.warn("Wrong limit, must be in [10..100], using 10 instead");
@@ -18,7 +19,12 @@ export const makeSettingsFrom = (
     limit = 10;
   }
 
+  if (max_empty_responses && (max_empty_responses < 2)) {
+    console.warn("Wrong max_empty_responses, must be in [2..infinity], using infinity");
+    max_empty_responses = undefined;
+  }
+
   return {
-    limit, timeout
+    limit, timeout, max_empty_responses
   } as const;
 }

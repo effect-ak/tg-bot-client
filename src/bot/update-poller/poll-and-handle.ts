@@ -43,7 +43,7 @@ export const pollAndHandle = (
 
         if (updates.length == 0) {
           state.emptyResponses += 1;
-          if (state.emptyResponses > 200) {
+          if (settings.max_empty_responses && state.emptyResponses > settings.max_empty_responses) {
             console.info("too many empty responses, quitting");
             return false;
           }
