@@ -1,5 +1,7 @@
 export * from "./client/_client.js"
 export * from "./bot/run.js"
+export * from "./bot/message-handler/types.js"
+export * from "./bot/factory/_service.js"
 export * from "./specification/api.js"
 export * from "./specification/types.js"
 export * from "./const.js"

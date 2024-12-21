@@ -69,7 +69,7 @@ await client.execute("send_document", {
   chat_id: "???", // replace ??? with the chat number
   message_effect_id: MESSAGE_EFFECTS["🎉"],
   document: {
-    file_content: Buffer.from("Hello!"),
+    file_content: new TextEncoder().encode("Hello!"),
     file_name: "hello.txt"
   },
   caption: "simple text file"

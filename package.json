@@ -23,16 +23,19 @@
     "url": "https://github.com/effect-ak/tg-bot-client"
   },
   "license": "MIT",
+  "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
   "scripts": {
-    "docgen": "docgen",
     "gen": "tsx ./codegen/main",
-    "echo-bot": "tsx ./example/echo-bot.ts",
-    "build": "pnpm build-esm && pnpm build-cjs",
-    "build-esm": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "build-cjs": "babel dist/esm --out-dir dist/cjs"
+    "echo-bot": "tsx ./example/echo-bot.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
@@ -44,8 +47,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8",
-    "tsup": "^8.3.5"
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "effect": "^3.4.0"
