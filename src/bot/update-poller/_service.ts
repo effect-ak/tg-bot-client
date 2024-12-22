@@ -2,7 +2,8 @@ import * as Micro from "effect/Micro";
 import * as Context from "effect/Context";
 
 import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault } from "#/client/execute-request/_service.js";
-import { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
+import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
+import type { TgBotClientError } from "#/client/errors.js";
 import { pollAndHandle } from "./poll-and-handle.js";
 
 export type BotUpdatePollerServiceInterface =
@@ -14,8 +15,10 @@ export class BotUpdatePollerService
 export const BotUpdatesPollerServiceDefault =
   Micro.gen(function* () {
 
+    console.log("Initiating BotUpdatesPollerServiceDefault")
+
     const state = {
-      isActive: false,
+      fiber: undefined as Micro.MicroFiber<unknown, TgBotClientError> | undefined
     }
 
     const client = yield* Micro.service(ClientExecuteRequestService);
@@ -24,24 +27,32 @@ export const BotUpdatesPollerServiceDefault =
       messageHandler: BotMessageHandlerSettings
     ) =>
       Micro.gen(function* () {
-        if (state.isActive) {
-          return yield* Micro.fail("AlreadyRunning");
-        }
 
-        const fiber =
-          yield* pollAndHandle({
+        console.log(state)
+
+        const startFiber =
+          pollAndHandle({
             settings: messageHandler,
             execute: client.execute
-          }).pipe(Micro.forkDaemon);
+          }).pipe(
+            Micro.forkDaemon,
+            Micro.tap(fiber =>
+              fiber.addObserver((exit) => {
+                console.log("bot's fiber has been closed", exit);
+              })
+            )
+          );
 
-        fiber.addObserver((exit) => {
-          console.log("bot's fiber has been closed", exit);
-          state.isActive = false;
-        });
+        if (state.fiber) {
+          console.log("killing previous bot's fiber")
+          yield* Micro.fiberInterrupt(state.fiber);
+        }
 
-        console.log("Reading bot's updates...");
+        state.fiber = yield* startFiber;
 
-        return fiber;
+        console.log("Reading bot's updates.....", state.fiber == null);
+
+        return state.fiber;
 
       });
 

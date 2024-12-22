@@ -15,8 +15,8 @@ export const makeClientConfigFrom =
       const config =
         yield* Micro.tryPromise({
           try: async () => {
-            const { readFile } = await import("fs/promises");
-            return JSON.parse(await readFile("config.json", "utf-8"))
+            const { readFileSync } = await import("fs");
+            return JSON.parse(await readFileSync("config.json", "utf-8"))
           },
           catch: error => {
             console.warn(error);

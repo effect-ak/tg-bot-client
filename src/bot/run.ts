@@ -5,4 +5,4 @@ export const runTgChatBot =
   (input: Parameters<typeof BotFactoryServiceDefault.runBot>[0]) =>
     BotFactoryServiceDefault
       .runBot(input)
-      .pipe(Micro.runPromiseExit)
+      .pipe(Micro.runPromise)
