@@ -13,6 +13,7 @@ This client facilitates interaction with the Telegram Bot API. It was created pr
 
 ## Features:
 - **Typesafe Client**: This is a clean client written in TypeScript with no abstractions.
+- **[Playground](https://effect-ak.github.io/telegram-bot-playground/)**: Develop/Run chat bots in your browser 
 - **Complete**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts)
 - **Readable Method Names**: Method names, such as `setChatAdministratorCustomTitle`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
