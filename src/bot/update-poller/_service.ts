@@ -39,6 +39,9 @@ export const BotUpdatesPollerServiceDefault =
             Micro.tap(fiber =>
               fiber.addObserver((exit) => {
                 console.log("bot's fiber has been closed", exit);
+                if (messageHandler.onExit) {
+                  messageHandler.onExit(exit)
+                }
               })
             )
           );

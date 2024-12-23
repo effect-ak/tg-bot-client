@@ -15,6 +15,9 @@ export type PollAndHandleInput = {
   execute: ClientExecuteRequestServiceInterface["execute"]
 }
 
+export type PollAndHandleResult = 
+  Micro.Micro.Success<ReturnType<typeof pollAndHandle>>
+
 export const pollAndHandle = (
   input: PollAndHandleInput
 ) => {

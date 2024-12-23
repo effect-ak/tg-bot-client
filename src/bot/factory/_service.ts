@@ -8,6 +8,9 @@ import { TgBotClientConfig } from "#/client/config.js";
 import { makeClientConfigFrom } from "./client-config.js";
 import { makeBot } from "./make-bot.js";
 
+export type BotInstance = 
+  Micro.Micro.Success<ReturnType<typeof BotFactoryServiceDefault["runBot"]>>
+
 export class BotFactoryService
   extends Context.Tag("BotFactoryService")<BotFactoryService, typeof BotFactoryServiceDefault>() { };
 

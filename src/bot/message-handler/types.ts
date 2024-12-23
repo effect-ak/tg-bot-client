@@ -1,5 +1,8 @@
 import type { Api } from "#/specification/api.js";
 import type { Update } from "#/specification/types.js";
+import type { PollAndHandleResult } from "#/bot/update-poller/poll-and-handle";
+import type * as Micro from "effect/Micro";
+import type { TgBotClientError } from "#/client/errors";
 
 export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>;
 
@@ -14,7 +17,9 @@ export type BotMessageHandlers = {
 };
 
 export type BotMessageHandlerSettings = {
-  readonly batch_size?: number,
-  readonly timeout?: number,
-  readonly max_empty_responses?: number,
-} & BotMessageHandlers
+  readonly batch_size?: number
+  readonly timeout?: number
+  readonly max_empty_responses?: number
+} & BotMessageHandlers & {
+  onExit?: (_: Micro.MicroExit<PollAndHandleResult, TgBotClientError>) => void 
+}
