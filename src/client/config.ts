@@ -11,7 +11,7 @@ export const makeTgBotClientConfig = (
 ) =>
   TgBotClientConfig.of({
     ...input,
-    ["base-url"]: input["base-url"] ?? defaultBaseUrl
+    base_url: input.base_url ?? defaultBaseUrl
   });
 
 export class TgBotClientConfig

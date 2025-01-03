@@ -20,7 +20,7 @@ export const execute = <M extends keyof Api>(
       yield* Micro.tryPromise({
         try: () =>
           fetch(
-            `${config["base-url"]}/bot${config["bot-token"]}/${String.snakeToCamel(method)}`, {
+            `${config.base_url}/bot${config.bot_token}/${String.snakeToCamel(method)}`, {
             body: makePayload(input) ?? null,
             method: "POST",
           }),

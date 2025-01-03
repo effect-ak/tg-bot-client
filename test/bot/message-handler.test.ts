@@ -1,6 +1,5 @@
 import { extractUpdate } from "#/bot/message-handler/utils.js";
 import { describe, expect, it } from "vitest";
-import { ac } from "vitest/dist/chunks/reporters.D7Jzd9GS.js";
 
 describe("message handler", () => {
 

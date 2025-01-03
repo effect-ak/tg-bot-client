@@ -31,7 +31,7 @@ This client facilitates interaction with the Telegram Bot API. It was created pr
 import { makeTgBotClient } from "@effect-ak/tg-bot-client"
 
 const client = makeTgBotClient({
-  token: "" //your token from bot father
+  bot_token: "" //your token taken from bot father
 });
 ```
 

@@ -1,9 +1,4 @@
 import { ConfigProvider } from "effect"
-import { dirname } from "path";
-import { fileURLToPath } from "url"
-
-const filePath = fileURLToPath(import.meta.url);
-const currentPath = dirname(filePath);
 
 export const withConfig =
   (input: {
@@ -11,6 +6,6 @@ export const withConfig =
   }) =>
     ConfigProvider.fromJson({
       "page-path": input.pagePath,
-      "scrapper-out-dir": [ currentPath, "..", "src", "specification" ],
-      "openapi-out-dir": [ currentPath, "..", "openapi" ],
+      "scrapper-out-dir": [ __dirname, "..", "src", "specification" ],
+      "openapi-out-dir": [ __dirname, "..", "openapi" ],
     });

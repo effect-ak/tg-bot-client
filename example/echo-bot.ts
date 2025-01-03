@@ -1,4 +1,4 @@
-import { runTgChatBot } from "../src/index.js"
+import { runTgChatBot, MESSAGE_EFFECTS } from "../src/index.js"
 
 runTgChatBot({
   type: "fromJsonFile",
