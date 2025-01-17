@@ -19,7 +19,7 @@ export const makeClientConfigFrom =
             return JSON.parse(await readFileSync("config.json", "utf-8"))
           },
           catch: error => {
-            console.warn(error);
+            console.warn("invalid tg bot config", error);
             return "ReadingConfigError";
           }
         });

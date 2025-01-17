@@ -1,18 +1,17 @@
 import * as Micro from "effect/Micro";
 
 import { TgBotClientError } from "../errors.js";
-import { TgBotClientConfigObject } from "../config.js";
-import { ClientExecuteRequestServiceInterface } from "../execute-request/_service.js";
+import { TgBotClientConfig } from "../config.js";
+import { execute } from "../execute-request/execute.js";
 
 export const getFile = (
   fileId: string,
-  config: TgBotClientConfigObject,
-  execute: ClientExecuteRequestServiceInterface
-): Micro.Micro<File, TgBotClientError> =>
+): Micro.Micro<File, TgBotClientError, TgBotClientConfig> =>
 
   Micro.gen(function* () {
 
-    const response = yield* execute.execute("get_file", { file_id: fileId });
+    const response = yield* execute("get_file", { file_id: fileId });
+    const config = yield* Micro.service(TgBotClientConfig);
 
     const file_path = response.file_path;
 
@@ -44,4 +43,4 @@ export const getFile = (
 
     return file;
 
-  })
+  });

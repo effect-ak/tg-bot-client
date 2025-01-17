@@ -1,7 +1,6 @@
 import * as Micro from "effect/Micro";
 import * as Context from "effect/Context";
 
-import { ClientExecuteRequestService, ClientExecuteRequestServiceDefault } from "#/client/execute-request/_service.js";
 import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
 import type { TgBotClientError } from "#/client/errors.js";
 import { pollAndHandle } from "./poll-and-handle.js";
@@ -21,19 +20,14 @@ export const BotUpdatesPollerServiceDefault =
       fiber: undefined as Micro.MicroFiber<unknown, TgBotClientError> | undefined
     }
 
-    const client = yield* Micro.service(ClientExecuteRequestService);
-
     const runBot = (
       messageHandler: BotMessageHandlerSettings
     ) =>
       Micro.gen(function* () {
 
-        console.log(state)
-
         const startFiber =
           pollAndHandle({
             settings: messageHandler,
-            execute: client.execute
           }).pipe(
             Micro.forkDaemon,
             Micro.tap(fiber =>
@@ -53,7 +47,7 @@ export const BotUpdatesPollerServiceDefault =
 
         state.fiber = yield* startFiber;
 
-        console.log("Reading bot's updates.....", state.fiber == null);
+        console.log("Fetching bot updates via long polling...");
 
         return state.fiber;
 
@@ -63,6 +57,5 @@ export const BotUpdatesPollerServiceDefault =
       runBot
     } as const;
 
-  }).pipe(
-    Micro.provideServiceEffect(ClientExecuteRequestService, ClientExecuteRequestServiceDefault)
-  );
+  });
+

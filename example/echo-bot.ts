@@ -1,11 +1,7 @@
-import { runTgChatBot } from "#/index.js"
+import { BotMessageHandlers, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
 
-runTgChatBot({
-  type: "fromJsonFile",
-  // log_level: "debug",
+const ECHO_BOT: BotMessageHandlers = {
   on_message: (msg) => {
-
-    // 2+10+4+5
 
     if (msg.text?.includes("+")) {
       const numbers = msg.text.split("+");
@@ -32,7 +28,8 @@ runTgChatBot({
     if (command == "/bye") {
       return {
         type: "message",
-        text: "See you later!"
+        text: "See you later!",
+        message_effect_id: MESSAGE_EFFECTS["❤️"]
       }
     }
 
@@ -52,4 +49,9 @@ runTgChatBot({
     }
 
   }
-})
+};
+
+runTgChatBot({
+  type: "fromJsonFile",
+  ...ECHO_BOT
+});

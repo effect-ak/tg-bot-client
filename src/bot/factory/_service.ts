@@ -27,28 +27,31 @@ export const BotFactoryServiceDefault = {
   makeBot,
   runBot: (input: RunBotInput) =>
     Micro.gen(function* () {
-      console.log("client")
 
-      const client = yield* makeClientConfigFrom(input);
+      const client = 
+        Context.make(TgBotClientConfig, yield* makeClientConfigFrom(input));
 
       const poller =
         yield* BotUpdatesPollerServiceDefault.pipe(
-          Micro.provideService(TgBotClientConfig, client),
+          Micro.provideContext(client)
         );
 
       const bot =
         yield* makeBot(input).pipe(
+          Micro.provideContext(client),
           Micro.provideService(BotUpdatePollerService, poller),
         );
 
       const reload =
         (input: Partial<RunBotInput>) =>
-          bot.runBot(input).pipe(Micro.runPromise);
+          bot.runBot(input).pipe(
+            Micro.provideContext(client)
+          );
 
       return {
-        reload
+        reload, bot
       } as const
 
     })
 
-}
+};

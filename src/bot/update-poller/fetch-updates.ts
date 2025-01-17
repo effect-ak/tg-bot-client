@@ -1,20 +1,19 @@
 import * as Micro from "effect/Micro";
 
-import { extractUpdate } from "#/bot/message-handler/utils.js";
 import type { BotMessageHandlers, BotResponse } from "#/bot/message-handler/types.js";
-import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 import type { State } from "./poll-and-handle.js";
 import type { SafeSettings } from "./settings.js";
+import { extractUpdate } from "#/bot/message-handler/utils.js";
+import { execute } from "#/client/execute-request/execute.js";
 
 type Context = {
   state: State
   settings: SafeSettings
   handlers: BotMessageHandlers
-  execute: ClientExecuteRequestServiceInterface["execute"]
 }
 
 export const fetchUpdates = (
-  { state, settings, execute, handlers }: Context
+  { state, settings, handlers }: Context
 ) =>
   Micro.gen(function* () {
     const updateId = state.lastUpdateId;

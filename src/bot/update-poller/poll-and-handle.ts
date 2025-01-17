@@ -1,6 +1,5 @@
 import * as Micro from "effect/Micro";
 
-import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
 import { makeSettingsFrom } from "./settings.js";
 import { fetchUpdates } from "./fetch-updates.js";
@@ -12,7 +11,6 @@ export type State = {
 
 export type PollAndHandleInput = {
   settings: BotMessageHandlerSettings
-  execute: ClientExecuteRequestServiceInterface["execute"]
 }
 
 export type PollAndHandleResult = 
@@ -32,7 +30,6 @@ export const pollAndHandle = (
   return Micro.delay(1000)(
     fetchUpdates({
       state, settings,
-      execute: input.execute,
       handlers: input.settings,
     })
   ).pipe(

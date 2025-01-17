@@ -4,17 +4,18 @@ import * as String from "effect/String";
 import type { Api } from "#/specification/api.js";
 
 import { TgBotClientError } from "../errors.js";
-import { TgBotClientConfigObject } from "../config.js";
+import { TgBotClientConfig } from "../config.js";
 import { makePayload } from "./payload.js";
 import { isTgBotApiResponse } from "../guards.js";
 
 export const execute = <M extends keyof Api>(
-  config: TgBotClientConfigObject,
   method: M,
   input: Parameters<Api[M]>[0]
-): Micro.Micro<ReturnType<Api[M]>, TgBotClientError> =>
+): Micro.Micro<ReturnType<Api[M]>, TgBotClientError, TgBotClientConfig> =>
 
   Micro.gen(function* () {
+
+    const config = yield* Micro.service(TgBotClientConfig);
 
     const httpResponse =
       yield* Micro.tryPromise({

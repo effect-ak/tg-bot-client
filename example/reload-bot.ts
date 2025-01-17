@@ -1,6 +1,6 @@
-import { runTgChatBot } from "../src/index.js";
+import { runTgChatBot } from "#/index.js";
 
-main()
+main();
 
 async function main() {
 

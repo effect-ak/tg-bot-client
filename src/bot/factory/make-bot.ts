@@ -7,9 +7,12 @@ export const makeBot =
   (messageHandler: BotMessageHandlerSettings) =>
     Micro.gen(function* () {
       const { runBot } = yield* Micro.service(BotUpdatePollerService);
+      const fiber = yield* runBot(messageHandler);
+      const interrupt =
+        Micro.fiberInterrupt(fiber);
+
       return {
-        fiber: yield* runBot(messageHandler),
-        runBot
+        runBot, interrupt
       };
     }).pipe(
       Micro.tapError(error => {

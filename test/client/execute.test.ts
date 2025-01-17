@@ -3,12 +3,13 @@ import { describe, expect, assert, vi } from "vitest";
 import { fixture } from "./fixture.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
 import { Micro } from "effect";
+import { execute } from "#/client/execute-request/execute.js";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 
 describe("telegram bot client, execute method", () => {
 
-  fixture("send dice", async ({ execute, chat_id, skip }) => {
+  fixture("send dice", async ({ chat_id, skip, context }) => {
 
     // skip();
 
@@ -17,7 +18,10 @@ describe("telegram bot client, execute method", () => {
         chat_id,
         emoji: "🎲",
         message_effect_id: MESSAGE_EFFECTS["🔥"]
-      }).pipe(Micro.runPromiseExit);
+      }).pipe(
+        Micro.provideContext(context),
+        Micro.runPromiseExit
+      );
 
     assert(response._tag == "Success");
 
