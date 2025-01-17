@@ -1,7 +1,8 @@
-import { runTgChatBot, MESSAGE_EFFECTS } from "../src/index.js"
+import { runTgChatBot } from "#/index.js"
 
 runTgChatBot({
   type: "fromJsonFile",
+  // log_level: "debug",
   on_message: (msg) => {
 
     // 2+10+4+5
@@ -16,16 +17,17 @@ runTgChatBot({
         type: "document",
         caption: "sum result",
         document: {
-          file_content: Buffer.from(`your sum is ${result}`),
+          file_content: new TextEncoder().encode(`your sum is ${result}`),
           file_name: "hello.txt"
         }
       }
     }
 
     const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
-    const command = msg.text?.slice(commandEntity?.offset, commandEntity?.length);
+    const command =
+      commandEntity ? msg.text?.slice(commandEntity?.offset, commandEntity?.length) : undefined;
 
-    console.log("command", command);
+    console.info("echo bot", { command });
 
     if (command == "/bye") {
       return {
@@ -42,11 +44,12 @@ runTgChatBot({
       }
     }
 
-    console.log("got a message", msg.text)
-
-    return {
-      type: "message",
-      text: "hey :)"
+    if (msg.text) {
+      return {
+        type: "message",
+        text: "hey :)"
+      }
     }
+
   }
 })

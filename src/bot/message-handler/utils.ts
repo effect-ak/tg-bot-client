@@ -16,7 +16,7 @@ export const extractUpdate =
       } as ExtractedUpdate<U>
     }
 
-    return undefined;
+    return;
 
   }
 

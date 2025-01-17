@@ -40,7 +40,7 @@ export const pollAndHandle = (
       while: ({ updates, lastSuccessId, hasError }) => {
 
         if (hasError) {
-          console.warn("error in handler, quitting");
+          console.info("error in handler, quitting");
           return false;
         }
 

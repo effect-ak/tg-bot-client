@@ -1,26 +1,28 @@
 import * as Micro from "effect/Micro";
 
 import { extractUpdate } from "#/bot/message-handler/utils.js";
-
+import type { BotMessageHandlers, BotResponse } from "#/bot/message-handler/types.js";
+import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 import type { State } from "./poll-and-handle.js";
 import type { SafeSettings } from "./settings.js";
-import type { BotMessageHandlers, BotResponse } from "../message-handler/types.js";
-import type { ClientExecuteRequestServiceInterface } from "#/client/execute-request/_service.js";
 
 type Context = {
-  state: State,
-  settings: SafeSettings,
-  handlers: BotMessageHandlers,
+  state: State
+  settings: SafeSettings
+  handlers: BotMessageHandlers
   execute: ClientExecuteRequestServiceInterface["execute"]
 }
 
 export const fetchUpdates = (
-  { state, settings, execute, handlers}: Context
+  { state, settings, execute, handlers }: Context
 ) =>
   Micro.gen(function* () {
     const updateId = state.lastUpdateId;
 
-    console.info("getting updates", state);
+    if (settings.log_level == "debug") {
+      console.debug("getting updates", state);
+    }
+
     const updates =
       yield* execute("get_updates", {
         ...settings,
@@ -42,31 +44,45 @@ export const fetchUpdates = (
         break;
       }
 
-      const handler = handlers[`on_${update.type}`] as (u: typeof update) => BotResponse;
+      const handler = handlers[`on_${update.type}`] as (u: typeof update) => BotResponse | undefined;
 
       if (!handler) {
-        console.warn("Handler for update not defined", update);
-        hasError = true;
-        break;
+        if (settings.update_types.includes(update.type)) {
+          console.error("Handler for update not defined", update);
+          hasError = true;
+          break;
+        } else {
+          if (settings.log_level == "debug") {
+            console.debug("Ignored update", update);
+          }
+          lastSuccessId = updateObject.update_id;
+          continue;
+        }
+      }
+
+      if (update.type == "message" && "text" in update) {
+        console.info("Got new message", { 
+          chatId: update.chat.id,
+          chatType: update.chat.type,
+          message: `${update.text.slice(0, 5)}...`
+        })
       }
 
       const handleResult = handler(update);
 
-      if ("chat" in update) {
+      if ("chat" in update && handleResult) {
         const response =
           yield* execute(`send_${handleResult.type}`, {
             ...handleResult,
             chat_id: update.chat.id
           });
-        console.log("bot response", response);
+        if (settings.log_level == "debug" && "text") {
+          console.debug("bot response", response);
+        }
       }
 
-      if (!handleResult) {
-        hasError = true;
-
-        console.log(handleResult);
-
-        break;
+      if (!handleResult && settings.log_level == "debug") {
+        console.debug("handler returned no response for update", { update });
       };
 
       lastSuccessId = updateObject.update_id;
@@ -74,12 +90,14 @@ export const fetchUpdates = (
     }
 
     if (hasError && lastSuccessId) {
-      const resp = //commit successfully handled messages
-        yield* execute("get_updates", {
-          offset: lastSuccessId,
-          limit: 0
-        });
+      yield* execute("get_updates", {
+        offset: lastSuccessId,
+        limit: 0
+      });
+      if (settings.log_level == "debug") {
+        console.debug("committed offset", lastSuccessId)
+      }
     }
 
     return { updates, lastSuccessId, hasError };
-  })
+  });

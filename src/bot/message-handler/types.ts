@@ -4,7 +4,8 @@ import type { PollAndHandleResult } from "#/bot/update-poller/poll-and-handle";
 import type * as Micro from "effect/Micro";
 import type { TgBotClientError } from "#/client/errors";
 
-export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>;
+export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>
+export type LogLevel = "info" | "debug"
 
 export type BotResponse = {
   [K in keyof Api]: K extends `send_${infer R}`
@@ -13,10 +14,12 @@ export type BotResponse = {
 }[keyof Api];
 
 export type BotMessageHandlers = {
-  [K in AvailableUpdateTypes as `on_${K}`]?: (update: NonNullable<Update[K]>) => BotResponse;
+  [K in AvailableUpdateTypes as `on_${K}`]?: (update: NonNullable<Update[K]>) => BotResponse | undefined;
 };
 
 export type BotMessageHandlerSettings = {
+  readonly log_level?: LogLevel
+  readonly update_types?: AvailableUpdateTypes[]
   readonly batch_size?: number
   readonly timeout?: number
   readonly max_empty_responses?: number

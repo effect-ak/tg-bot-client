@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://effect-ak.github.io/telegram-bot-client",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -32,10 +32,6 @@
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
     }
-  },
-  "scripts": {
-    "gen": "tsx ./codegen/main",
-    "echo-bot": "tsx ./example/echo-bot.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
