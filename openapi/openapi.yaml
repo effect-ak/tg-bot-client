@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: '8.1'
+  version: '8.2'
   contact:
     url: https://github.com/effect-ak/tg-bot-client
   summary: >-
@@ -281,9 +281,9 @@ paths:
                   description: >-
                     Required if ok is False<br/>Error message in human readable
                     form that explains why it is impossible to complete the
-                    order (e.g<br/>"Sorry, delivery to your desired address is
-                    unavailable&#39;)<br/>Telegram will display this message to
-                    the user.
+                    order (e.g<br/>“Sorry, delivery to your desired address is
+                    unavailable”)<br/>Telegram will display this message to the
+                    user.
               required:
                 - shipping_query_id
                 - ok
@@ -3058,8 +3058,8 @@ paths:
                     message_reaction_count (default)<br/>If not specified, the
                     previous setting will be used<br/>.<br/>Please note that
                     this parameter doesn&#39;t affect updates created before the
-                    call to the getUpdates, so unwanted updates may be received
-                    for a short period of time.
+                    call to getUpdates, so unwanted updates may be received for
+                    a short period of time.
       responses:
         '200':
           description: success
@@ -3476,6 +3476,74 @@ paths:
               required:
                 - user_id
                 - telegram_payment_charge_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /removeChatVerification:
+    post:
+      tags:
+        - stickers
+      summary: remove_chat_verification
+      description: >-
+        Removes verification from a chat that is currently verified on behalf of
+        the organization represented by the bot
+      externalDocs:
+        url: https://core.telegram.org/bots/api#removechatverification
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  oneOf:
+                    - type: number
+                    - type: string
+                  description: >-
+                    Unique identifier for the target chat or username of the
+                    target channel (in the format @channelusername)
+              required:
+                - chat_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /removeUserVerification:
+    post:
+      tags:
+        - stickers
+      summary: remove_user_verification
+      description: >-
+        Removes verification from a user who is currently verified on behalf of
+        the organization represented by the bot
+      externalDocs:
+        url: https://core.telegram.org/bots/api#removeuserverification
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  description: Unique identifier of the target user
+              required:
+                - user_id
       responses:
         '200':
           description: success
@@ -4559,6 +4627,11 @@ paths:
                 gift_id:
                   type: string
                   description: Identifier of the gift
+                pay_for_upgrade:
+                  type: boolean
+                  description: >-
+                    Pass True to pay for the gift upgrade from the bot&#39;s
+                    balance, thereby making the upgrade free for the receiver
                 text:
                   type: string
                   description: >-
@@ -6995,7 +7068,7 @@ paths:
                   description: >-
                     Format of the thumbnail, must be one of “static” for a .WEBP
                     or .PNG image, “animated” for a .TGS animation, or “video”
-                    for a WEBM video
+                    for a .WEBM video
                 thumbnail:
                   oneOf:
                     - $ref: '#/components/schemas/InputFile'
@@ -7006,7 +7079,7 @@ paths:
                     100px, or a .TGS animation with a thumbnail up to 32
                     kilobytes in size (see
                     https://core.telegram.org/stickers#animation-requirements
-                    for animated sticker technical requirements), or a WEBM
+                    for animated sticker technical requirements), or a .WEBM
                     video with the thumbnail up to 32 kilobytes in size; see
                     https://core.telegram.org/stickers#video-requirements for
                     video sticker technical requirements<br/>Pass a file_id as a
@@ -7115,12 +7188,13 @@ paths:
         Use this method to specify a URL and receive incoming updates via an
         outgoing webhook<br/>Whenever there is an update for the bot, we will
         send an HTTPS POST request to the specified URL, containing a
-        JSON-serialized Update<br/>In case of an unsuccessful request, we will
-        give up after a reasonable amount of attempts<br/>If you&#39;d like to
-        make sure that the webhook was set by you, you can specify secret data
-        in the parameter secret_token<br/>If specified, the request will contain
-        a header “X-Telegram-Bot-Api-Secret-Token” with the secret token as
-        content.
+        JSON-serialized Update<br/>In case of an unsuccessful request (a request
+        with response HTTP status code different from 2XY), we will repeat the
+        request and give up after a reasonable amount of attempts<br/>If
+        you&#39;d like to make sure that the webhook was set by you, you can
+        specify secret data in the parameter secret_token<br/>If specified, the
+        request will contain a header “X-Telegram-Bot-Api-Secret-Token” with the
+        secret token as content.
       externalDocs:
         url: https://core.telegram.org/bots/api#setwebhook
         description: telegram documentation
@@ -7642,6 +7716,86 @@ paths:
               schema:
                 $ref: '#/components/schemas/File'
               example: File
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /verifyChat:
+    post:
+      tags:
+        - stickers
+      summary: verify_chat
+      description: >-
+        Verifies a chat on behalf of the organization which is represented by
+        the bot
+      externalDocs:
+        url: https://core.telegram.org/bots/api#verifychat
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  oneOf:
+                    - type: number
+                    - type: string
+                  description: >-
+                    Unique identifier for the target chat or username of the
+                    target channel (in the format @channelusername)
+                custom_description:
+                  type: string
+                  description: >-
+                    Custom description for the verification; 0-70
+                    characters<br/>Must be empty if the organization isn&#39;t
+                    allowed to provide a custom verification description.
+              required:
+                - chat_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /verifyUser:
+    post:
+      tags:
+        - stickers
+      summary: verify_user
+      description: >-
+        Verifies a user on behalf of the organization which is represented by
+        the bot
+      externalDocs:
+        url: https://core.telegram.org/bots/api#verifyuser
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  description: Unique identifier of the target user
+                custom_description:
+                  type: string
+                  description: >-
+                    Custom description for the verification; 0-70
+                    characters<br/>Must be empty if the organization isn&#39;t
+                    allowed to provide a custom verification description.
+              required:
+                - user_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
 components:
@@ -9732,6 +9886,11 @@ components:
         star_count:
           type: number
           description: The number of Telegram Stars that must be paid to send the sticker
+        upgrade_star_count:
+          type: number
+          description: >-
+            The number of Telegram Stars that must be paid to upgrade the gift
+            to a unique one
         total_count:
           type: number
           description: >-
@@ -10087,9 +10246,6 @@ components:
         url:
           type: string
           description: URL of the result
-        hide_url:
-          type: boolean
-          description: Pass True if you don&#39;t want the URL to be shown in the message
         description:
           type: string
           description: Short description of the result
@@ -10683,7 +10839,7 @@ components:
           description: Unique identifier for this result, 1-64 bytes
         gif_url:
           type: string
-          description: A valid URL for the GIF file<br/>File size must not exceed 1MB
+          description: A valid URL for the GIF file
         thumbnail_url:
           type: string
           description: >-
@@ -10821,7 +10977,7 @@ components:
           description: Unique identifier for this result, 1-64 bytes
         mpeg4_url:
           type: string
-          description: A valid URL for the MPEG4 file<br/>File size must not exceed 1MB
+          description: A valid URL for the MPEG4 file
         thumbnail_url:
           type: string
           description: >-
@@ -11786,7 +11942,7 @@ components:
             - video
           description: >-
             Format of the added sticker, must be one of “static” for a .WEBP or
-            .PNG image, “animated” for a .TGS animation, “video” for a WEBM
+            .PNG image, “animated” for a .TGS animation, “video” for a .WEBM
             video
         emoji_list:
           type: array
