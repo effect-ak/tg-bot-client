@@ -7,6 +7,9 @@ run-echo-bot:
 run-effect-bot:
 	tsx ./example/effect-bot.ts
 
+run-reload-bot:
+	tsx ./example/reload-bot.ts
+
 publish:
 	tsup
 	pnpm publish

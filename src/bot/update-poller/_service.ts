@@ -1,8 +1,8 @@
 import * as Micro from "effect/Micro";
 import * as Context from "effect/Context";
 
-import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
 import type { TgBotClientError } from "#/client/errors.js";
+import { BotMessageHandler } from "#/bot/message-handler/_service.js";
 import { pollAndHandle } from "./poll-and-handle.js";
 
 export type BotUpdatePollerServiceInterface =
@@ -14,16 +14,18 @@ export class BotUpdatePollerService
 export const BotUpdatesPollerServiceDefault =
   Micro.gen(function* () {
 
-    console.log("Initiating BotUpdatesPollerServiceDefault")
+    console.log("Initiating BotUpdatesPollerServiceDefault");
 
     const state = {
       fiber: undefined as Micro.MicroFiber<unknown, TgBotClientError> | undefined
-    }
+    };
 
-    const runBot = (
-      messageHandler: BotMessageHandlerSettings
-    ) =>
+    const runBot =
       Micro.gen(function* () {
+
+        console.log("run bot")
+
+        const messageHandler = yield* Micro.service(BotMessageHandler);
 
         const startFiber =
           pollAndHandle({
@@ -33,9 +35,9 @@ export const BotUpdatesPollerServiceDefault =
             Micro.tap(fiber =>
               fiber.addObserver((exit) => {
                 console.log("bot's fiber has been closed", exit);
-                if (messageHandler.onExit) {
-                  messageHandler.onExit(exit)
-                }
+                // if (messageHandler.onExit) {
+                //   messageHandler.onExit(exit)
+                // }
               })
             )
           );
@@ -49,12 +51,10 @@ export const BotUpdatesPollerServiceDefault =
 
         console.log("Fetching bot updates via long polling...");
 
-        return state.fiber;
-
       });
 
     return {
-      runBot
+      runBot, getFiber: () => state.fiber
     } as const;
 
   });

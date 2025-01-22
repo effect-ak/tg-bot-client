@@ -17,6 +17,7 @@ async function main() {
     });
 
   setTimeout(() => {
+    console.log("time to reload")
     bot.reload({
       on_message: (msg) => {
 
@@ -26,6 +27,6 @@ async function main() {
         }
       }
     })
-  }, 10000)
+  }, 5000)
 
 }

@@ -1,5 +1,5 @@
 import { BotFactoryServiceDefault } from "#/index";
-import { Effect } from "effect";
+import { Effect, Micro, pipe } from "effect";
 
 Effect.gen(function* () {
 
@@ -7,6 +7,8 @@ Effect.gen(function* () {
     yield* BotFactoryServiceDefault
       .runBot({
         type: "fromJsonFile",
+        log_level: "debug",
+        max_empty_responses: 3,
         on_message: (message) => {
       
           if (message.text) {
@@ -19,8 +21,9 @@ Effect.gen(function* () {
         }
       });
 
-  yield* Effect.sleep("5 seconds").pipe(
-    Effect.andThen(bot.bot.interrupt),
+  yield* pipe(
+    Micro.fiberAwait(bot.fiber()!),
+    Effect.andThen(Effect.logInfo("done")),
     Effect.forkDaemon
   );
 

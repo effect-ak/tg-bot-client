@@ -1,9 +1,9 @@
-import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
+import type { BotMessageHandlerShape } from "#/bot/message-handler/_service";
 
 export type SafeSettings = ReturnType<typeof makeSettingsFrom>
 
 export const makeSettingsFrom = (
-  input: BotMessageHandlerSettings
+  input: BotMessageHandlerShape
 ) => {
   let limit = input.batch_size ?? 10;
   let timeout = input.timeout ?? 10;

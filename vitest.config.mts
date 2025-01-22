@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import config from "./config.json" assert { type: 'json' };
 
 export default defineConfig({
-  plugins: [
+  plugins: [ 
     tsconfigPaths()
   ],
   test: {

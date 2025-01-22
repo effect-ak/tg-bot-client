@@ -14,6 +14,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "noEmit": true,
+    "noErrorTruncation": true,
     "paths": {
       "#/*": ["./src/*"],
       "#codegen/*": ["./codegen/*"],

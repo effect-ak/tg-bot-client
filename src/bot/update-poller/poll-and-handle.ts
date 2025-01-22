@@ -1,6 +1,6 @@
 import * as Micro from "effect/Micro";
 
-import type { BotMessageHandlerSettings } from "#/bot/message-handler/types.js";
+import type { BotMessageHandlerShape } from "#/bot/message-handler/_service.js";
 import { makeSettingsFrom } from "./settings.js";
 import { fetchUpdates } from "./fetch-updates.js";
 
@@ -10,7 +10,7 @@ export type State = {
 }
 
 export type PollAndHandleInput = {
-  settings: BotMessageHandlerSettings
+  settings: BotMessageHandlerShape
 }
 
 export type PollAndHandleResult = 
