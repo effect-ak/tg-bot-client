@@ -30,7 +30,7 @@ export const makeOpenApiDocument =
     )
 
   return {
-    openapi: "3.0.3",
+    openapi: "3.1.0",
     info: {
       title: "Telegram bot api",
       description: "Generated from official Telegram documentation",
