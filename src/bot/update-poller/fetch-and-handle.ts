@@ -58,7 +58,7 @@ export const fetchAndHandle = (
               updateKey: Object.keys(update).at(1),
               name: error._tag
             });
-            return Micro.succeed(true);
+            return Micro.succeed(undefined);
           })
         ),
         {
@@ -158,14 +158,7 @@ const handleUpdate = (
                 reply_parameters: {
                   message_id: updateObject.message?.message_id,
                 }
-              } : undefined),
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    { text: "Repeat", callback_data: "fix:123" }
-                  ]
-                ]
-              }
+              } : undefined)
             })
           )
         })
