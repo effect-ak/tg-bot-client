@@ -1,13 +1,13 @@
 import * as Context from "effect/Context";
-import type { AvailableUpdateTypes, BotMessageHandlers, LogLevel } from "./types";
+import type { BotMessageHandlers, LogLevel } from "./types";
 
 export type BotMessageHandlerShape = Context.Tag.Service<BotMessageHandler>;
 
 export class BotMessageHandler
-  extends Context.Tag("BotMessageHandler")<BotMessageHandler, {
-    readonly log_level?: LogLevel
-    readonly update_types?: AvailableUpdateTypes[]
-    readonly batch_size?: number
-    readonly timeout?: number
-    readonly max_empty_responses?: number
-  } & BotMessageHandlers>() { };
+  extends Context.Tag("BotMessageHandler")<BotMessageHandler, Readonly<{
+    log_level?: LogLevel
+    batch_size?: number
+    timeout?: number
+    max_empty_responses?: number
+    on_error?: "stop" | "continue" 
+  }> & BotMessageHandlers>() { };

@@ -2,7 +2,7 @@ import * as Micro from "effect/Micro";
 
 import type { BotMessageHandlerShape } from "#/bot/message-handler/_service.js";
 import { makeSettingsFrom } from "./settings.js";
-import { fetchUpdates } from "./fetch-updates.js";
+import { fetchAndHandle } from "./fetch-and-handle.js";
 
 export type State = {
   lastUpdateId: number | undefined
@@ -14,9 +14,9 @@ export type PollAndHandleInput = {
 }
 
 export type PollAndHandleResult = 
-  Micro.Micro.Success<ReturnType<typeof pollAndHandle>>
+  Micro.Micro.Success<ReturnType<typeof pollUpdates>>
 
-export const pollAndHandle = (
+export const pollUpdates = (
   input: PollAndHandleInput
 ) => {
 
@@ -28,16 +28,16 @@ export const pollAndHandle = (
   const settings = makeSettingsFrom(input.settings);
 
   return Micro.delay(1000)(
-    fetchUpdates({
+    fetchAndHandle({
       state, settings,
       handlers: input.settings,
     })
   ).pipe(
     Micro.repeat({
-      while: ({ updates, lastSuccessId, hasError }) => {
+      while: ({ updates, lastUpdateId, hasError }) => {
 
-        if (hasError) {
-          console.info("error in handler, quitting");
+        if (hasError === true && settings.on_error == "stop") {
+          console.info("Could not handle some messages, quitting");
           return false;
         }
 
@@ -51,8 +51,8 @@ export const pollAndHandle = (
           state.emptyResponses = 0;
         };
 
-        if (lastSuccessId) {
-          state.lastUpdateId = lastSuccessId + 1;
+        if (lastUpdateId) {
+          state.lastUpdateId = lastUpdateId + 1;
         }
 
         return true;

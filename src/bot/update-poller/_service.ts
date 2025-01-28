@@ -3,7 +3,8 @@ import * as Context from "effect/Context";
 
 import type { TgBotClientError } from "#/client/errors.js";
 import { BotMessageHandler } from "#/bot/message-handler/_service.js";
-import { pollAndHandle } from "./poll-and-handle.js";
+import { pollUpdates } from "./poll-updates.js";
+import { HandleUpdateError } from "./fetch-and-handle.js";
 
 export type BotUpdatePollerServiceInterface =
   Micro.Micro.Success<typeof BotUpdatesPollerServiceDefault>;
@@ -17,7 +18,7 @@ export const BotUpdatesPollerServiceDefault =
     console.log("Initiating BotUpdatesPollerServiceDefault");
 
     const state = {
-      fiber: undefined as Micro.MicroFiber<unknown, TgBotClientError> | undefined
+      fiber: undefined as Micro.MicroFiber<unknown, TgBotClientError | HandleUpdateError> | undefined
     };
 
     const runBot =
@@ -28,16 +29,13 @@ export const BotUpdatesPollerServiceDefault =
         const messageHandler = yield* Micro.service(BotMessageHandler);
 
         const startFiber =
-          pollAndHandle({
+          pollUpdates({
             settings: messageHandler,
           }).pipe(
             Micro.forkDaemon,
             Micro.tap(fiber =>
               fiber.addObserver((exit) => {
                 console.log("bot's fiber has been closed", exit);
-                // if (messageHandler.onExit) {
-                //   messageHandler.onExit(exit)
-                // }
               })
             )
           );
@@ -58,4 +56,3 @@ export const BotUpdatesPollerServiceDefault =
     } as const;
 
   });
-

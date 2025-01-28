@@ -1,22 +1,25 @@
-import * as Data from "effect/Data";
+import { TaggedError } from "effect/Data";
 
-type ErrorReason = {
-  readonly type: "NotOkResponse"
-  readonly errorCode?: number
-  readonly details?: string
+type ErrorReason = Readonly<{
+  type: "NotOkResponse"
+  errorCode?: number
+  details?: string
 } | {
-  readonly type: "UnexpectedResponse"
-  readonly response: unknown
+  type: "UnexpectedResponse"
+  response: unknown
 } | {
-  readonly type: "ClientInternalError"
-  readonly cause: unknown
+  type: "ClientInternalError"
+  cause: unknown
 } | {
-  readonly type: "UnableToGetFile"
-  readonly cause: unknown
-}
+  type: "UnableToGetFile"
+  cause: unknown
+} | {
+  type: "BotHandlerError"
+  cause: unknown
+}>
 
 export class TgBotClientError
-  extends Data.TaggedError("TgBotClientError")<{
+  extends TaggedError("TgBotClientError")<{
     reason: ErrorReason
   }> {
 

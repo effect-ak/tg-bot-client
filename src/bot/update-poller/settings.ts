@@ -8,8 +8,8 @@ export const makeSettingsFrom = (
   let limit = input.batch_size ?? 10;
   let timeout = input.timeout ?? 10;
   let max_empty_responses = input.max_empty_responses;
-  let update_types = input.update_types;
   let log_level = input.log_level;
+  let on_error = input.on_error;
 
   if (limit < 10 || limit > 100) {
     console.warn("Wrong limit, must be in [10..100], using 10 instead");
@@ -31,16 +31,19 @@ export const makeSettingsFrom = (
     max_empty_responses = undefined;
   }
 
-  if (!update_types) {
-    console.info("Handling only messages, ignoring others");
-    update_types = ["message"];
-  }
-
   if (!log_level) {
     log_level = "info";
   }
 
-  return {
-    limit, timeout, max_empty_responses, update_types, log_level
+  if (!on_error) {
+    on_error = "stop";
+  }
+
+  const config = {
+    limit, timeout, max_empty_responses, log_level, on_error
   } as const;
+
+  console.log("bot configuration", config);
+
+  return config;
 }

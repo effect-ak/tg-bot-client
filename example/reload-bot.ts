@@ -1,4 +1,4 @@
-import { runTgChatBot } from "#/index.js";
+import { BotResponse, runTgChatBot } from "#/index.js";
 
 main();
 
@@ -9,10 +9,12 @@ async function main() {
       type: "fromJsonFile",
       on_message: (msg) => {
 
-        return {
+        if (!msg.text) return BotResponse.ignore;
+
+        return BotResponse.make({
           type: "message",
           text: "hey :)"
-        }
+        })
       }
     });
 
@@ -21,10 +23,12 @@ async function main() {
     bot.reload({
       on_message: (msg) => {
 
-        return {
+        if (!msg.text) return BotResponse.ignore;
+
+        return BotResponse.make({
           type: "message",
           text: "reloaded hey :)"
-        }
+        })
       }
     })
   }, 5000)

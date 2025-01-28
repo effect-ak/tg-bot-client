@@ -1,4 +1,4 @@
-import { BotFactoryServiceDefault } from "#/index";
+import { BotFactoryServiceDefault, BotResponse } from "#/index";
 import { Effect, Micro, pipe } from "effect";
 
 Effect.gen(function* () {
@@ -11,12 +11,12 @@ Effect.gen(function* () {
         max_empty_responses: 3,
         on_message: (message) => {
       
-          if (message.text) {
-            return {
-              type: "message",
-              text: "hello!!!"
-            }
-          }
+          if (!message.text) return BotResponse.ignore;
+
+          return BotResponse.make({
+            type: "message",
+            text: "hello!!!"
+          })
       
         }
       });

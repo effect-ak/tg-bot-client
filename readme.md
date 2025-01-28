@@ -5,27 +5,25 @@
 
 
 
-### Motivation
+## Motivation
 
-The official documentation is available as a comprehensive [HTML page](https://core.telegram.org/bots/api), providing basic navigation. While functional, relying solely on this format can be somewhat inconvenient during bot development.
+The official documentation is available as a comprehensive [HTML page](https://core.telegram.org/bots/api), providing basic navigation. While functional, relying solely on this format can be somewhat inconvenient during bot **development**.
 
-This client facilitates interaction with the Telegram Bot API. It was created primarily because Telegram does not offer an official SDK for their API.
+This client facilitates interaction with the **Telegram Bot API**. It was created primarily because **Telegram** does not offer an official TypeScript **SDK** for their **API**.
 
-## Features:
-- **Typesafe Client**: This is a clean client written in TypeScript with no abstractions.
-- **[Playground](https://effect-ak.github.io/telegram-bot-playground/)**: Develop/Run chat bots in your browser 
-- **Complete**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts)
+## Highlights:
+- **[Client](#client)**: Light TypeScript client
+- **[ChatBot runner](#chatbot-runner)**: Focus on the logic of your chat bot
+- **Complete and Up-to-Date Telegram Bot API**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts), ensuring this client remains in sync and supports every method and type provided by the **Telegram Bot API**.
 - **Readable Method Names**: Method names, such as `setChatAdministratorCustomTitle`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
-  - `Integer` becomes `number`
-  - `True` becomes `boolean`
-  - `String or Number` becomes `string | number`
-  - Enumerated types, such as `Type of the chat, can be either “private”, “group”, “supergroup” or “channel”` becomes a standard union of literal types `"private"| "group" | "supergroup" | "channel"`
-  - And so on
+  - `Integer` → `number`
+  - `True` → `boolean`
+  - `String or Number` → `string | number`
+  - Enumerated types, such as `"Type of the chat can be either “private”, “group”, “supergroup” or “channel”"`, are converted to a standard union of literal types `"private" | "group" | "supergroup" | "channel"`
+  - And more...
 
-### Usage example
-
-#### Creating a Client
+## Client
 
 ```typescript
 import { makeTgBotClient } from "@effect-ak/tg-bot-client"
@@ -35,7 +33,7 @@ const client = makeTgBotClient({
 });
 ```
 
-#### Executing api methods
+### Executing api methods
 
 `client` has an `execute` method which requires two arguments
 
@@ -93,16 +91,23 @@ const file =
   });
 ```
 
-### Chatbot Support
+## ChatBot runner
 
-You can write the logic for your chatbot and run it locally.
+### How this library helps
 
-Take a look at [example](./example/echo-bot.ts)
+A chatbot is essentially a **function** that is triggered by every user message, whether it's a text message, a reaction, or a payment update. Lets name this function as **handler function**
 
-The Telegram bot supports both push and pull notification models for messages. This package uses the **pull** model for several reasons:
+This library handles the task of reading these **updates** from the Telegram Bot API's **message queue**. It then invokes the appropriate **handler function** with the received update.
 
-- **Flexibility in Handler Deployment:** Allows you to run the bot handler on any JS platform (NodeJs, Browser) 
-- **Sequential Message Processing:** Messages in the queue are read one by one, and the handler is invoked for each message. If an error occurs in the handler, the next message remains in the queue, and the bot stops running. When the handler successfully processes a message, it proceeds to the next one.
+### Playground
+
+Develop/Run chat bots in your browser via **[Chat Bot Playground](https://effect-ak.github.io/telegram-bot-playground/)**
+
+### Local run
+
+You can write the logic for your chatbot and **run it locally** and message to your bot via **Telegram** messenger.
+
+Take a look at examples [here](example)
 
 ### Setup Instructions
 
@@ -123,33 +128,29 @@ The Telegram bot supports both push and pull notification models for messages. T
    Create a file named `bot.js` and add your bot's logic as shown below:
 
    ```typescript
-   import { MESSAGE_EFFECTS, runTgChatBot } from "@effect-ak/tg-bot-client"
+   import { MESSAGE_EFFECTS, runTgChatBot, BotResponse } from "@effect-ak/tg-bot-client"
 
    runTgChatBot({
      type: "fromJsonFile",
      on_message: (msg) => {
-       if (msg?.text === "bye") {
-         return {
-           type: "message",
-           text: "See you later!",
-           message_effect_id: MESSAGE_EFFECTS["❤️"]
-         }
-       }
 
-       return {
-         type: "message",
-         text: "I'm a simple bot"
-       }
+      if (!msg.text) return BotResponse.ignore;
+
+      if (msg?.text === "bye") {
+        return BotResponse.make({
+          type: "message",
+          text: "See you later!",
+          message_effect_id: MESSAGE_EFFECTS["❤️"]
+        })
+      }
+
+      return BotResponse.make({
+        type: "message",
+        text: "I'm a simple bot"
+      })
      }
    })
    ```
-
-   **Explanation:**
-   - **Import Statements:** Import necessary modules from the `@effect-ak/tg-bot-client` package.
-   - **`runTgChatBot` Function:** Initializes the Telegram chatbot using the configuration from the `config.json` file.
-   - **`on_message` Handler:** Defines the logic for handling incoming messages.
-     - If the message text is `"bye"`, the bot responds with `"See you later!"` and adds a heart emoji effect.
-     - For any other message, the bot responds with `"I'm a simple bot"`.
 
 3. **Run the Bot**
 
@@ -158,3 +159,35 @@ The Telegram bot supports both push and pull notification models for messages. T
    ```bash
    node bot.js
    ```
+
+### How It Works: Pull Model
+
+The Telegram bot supports both **push** and **pull** notification models for messages. This package uses the **pull** model for several reasons:
+
+- **Run chat bots anywhere without exposing public ports or URLs:** The Telegram **push** model requires you as a developer to specify a public URL where updates will be sent.  
+  For example, **pull** allows running chat bots in a web browser, which doesn't have a public URL.
+  
+- **Leveraging Telegram's infrastructure:** Telegram keeps new updates for 24 hours and gives you plenty of time to process them.
+
+#### Few details and clarifications
+
+Developer is responsible only for **Handler Function**.
+
+**ChatBot runner** reads updates from the  queue and shifts **ID** of last proceeded update so that **handler function** won't be triggered multiple times for the same update.
+
+```mermaid
+graph TD
+  HandlerFunction[/**Handler Function**/]
+  Library[**ChatBot runner**]
+  TgBot[Telegram chat bot]
+  MessageQueue[**Bot updates queue**<br>_api.telegram.org/bot/updates_]
+  User -->|Sends Update, e.g  a text message| TgBot
+  TgBot -->|Stores Update for 24 hours | MessageQueue
+
+  subgraph Pull Updates
+    Library -->|Fetches Update | MessageQueue
+    Library -->|Invokes| HandlerFunction
+  end
+
+
+```

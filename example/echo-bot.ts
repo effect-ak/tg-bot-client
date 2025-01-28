@@ -1,7 +1,8 @@
-import { BotMessageHandlers, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
+import { BotMessageHandlers, BotResponse, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
+import { Effect, pipe } from "effect";
 
 const ECHO_BOT: BotMessageHandlers = {
-  on_message: (msg) => {
+  on_message: async (msg) => {
 
     if (msg.text?.includes("+")) {
       const numbers = msg.text.split("+");
@@ -9,14 +10,14 @@ const ECHO_BOT: BotMessageHandlers = {
       for (const num of numbers) {
         result += parseInt(num);
       }
-      return {
+      return BotResponse.make({
         type: "document",
         caption: "sum result",
         document: {
           file_content: new TextEncoder().encode(`your sum is ${result}`),
           file_name: "hello.txt"
         }
-      }
+      })
     }
 
     const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
@@ -26,32 +27,52 @@ const ECHO_BOT: BotMessageHandlers = {
     console.info("echo bot", { command });
 
     if (command == "/bye") {
-      return {
-        type: "message",
-        text: "See you later!",
-        message_effect_id: MESSAGE_EFFECTS["❤️"]
-      }
+      return pipe(
+        Effect.sleep("5 seconds"),
+        Effect.andThen(() =>
+          BotResponse.make({
+            type: "message",
+            text: "See you later!",
+            reply_parameters: {
+              message_id: msg.message_id
+            },
+            message_effect_id: MESSAGE_EFFECTS["❤️"]
+          })
+        ),
+        Effect.runPromise
+      )
     }
 
     if (command == "/echo") {
-      return {
+      return BotResponse.make({
         type: "message",
         text: `<pre language="json">${JSON.stringify(msg, undefined, 2)}</pre>`,
         parse_mode: "HTML"
-      }
+      })
+    }
+
+    if (command == "/error") {
+      throw new Error("boom");
     }
 
     if (msg.text) {
-      return {
+      return BotResponse.make({
         type: "message",
-        text: "hey :)"
-      }
+        text: "hey :)",
+        reply_parameters: {
+          message_id: msg.message_id
+        }
+      })
     }
+
+    return BotResponse.ignore;
 
   }
 };
 
 runTgChatBot({
   type: "fromJsonFile",
+  on_error: "continue",
+  // max_empty_responses: 2,
   ...ECHO_BOT
 });
