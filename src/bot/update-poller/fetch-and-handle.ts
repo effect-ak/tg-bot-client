@@ -65,7 +65,12 @@ export const fetchAndHandle = (
           concurrency: 10,
         }
       ).pipe(
-        Micro.andThen(result => result.every(error => error == null))
+        Micro.andThen(batchResult => {
+          if (settings.log_level == "debug") {
+            console.debug("handle batch result", batchResult)
+          }
+          return !batchResult.every(error => error == null);
+        })
       );
 
     if (lastUpdateId) { // next batch
@@ -149,6 +154,11 @@ const handleUpdate = (
         }),
         Micro.catchAll(error => {
           handleUpdateError = error;
+          console.log("error", {
+            updateId: updateObject.update_id,
+            updateKey: Object.keys(update).at(1),
+            name: error._tag
+          });
           return Micro.succeed(
             BotResponse.make({
               type: "message",
