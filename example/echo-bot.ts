@@ -1,7 +1,7 @@
-import { BotMessageHandlers, BotResponse, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
+import { BotUpdatesHandlers, BotResponse, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
 import { Effect, pipe } from "effect";
 
-const ECHO_BOT: BotMessageHandlers = {
+const ECHO_BOT: BotUpdatesHandlers = {
   on_message: async (msg) => {
 
     if (msg.text?.includes("+")) {
@@ -72,7 +72,12 @@ const ECHO_BOT: BotMessageHandlers = {
 
 runTgChatBot({
   type: "fromJsonFile",
-  on_error: "continue",
-  // max_empty_responses: 2,
-  ...ECHO_BOT
+  poll: {
+    log_level: "debug",
+    batch_size: 20,
+  },
+  mode: {
+    type: "single",
+    ...ECHO_BOT
+  }
 });

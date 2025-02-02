@@ -1,19 +1,73 @@
 import * as Micro from "effect/Micro";
 import * as Data from "effect/Data";
 
-import { BotMessageHandlers, BotResponse, HandleUpdateFunction } from "#/bot/message-handler/types.js";
-import type { State } from "./poll-updates.js";
-import type { SafeSettings } from "./settings.js";
-import { extractUpdate } from "#/bot/message-handler/utils.js";
+import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "#/bot/internal/types.js";
+import { extractUpdate } from "#/bot/internal/utils.js";
 import { execute } from "#/client/execute-request/execute.js";
 import { Update } from "#/specification/types.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
+import { BotPollSettingsTag, PollSettings } from "./poll-settings.js";
 
-type Context = {
-  state: State
-  settings: SafeSettings
-  handlers: BotMessageHandlers
-}
+export class BatchUpdateResult
+  extends Data.Class<{
+    hasErrors: boolean,
+    updates: Update[]
+  }> { };
+
+export const handleUpdates = (
+  updates: Update[],
+) =>
+  Micro.gen(function* () {
+
+    const pollSettings = yield* Micro.service(BotPollSettingsTag);
+    const updateHandler = yield* Micro.service(BotUpdateHandlersTag);
+
+    if (updateHandler.type == "single") {
+      return yield* handleOneByOne(updates, updateHandler, pollSettings);
+    } else {
+      return yield* handleEntireBatch(updates, updateHandler, pollSettings)
+    }
+
+  });
+
+const handleEntireBatch = (
+  updates: Update[],
+  handlers: HandleBatchUpdateFunction,
+  pollSettings: PollSettings
+) =>
+  Micro.try({
+    try: () => handlers.on_batch(updates),
+    catch: _ => _
+  }).pipe(
+    Micro.andThen(result => {
+      if (result instanceof Promise) {
+        return Micro.tryPromise({
+          try: () => result,
+          catch: _ => _
+        })
+      } else {
+        return Micro.succeed(result as boolean)
+      }
+    }),
+    Micro.andThen(doNext =>
+      new BatchUpdateResult({
+        hasErrors: !doNext,
+        updates
+      })
+    ),
+    Micro.catchAll(error => {
+      console.log("handle batch error", {
+        errorMessage: (error instanceof Error) ? error.message : undefined,
+        updates: updates.map(_ => Object.keys(_).at(1))
+      });
+      return Micro.succeed(
+        new BatchUpdateResult({
+          hasErrors: true, updates
+        })
+      )
+    })
+  );
+
 
 export class HandleUpdateError
   extends Data.TaggedError("HandleUpdateError")<{
@@ -22,77 +76,44 @@ export class HandleUpdateError
     cause?: unknown
   }> { }
 
-export const fetchAndHandle = (
-  { state, settings, handlers }: Context
+export const handleOneByOne = (
+  updates: Update[],
+  handlers: BotUpdatesHandlers,
+  pollSettings: PollSettings
 ) =>
-  Micro.gen(function* () {
-    const updateId = state.lastUpdateId;
-
-    if (settings.log_level == "debug") {
-      console.debug("getting updates", state);
-    }
-
-    const updates =
-      yield* execute("get_updates", {
-        ...settings,
-        ...(updateId ? { offset: updateId } : undefined),
-      }).pipe(
-        Micro.andThen(_ => _.sort(_ => _.update_id))
-      );
-
-    if (updates.length) {
-      console.debug(`got a batch of updates (${updates.length})`);
-    }
-
-    const lastUpdateId = updates.map(_ => _.update_id).sort().at(-1);
-
-    if (!lastUpdateId) return { updates: [], lastUpdateId: undefined };
-
-    const hasError =
-      yield* Micro.forEach(
-        updates,
-        update => handleUpdate(update, settings, handlers).pipe(
-          Micro.catchAll(error => {
-            console.log("error", {
-              updateId: update.update_id,
-              updateKey: Object.keys(update).at(1),
-              name: error._tag
-            });
-            return Micro.succeed(undefined);
-          })
-        ),
-        {
-          concurrency: 10,
-        }
-      ).pipe(
-        Micro.andThen(batchResult => {
-          if (settings.log_level == "debug") {
-            console.debug("handle batch result", batchResult)
-          }
-          return !batchResult.every(error => error == null);
+  Micro.forEach(
+    updates,
+    update =>
+      handleOneUpdate(update, handlers).pipe(
+        Micro.catchAll(error => {
+          console.log("update handle error", {
+            updateId: update.update_id,
+            updateKey: Object.keys(update).at(1),
+            name: error._tag
+          });
+          return Micro.succeed(error);
         })
-      );
-
-    if (lastUpdateId) { // next batch
-      yield* execute("get_updates", {
-        offset: lastUpdateId,
-        limit: 0
-      });
-      if (settings.log_level == "debug") {
-        console.debug("committed offset", lastUpdateId)
-      }
+      ),
+    {
+      concurrency: 10,
     }
-
-    return { updates, lastUpdateId, hasError };
-  });
-
+  ).pipe(
+    Micro.andThen(batchResult => {
+      if (pollSettings.log_level == "debug") {
+        console.debug("handle batch result", batchResult)
+      }
+      return new BatchUpdateResult({
+        hasErrors: !batchResult.every(error => error == null),
+        updates
+      })
+    })
+  );
 /**
  * Processes a Telegram update using the appropriate handler.
  */
-const handleUpdate = (
+export const handleOneUpdate = (
   updateObject: Update,
-  settings: SafeSettings,
-  handlers: BotMessageHandlers
+  handlers: BotUpdatesHandlers
 ) =>
   Micro.gen(function* () {
 
@@ -107,9 +128,9 @@ const handleUpdate = (
       );
     }
 
-    const handler = handlers[`on_${update.type}`] as HandleUpdateFunction<typeof update>;
+    const updateHandler = handlers[`on_${update.type}`] as HandleUpdateFunction<typeof update>;
 
-    if (!handler) {
+    if (!updateHandler) {
       return yield* Micro.fail(
         new HandleUpdateError({
           name: "HandlerNotDefined",
@@ -130,7 +151,7 @@ const handleUpdate = (
 
     const handleResult =
       yield* Micro.try({
-        try: () => handler(update),
+        try: () => updateHandler(update),
         catch: error =>
           new HandleUpdateError({
             name: "BotHandlerError",
@@ -174,7 +195,9 @@ const handleUpdate = (
         })
       );
 
-    if (!handleResult && settings.log_level == "debug") {
+    const pollSettings = yield* Micro.service(BotPollSettingsTag);
+
+    if (!handleResult && pollSettings.log_level == "debug") {
       console.log(`Bot response is undefined for update with ID #${updateObject.update_id}.`);
       return;
     };
@@ -185,10 +208,10 @@ const handleUpdate = (
           ...handleResult.response,
           chat_id: update.chat.id
         });
-      if (settings.log_level == "debug" && "text") {
+      if (pollSettings.log_level == "debug" && "text") {
         console.debug("bot response", response);
       }
     }
 
     return handleUpdateError;
-  })
+  });

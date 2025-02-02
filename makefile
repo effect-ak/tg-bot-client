@@ -10,6 +10,9 @@ run-effect-bot:
 run-reload-bot:
 	tsx ./example/reload-bot.ts
 
+run-batch-bot:
+	tsx ./example/batch-bot.ts
+
 publish:
 	tsup
 	pnpm publish

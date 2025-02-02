@@ -7,20 +7,24 @@ async function main() {
   const bot =
     await runTgChatBot({
       type: "fromJsonFile",
-      on_message: (msg) => {
+      mode: {
+        type: "single",
+        on_message: (msg) => {
 
-        if (!msg.text) return BotResponse.ignore;
-
-        return BotResponse.make({
-          type: "message",
-          text: "hey :)"
-        })
+          if (!msg.text) return BotResponse.ignore;
+  
+          return BotResponse.make({
+            type: "message",
+            text: "hey :)"
+          })
+        }
       }
     });
 
   setTimeout(() => {
     console.log("time to reload")
     bot.reload({
+      type: "single",
       on_message: (msg) => {
 
         if (!msg.text) return BotResponse.ignore;

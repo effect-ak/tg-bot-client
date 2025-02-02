@@ -1,4 +1,4 @@
-import { extractUpdate } from "#/bot/message-handler/utils.js";
+import { extractUpdate } from "#/bot/internal/utils.js";
 import { describe, expect, it } from "vitest";
 
 describe("message handler", () => {

@@ -1,23 +1,28 @@
-import { BotFactoryServiceDefault, BotResponse } from "#/index";
 import { Effect, Micro, pipe } from "effect";
+
+import { BotResponse, launchBot } from "#/index";
 
 Effect.gen(function* () {
 
   const bot = 
-    yield* BotFactoryServiceDefault
-      .runBot({
+    yield* launchBot({
         type: "fromJsonFile",
-        log_level: "debug",
-        max_empty_responses: 3,
-        on_message: (message) => {
+        poll: {
+          log_level: "debug",
+          max_empty_responses: 3,
+        },
+        mode: {
+          type: "single",
+          on_message: (message) => {
       
-          if (!message.text) return BotResponse.ignore;
-
-          return BotResponse.make({
-            type: "message",
-            text: "hello!!!"
-          })
-      
+            if (!message.text) return BotResponse.ignore;
+  
+            return BotResponse.make({
+              type: "message",
+              text: "hello!!!"
+            })
+        
+          }
         }
       });
 

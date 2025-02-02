@@ -1,8 +1,29 @@
+/**
+ * This module provides utility functions for input configuration
+ */
+
 import * as Micro from "effect/Micro";
 
 import { makeTgBotClientConfig } from "#/client/config.js";
 import { isTgBotClientSettingsInput } from "#/client/guards.js";
-import type { RunBotInput } from "./_service.js";
+import type { TgBotClientSettingsInput } from "#/client/guards.js";
+import type { BotMode } from "#/bot/internal/types";
+import type { PollSettings } from "#/bot/internal/poll-settings";
+
+export interface RunBotInputBase {
+  mode: BotMode
+  poll?: Partial<PollSettings>
+}
+
+export interface RunBotInputFromJsonFile extends RunBotInputBase {
+  type: "fromJsonFile"
+}
+
+export interface RunBotInputConfig extends RunBotInputBase, TgBotClientSettingsInput {
+  type: "config"
+}
+
+export type RunBotInput = RunBotInputFromJsonFile | RunBotInputConfig;
 
 export const makeClientConfigFrom =
   (input: RunBotInput) =>

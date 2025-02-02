@@ -1,12 +1,9 @@
 import * as Micro from "effect/Micro";
-import { BotFactoryServiceDefault, RunBotInput } from "./factory/_service.js";
-import { BotMessageHandler } from "./message-handler/_service.js";
+import { launchBot } from "./internal/launch.js";
+import { RunBotInput } from "./internal/client-config.js";
 
-export const runTgChatBot = 
+export const runTgChatBot =
   (input: RunBotInput) =>
-    BotFactoryServiceDefault
-      .runBot(input)
-      .pipe(
-        Micro.provideService(BotMessageHandler, input),
-        Micro.runPromise
-      );
+    launchBot(input).pipe(
+      Micro.runPromise
+    );
