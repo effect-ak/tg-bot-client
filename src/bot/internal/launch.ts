@@ -7,6 +7,8 @@ import { BotRunService } from "#/bot/service/run.js";
 import { BotPollSettings, BotPollSettingsTag } from "#/bot/internal/poll-settings.js";
 import { makeClientConfigFrom, RunBotInput } from "./client-config.js";
 
+export type BotInstance = Micro.Micro.Success<ReturnType<typeof launchBot>>
+
 export const launchBot = (
   input: RunBotInput
 ) =>

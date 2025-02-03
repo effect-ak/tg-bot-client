@@ -68,7 +68,6 @@ const handleEntireBatch = (
     })
   );
 
-
 export class HandleUpdateError
   extends Data.TaggedError("HandleUpdateError")<{
     name: "UnknownUpdate" | "HandlerNotDefined" | "BotHandlerError",
@@ -89,7 +88,8 @@ export const handleOneByOne = (
           console.log("update handle error", {
             updateId: update.update_id,
             updateKey: Object.keys(update).at(1),
-            name: error._tag
+            name: error._tag,
+            ...(error.cause instanceof Error ? { error: error.cause.message } : undefined)
           });
           return Micro.succeed(error);
         })
@@ -177,8 +177,9 @@ export const handleOneUpdate = (
           handleUpdateError = error;
           console.log("error", {
             updateId: updateObject.update_id,
-            updateKey: Object.keys(update).at(1),
-            name: error._tag
+            updateKey: Object.keys(updateObject).at(1),
+            name: error._tag,
+            ...(error.cause instanceof Error ? { error: error.cause.message } : undefined)
           });
           return Micro.succeed(
             BotResponse.make({

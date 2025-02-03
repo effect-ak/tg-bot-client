@@ -128,11 +128,10 @@ Take a look at examples [here](example)
    Create a file named `bot.js` and add your bot's logic as shown below:
 
    ```typescript
-   import { MESSAGE_EFFECTS, runTgChatBot, BotResponse } from "@effect-ak/tg-bot-client"
+   import { MESSAGE_EFFECTS, runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot-client"
 
-   runTgChatBot({
-     type: "fromJsonFile",
-     on_message: (msg) => {
+   const BOT = defineBot({
+      on_message: (msg) => {
 
       if (!msg.text) return BotResponse.ignore;
 
@@ -148,6 +147,14 @@ Take a look at examples [here](example)
         type: "message",
         text: "I'm a simple bot"
       })
+     }
+   })
+
+   runTgChatBot({
+     type: "fromJsonFile",
+     mode: {
+      type: "single",
+      ...BOT
      }
    })
    ```

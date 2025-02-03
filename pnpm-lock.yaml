@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      effect:
-        specifier: ^3.11.0
-        version: 3.12.0
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0.9
@@ -18,6 +14,9 @@ importers:
       '@types/node':
         specifier: ^22.10.1
         version: 22.10.2
+      effect:
+        specifier: ^3.11.0
+        version: 3.12.0
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0

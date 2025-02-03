@@ -24,7 +24,7 @@ runTgChatBot({
         text: `I got ${messages.length} messages`
       });
 
-      return false;
+      return true;
     }
   }
 });
