@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: '8.2'
+  version: '8.3'
   contact:
     url: https://github.com/effect-ak/tg-bot-client
   summary: >-
@@ -629,6 +629,9 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                video_start_timestamp:
+                  type: number
+                  description: New start timestamp for the copied video in the message
                 caption:
                   type: string
                   description: >-
@@ -2267,6 +2270,9 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                video_start_timestamp:
+                  type: number
+                  description: New start timestamp for the forwarded video in the message
                 disable_notification:
                   type: boolean
                   description: >-
@@ -2370,8 +2376,8 @@ paths:
         - stickers
       summary: get_available_gifts
       description: >-
-        Returns the list of gifts that can be sent by the bot to
-        users<br/>Requires no parameters
+        Returns the list of gifts that can be sent by the bot to users and
+        channel chats<br/>Requires no parameters
       externalDocs:
         url: https://core.telegram.org/bots/api#getavailablegifts
         description: telegram documentation
@@ -4608,8 +4614,8 @@ paths:
         - stickers
       summary: send_gift
       description: >-
-        Sends a gift to the given user<br/>The gift can&#39;t be converted to
-        Telegram Stars by the user
+        Sends a gift to the given user or channel chat<br/>The gift can&#39;t be
+        converted to Telegram Stars by the receiver
       externalDocs:
         url: https://core.telegram.org/bots/api#sendgift
         description: telegram documentation
@@ -4619,14 +4625,22 @@ paths:
             schema:
               type: object
               properties:
-                user_id:
-                  type: number
-                  description: >-
-                    Unique identifier of the target user that will receive the
-                    gift
                 gift_id:
                   type: string
                   description: Identifier of the gift
+                user_id:
+                  type: number
+                  description: >-
+                    Required if chat_id is not specified<br/>Unique identifier
+                    of the target user who will receive the gift.
+                chat_id:
+                  oneOf:
+                    - type: number
+                    - type: string
+                  description: >-
+                    Required if user_id is not specified<br/>Unique identifier
+                    for the chat or username of the channel (in the format
+                    @channelusername) that will receive the gift.
                 pay_for_upgrade:
                   type: boolean
                   description: >-
@@ -4635,7 +4649,7 @@ paths:
                 text:
                   type: string
                   description: >-
-                    Text that will be shown along with the gift; 0-255
+                    Text that will be shown along with the gift; 0-128
                     characters
                 text_parse_mode:
                   oneOf:
@@ -4659,7 +4673,6 @@ paths:
                     “underline”, “strikethrough”, “spoiler”, and “custom_emoji”
                     are ignored.
               required:
-                - user_id
                 - gift_id
       responses:
         '200':
@@ -5855,6 +5868,21 @@ paths:
                     uploaded using multipart/form-data under
                     &lt;file_attach_name&gt;<br/>More information on Sending
                     Files »
+                cover:
+                  oneOf:
+                    - $ref: '#/components/schemas/InputFile'
+                    - type: string
+                  description: >-
+                    Cover for the video in the message<br/>Pass a file_id to
+                    send a file that exists on the Telegram servers
+                    (recommended), pass an HTTP URL for Telegram to get a file
+                    from the Internet, or pass
+                    “attach://&lt;file_attach_name&gt;” to upload a new one
+                    using multipart/form-data under &lt;file_attach_name&gt;
+                    name<br/>More information on Sending Files »
+                start_timestamp:
+                  type: number
+                  description: Start timestamp for the video in the message
                 caption:
                   type: string
                   description: >-
@@ -6577,9 +6605,10 @@ paths:
       summary: set_message_reaction
       description: >-
         Use this method to change the chosen reactions on a message<br/>Service
-        messages can&#39;t be reacted to<br/>Automatically forwarded messages
-        from a channel to its discussion group have the same available reactions
-        as messages in the channel<br/>Bots can&#39;t use paid reactions
+        messages of some types can&#39;t be reacted to<br/>Automatically
+        forwarded messages from a channel to its discussion group have the same
+        available reactions as messages in the channel<br/>Bots can&#39;t use
+        paid reactions
       externalDocs:
         url: https://core.telegram.org/bots/api#setmessagereaction
         description: telegram documentation
@@ -8809,6 +8838,9 @@ components:
         permissions:
           $ref: '#/components/schemas/ChatPermissions'
           description: Default chat member permissions, for groups and supergroups
+        can_send_gift:
+          type: boolean
+          description: True, if gifts can be sent to the chat
         can_send_paid_media:
           type: boolean
           description: >-
@@ -11518,9 +11550,7 @@ components:
             multipart/form-data under &lt;file_attach_name&gt; name<br/>More
             information on Sending Files »
         thumbnail:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             Thumbnail of the file sent; can be ignored if thumbnail generation
             for the file is supported server-side<br/>The thumbnail should be in
@@ -11590,9 +11620,7 @@ components:
             multipart/form-data under &lt;file_attach_name&gt; name<br/>More
             information on Sending Files »
         thumbnail:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             Thumbnail of the file sent; can be ignored if thumbnail generation
             for the file is supported server-side<br/>The thumbnail should be in
@@ -11654,9 +11682,7 @@ components:
             multipart/form-data under &lt;file_attach_name&gt; name<br/>More
             information on Sending Files »
         thumbnail:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             Thumbnail of the file sent; can be ignored if thumbnail generation
             for the file is supported server-side<br/>The thumbnail should be in
@@ -11762,9 +11788,7 @@ components:
             multipart/form-data under &lt;file_attach_name&gt; name<br/>More
             information on Sending Files »
         thumbnail:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             Thumbnail of the file sent; can be ignored if thumbnail generation
             for the file is supported server-side<br/>The thumbnail should be in
@@ -11775,6 +11799,18 @@ components:
             “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded
             using multipart/form-data under &lt;file_attach_name&gt;<br/>More
             information on Sending Files »
+        cover:
+          type: string
+          description: >-
+            Cover for the video in the message<br/>Pass a file_id to send a file
+            that exists on the Telegram servers (recommended), pass an HTTP URL
+            for Telegram to get a file from the Internet, or pass
+            “attach://&lt;file_attach_name&gt;” to upload a new one using
+            multipart/form-data under &lt;file_attach_name&gt; name<br/>More
+            information on Sending Files »
+        start_timestamp:
+          type: number
+          description: Start timestamp for the video in the message
         caption:
           type: string
           description: >-
@@ -11866,9 +11902,7 @@ components:
             multipart/form-data under &lt;file_attach_name&gt; name<br/>More
             information on Sending Files »
         thumbnail:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             Thumbnail of the file sent; can be ignored if thumbnail generation
             for the file is supported server-side<br/>The thumbnail should be in
@@ -11879,6 +11913,18 @@ components:
             “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded
             using multipart/form-data under &lt;file_attach_name&gt;<br/>More
             information on Sending Files »
+        cover:
+          type: string
+          description: >-
+            Cover for the video in the message<br/>Pass a file_id to send a file
+            that exists on the Telegram servers (recommended), pass an HTTP URL
+            for Telegram to get a file from the Internet, or pass
+            “attach://&lt;file_attach_name&gt;” to upload a new one using
+            multipart/form-data under &lt;file_attach_name&gt; name<br/>More
+            information on Sending Files »
+        start_timestamp:
+          type: number
+          description: Start timestamp for the video in the message
         width:
           type: number
           description: Video width
@@ -14383,6 +14429,7 @@ components:
     TransactionPartner:
       oneOf:
         - $ref: '#/components/schemas/TransactionPartnerUser'
+        - $ref: '#/components/schemas/TransactionPartnerChat'
         - $ref: '#/components/schemas/TransactionPartnerAffiliateProgram'
         - $ref: '#/components/schemas/TransactionPartnerFragment'
         - $ref: '#/components/schemas/TransactionPartnerTelegramAds'
@@ -14408,6 +14455,23 @@ components:
       required:
         - type
         - commission_per_mille
+    TransactionPartnerChat:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - chat
+          description: Type of the transaction partner, always “chat”
+        chat:
+          $ref: '#/components/schemas/Chat'
+          description: Information about the chat
+        gift:
+          $ref: '#/components/schemas/Gift'
+          description: The gift sent to the chat by the bot
+      required:
+        - type
+        - chat
     TransactionPartnerFragment:
       type: object
       properties:
@@ -14777,6 +14841,14 @@ components:
         thumbnail:
           $ref: '#/components/schemas/PhotoSize'
           description: Video thumbnail
+        cover:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhotoSize'
+          description: Available sizes of the cover of the video in the message
+        start_timestamp:
+          type: number
+          description: Timestamp in seconds from which the video will play in the message
         file_name:
           type: string
           description: Original filename as defined by the sender
