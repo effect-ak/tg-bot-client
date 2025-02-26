@@ -36,10 +36,11 @@ export const makeOpenApiDocument =
       description: "Generated from official Telegram documentation",
       version: input.apiVersion,
       contact: {
-        url: "https://github.com/effect-ak/tg-bot-client"
+        name: "Aleksandr Kondaurov",
+        url: "https://github.com/effect-ak/tg-bot-client/issues"
       },
       summary: [
-        "![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client) **TypeScript http client**"
+        "[![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)"
       ].join("<br/>")
     },
     servers: [
