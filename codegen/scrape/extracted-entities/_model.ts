@@ -1,7 +1,7 @@
 import { Data } from "effect";
 
 import type { ExtractedMethod } from "#codegen/scrape/extracted-method/_model.js";
-import type { ExtractedType } from "../extracted-type/_model.js";
+import type { ExtractedType } from "#codegen/scrape/extracted-type/_model.js";
 import { extractFromPage } from "./extract.js";
 import { DocPage } from "../doc-page/_model.js";
 

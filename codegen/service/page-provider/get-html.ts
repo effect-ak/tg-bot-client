@@ -2,23 +2,30 @@ import { Effect } from "effect";
 
 import { writeFile, readFile } from "fs/promises"
 
-export const telegramApiDocs = "https://core.telegram.org/bots/api";
+export type HtmlPageName = keyof typeof HtmlPages
+
+const baseUrl = "https://core.telegram.org";
+
+export const HtmlPages = {
+  api: `${baseUrl}/bots/api`,
+  webapp: `${baseUrl}/bots/webapps`
+} as const;
 
 export const getPageHtml =
-  (pagePath: string) =>
+  (page: HtmlPageName) =>
     Effect.tryPromise(async () => {
 
-      const saved = await readFile(pagePath).catch(() => undefined);
+      const fileName = `${page}.html`;
 
-      if (saved) {
-        return saved.toString("utf-8");
-      }
+      const saved = await readFile(fileName).catch(() => undefined);
+
+      if (saved) saved.toString("utf-8");
 
       const content = 
-        await fetch(telegramApiDocs).then(_ => _.text());
+        await fetch(HtmlPages[page]).then(_ => _.text());
 
-      await writeFile(pagePath, content);
+      await writeFile(fileName, content);
 
       return content;
 
-    })
+    });

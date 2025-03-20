@@ -27,7 +27,7 @@ export class CodeWriterService
           (name: string, ...dir: string[]) =>
             Either.try(() => {
               const to = Path.join(...writeToDir, ...dir, name + ".ts");
-              console.log("Creating source file", to)
+              console.log("Creating morph source file", to)
               return project.createSourceFile(to, "", { overwrite: true });
             });
 

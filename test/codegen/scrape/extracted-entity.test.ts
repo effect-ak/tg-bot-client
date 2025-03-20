@@ -4,9 +4,9 @@ import { fixture } from "../fixture.js";
 
 describe("extracted-entity", () => {
 
-  fixture("ReactionTypeEmoji", ({ page }) => {
+  fixture("ReactionTypeEmoji", ({ apiPage }) => {
 
-    const entity = page.getEntity("ReactionTypeEmoji");
+    const entity = apiPage.getEntity("ReactionTypeEmoji");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -19,9 +19,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("answerCallbackQuery", ({ page }) => {
+  fixture("answerCallbackQuery", ({ apiPage }) => {
 
-    const entity = page.getEntity("answerCallbackQuery");
+    const entity = apiPage.getEntity("answerCallbackQuery");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -29,9 +29,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("InputFile", ({ page }) => {
+  fixture("InputFile", ({ apiPage }) => {
 
-    const entity = page.getEntity("InputFile");
+    const entity = apiPage.getEntity("InputFile");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -46,9 +46,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("sendMediaGroup", ({ page }) => {
+  fixture("sendMediaGroup", ({ apiPage }) => {
 
-    const entity = page.getEntity("sendMediaGroup");
+    const entity = apiPage.getEntity("sendMediaGroup");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -65,9 +65,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("setGameScore", ({ page }) => {
+  fixture("setGameScore", ({ apiPage }) => {
 
-    const entity = page.getEntity("setGameScore");
+    const entity = apiPage.getEntity("setGameScore");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -77,9 +77,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("getStarTransactions", ({ page }) => {
+  fixture("getStarTransactions", ({ apiPage }) => {
 
-    const entity = page.getEntity("getStarTransactions");
+    const entity = apiPage.getEntity("getStarTransactions");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -89,9 +89,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("deleteMessage", ({ page }) => {
+  fixture("deleteMessage", ({ apiPage }) => {
 
-    const entity = page.getEntity("deleteMessage");
+    const entity = apiPage.getEntity("deleteMessage");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -101,9 +101,9 @@ describe("extracted-entity", () => {
 
   });
   
-  fixture("getWebhookInfo", ({ page }) => {
+  fixture("getWebhookInfo", ({ apiPage }) => {
 
-    const entity = page.getEntity("getWebhookInfo");
+    const entity = apiPage.getEntity("getWebhookInfo");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -113,9 +113,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("ReplyKeyboardMarkup", ({ page }) => {
+  fixture("ReplyKeyboardMarkup", ({ apiPage }) => {
 
-    const entity = page.getEntity("ReplyKeyboardMarkup");
+    const entity = apiPage.getEntity("ReplyKeyboardMarkup");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -130,9 +130,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("User", ({ page }) => {
+  fixture("User", ({ apiPage }) => {
 
-    const entity = page.getEntity("User");
+    const entity = apiPage.getEntity("User");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -145,9 +145,9 @@ describe("extracted-entity", () => {
   });
 
 
-  fixture("forwardMessages", ({ page }) => {
+  fixture("forwardMessages", ({ apiPage }) => {
 
-    const entity = page.getEntity("forwardMessages");
+    const entity = apiPage.getEntity("forwardMessages");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -157,9 +157,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("Chat", ({ page }) => {
+  fixture("Chat", ({ apiPage }) => {
 
-    const entity = page.getEntity("Chat");
+    const entity = apiPage.getEntity("Chat");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -184,9 +184,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("Message", ({ page }) => {
+  fixture("Message", ({ apiPage }) => {
 
-    const entity = page.getEntity("Message");
+    const entity = apiPage.getEntity("Message");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -199,9 +199,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("getMyCommands", ({ page }) => {
+  fixture("getMyCommands", ({ apiPage }) => {
 
-    const entity = page.getEntity("getMyCommands");
+    const entity = apiPage.getEntity("getMyCommands");
 
     if (entity._tag == "Left") console.log(entity.left);
 
@@ -215,9 +215,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("logOut", ({ page }) => {
+  fixture("logOut", ({ apiPage }) => {
 
-    const entity = page.getEntity("logOut");
+    const entity = apiPage.getEntity("logOut");
 
     assert(entity._tag == "Right");
 
@@ -229,9 +229,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("getMe", ({ page }) => {
+  fixture("getMe", ({ apiPage }) => {
 
-    const entity = page.getEntity("getMe");
+    const entity = apiPage.getEntity("getMe");
 
     assert(entity._tag == "Right");
 
@@ -242,9 +242,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("sendChatAction", ({ page }) => {
+  fixture("sendChatAction", ({ apiPage }) => {
 
-    const entity = page.getEntity("sendChatAction");
+    const entity = apiPage.getEntity("sendChatAction");
 
     assert(entity._tag == "Right");
 
@@ -253,9 +253,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("ForumTopicClosed", async ({ page }) => {
+  fixture("ForumTopicClosed", async ({ apiPage }) => {
 
-    const entity = page.getEntity("forumTopicClosed");
+    const entity = apiPage.getEntity("forumTopicClosed");
 
     assert(entity._tag == "Right");
 
@@ -269,9 +269,9 @@ describe("extracted-entity", () => {
 
   });
 
-  fixture("ChatFullInfo", ({ page }) => {
+  fixture("ChatFullInfo", ({ apiPage }) => {
 
-    const entity = page.getEntity("ChatFullInfo");
+    const entity = apiPage.getEntity("ChatFullInfo");
 
     assert(entity._tag == "Right");
 

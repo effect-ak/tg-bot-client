@@ -1,7 +1,7 @@
 import { Data, Either } from "effect"
 
 import type { HtmlElement } from "#codegen/types.js"
-import { NormalType, NormalTypeShape } from "#scrape/normal-type/_model.js"
+import type { NormalType, NormalTypeShape } from "#scrape/normal-type/_model.js"
 import type { EntityFields } from "#codegen/scrape/entity-fields/_model.js"
 import { extractFromNode } from "./factory.js"
 

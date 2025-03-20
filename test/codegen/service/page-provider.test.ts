@@ -5,9 +5,9 @@ import { fixture } from "../fixture.js";
 
 describe("page provider service", () => {
 
-  fixture("extract all", async ({ page, skip }) => {    
+  fixture("extract all", async ({ apiPage, skip }) => {    
 
-    const all = ExtractedEntities.make(page);
+    const all = ExtractedEntities.make(apiPage);
 
     assert(all._tag == "Right");
 

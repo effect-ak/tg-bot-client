@@ -1,25 +1,22 @@
-import { Config, Effect } from "effect";
+import { Effect } from "effect";
 
 import { DocPage } from "#scrape/doc-page/_model.js";
-import { getPageHtml } from "./get-html.js";
+import { getPageHtml, HtmlPageName } from "./get-html.js";
 
 export class PageProviderService
   extends Effect.Service<PageProviderService>()("PageProviderService", {
     scoped:
       Effect.gen(function* () {
 
-        const pagePath =
-          yield* Config.nonEmptyString("page-path");
-
         yield* Effect.addFinalizer(() => Effect.logInfo("Closing scrapeDocPage"));
 
-        const htmlString =
-          yield* getPageHtml(pagePath);
-
-        const page = yield* DocPage.fromHtmlString(htmlString);
+        const makePage = 
+          (pageName: HtmlPageName) => 
+            getPageHtml(pageName).pipe(Effect.andThen(DocPage.fromHtmlString))
 
         return {
-          page
+          api: makePage("api"), 
+          webapp: makePage("webapp")
         } as const;
 
       })

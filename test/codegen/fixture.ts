@@ -1,62 +1,54 @@
-import { Effect, Logger, LogLevel } from "effect";
+import { Effect, Logger, LogLevel, ManagedRuntime } from "effect";
 import { test } from "vitest";
 
-import { withConfig } from "#codegen/config.js";
-import { DocPage } from "#scrape/doc-page/_model.js";
 import { CodeWriterService, PageProviderService } from "#codegen/service/index.js";
 import { OpenapiWriterService } from "#codegen/service/openapi-writer/_service.js";
+import { WebAppPage } from "#codegen/scrape/webapp/_model";
+import { DocPage } from "#codegen/scrape/doc-page/_model";
+import { live } from "#codegen/main";
 
 type Fixture = {
-  readonly page: DocPage
+  readonly apiPage: DocPage
+  readonly webAppPage: WebAppPage
   readonly codeWriter: CodeWriterService
   readonly openApiWriter: OpenapiWriterService
 };
 
-const makeFixture =
+const mainPromise =
   Effect.gen(function* () {
-
     console.log("creating fixture =>");
 
-    const { page } = yield* PageProviderService;
+    const htmlPageProvider = yield* PageProviderService;
+    const apiPage = yield* htmlPageProvider.api;
+    const webAppPage = yield* htmlPageProvider.webapp;
     const codeWriter = yield* CodeWriterService;
     const openApiWriter = yield* OpenapiWriterService;
 
-    return { page, codeWriter, openApiWriter } as const;
+    return { apiPage, webAppPage, codeWriter, openApiWriter } as const;
   }).pipe(
-    Effect.provide([
-      PageProviderService.Default,
-      CodeWriterService.Default,
-      OpenapiWriterService.Default,
-      Logger.pretty
-    ]),
-    Effect.withConfigProvider(
-      withConfig({
-        pagePath: "tg-bot-api.html"
-      })
-    ),
-    Logger.withMinimumLogLevel(LogLevel.Debug)
-  );
-
-const fixturePromise = 
-  makeFixture.pipe(
+    Effect.provide(live),
+    Logger.withMinimumLogLevel(LogLevel.Debug),
     Effect.tapErrorCause(Effect.logError),
     Effect.runPromise
-  ).catch(error => {
-    const a = 1
-    throw error
-  });
+  );
 
-export const fixture = test.extend<Fixture>(({
-  page: async ({}, use) => {
-    const page  = await fixturePromise;
-    use(page.page);
-  },
-  codeWriter: async ({}, use) => {
-    const page  = await fixturePromise;
-    use(page.codeWriter);
-  },
-  openApiWriter: async ({}, use) => {
-    const page  = await fixturePromise;
-    use(page.openApiWriter);
-  },
-}));
+export const fixture =
+  test.extend<Fixture>(({
+    webAppPage: async ({ }, use) => {
+      const page = await mainPromise;
+      use(page.webAppPage);
+    },
+    apiPage: async ({ }, use) => {
+      const page = await mainPromise;
+      use(page.apiPage);
+    },
+    codeWriter: async ({ }, use) => {
+      const page = await mainPromise;
+      use(page.codeWriter);
+    },
+    openApiWriter: async ({ }, use) => {
+      const page = await mainPromise;
+      use(page.openApiWriter);
+    },
+  }));
+

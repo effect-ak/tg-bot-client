@@ -1,7 +1,6 @@
 import { Data, Either, pipe } from "effect";
-import * as html_parser from "node-html-parser";
 
-import { HtmlElement } from "#codegen/types.js";
+import { HtmlElement, parseStringToHtml } from "#codegen/types.js";
 import { ExtractedEntity } from "#codegen/scrape/extracted-entity/_model.js";
 import { ExtractedType } from "#codegen/scrape/extracted-type/_model.js";
 import { ExtractedMethod } from "#codegen/scrape/extracted-method/_model.js";
@@ -13,10 +12,8 @@ export class DocPage
     node: HtmlElement
   }> {
 
-  static fromHtmlString(html: string): Either.Either<DocPage, string> {
-    const node = Either.try(() => html_parser.parse(html));
-    if (Either.isLeft(node)) return Either.left("InvalidHtml");
-    return Either.right(new DocPage({ node: node.right }))
+  static fromHtmlString(html: string) {
+    return parseStringToHtml(html).pipe(Either.andThen(node => new DocPage({ node })))
   }
 
   getEntity(name: string) {
