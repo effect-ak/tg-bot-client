@@ -41,7 +41,10 @@ export class DocPage
   }
 
   getLatestVersion() {
-    return this.node.querySelector("p > strong")?.text?.split(" ").at(-1);
+    return Either.fromNullable(
+      this.node.querySelector("p > strong")?.text?.split(" ").at(-1),
+      () => new Error("Html node with latest API version not found")
+    )
   }
 
 }

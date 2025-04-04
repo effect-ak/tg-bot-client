@@ -1,7 +1,8 @@
 import { Effect } from "effect";
 
 import { DocPage } from "#scrape/doc-page/_model.js";
-import { getPageHtml, HtmlPageName } from "./get-html.js";
+import { getPageHtml } from "./get-html.js";
+import { WebAppPage } from "#codegen/scrape/webapp/_model.js";
 
 export class PageProviderService
   extends Effect.Service<PageProviderService>()("PageProviderService", {
@@ -10,13 +11,9 @@ export class PageProviderService
 
         yield* Effect.addFinalizer(() => Effect.logInfo("Closing scrapeDocPage"));
 
-        const makePage = 
-          (pageName: HtmlPageName) => 
-            getPageHtml(pageName).pipe(Effect.andThen(DocPage.fromHtmlString))
-
         return {
-          api: makePage("api"), 
-          webapp: makePage("webapp")
+          api: getPageHtml("api").pipe(Effect.andThen(DocPage.fromHtmlString)), 
+          webapp: getPageHtml("webapp").pipe(Effect.andThen(WebAppPage.fromHtmlString))
         } as const;
 
       })

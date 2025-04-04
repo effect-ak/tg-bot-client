@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "homepage": "https://effect-ak.github.io/telegram-bot-playground/",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -43,9 +43,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^2.1.8"
-  },
-  "dependencies": {
-    "effect": "^3.11.0"
+    "vitest": "^2.1.8",
+    "effect": "^3.14.5"
   }
 }

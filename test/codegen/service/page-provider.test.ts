@@ -1,7 +1,7 @@
 import { describe, assert, expect } from "vitest";
 
 import { ExtractedEntities } from "#codegen/scrape/extracted-entities/_model.js";
-import { fixture } from "../fixture.js";
+import { fixture } from "../../fixture/codegen-main";
 
 describe("page provider service", () => {
 

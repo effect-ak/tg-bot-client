@@ -1,8 +1,8 @@
 import type { OpenAPIV3_1 } from "openapi-types";
 
-import { defaultBaseUrl } from "#/index.js";
-import { ExtractedMethod } from "#codegen/scrape/extracted-method/_model.js";
-import { ExtractedType } from "#codegen/scrape/extracted-type/_model.js";
+import { defaultBaseUrl } from "#/const.js";
+import { ExtractedMethod } from "#scrape/extracted-method/_model.js";
+import { ExtractedType } from "#scrape/extracted-type/_model.js";
 import { responsesObject } from "./components.js";
 import { makePath } from "./paths.js";
 

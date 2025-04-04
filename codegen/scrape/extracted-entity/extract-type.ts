@@ -1,7 +1,7 @@
 import { Either, Array } from "effect";
 
 import { HtmlElement } from "#codegen/types.js";
-import { EntityFields } from "#codegen/scrape/entity-fields/_model.js";
+import { EntityFields } from "#scrape/entity-fields/_model.js";
 import { NormalType } from "#scrape/normal-type/_model.js";
 import { ExtractEntityError } from "./errors.js";
 import { ExtractedEntityShape } from "./_model.js";
@@ -20,7 +20,7 @@ export const extractType = (
     for (const row of rows) {
       const all = row.querySelectorAll("td");
 
-      const fieldName = all.at(0)?.text;
+      let fieldName = all.at(0)?.childNodes.at(0)?.text?.trim();
       if (!fieldName) return ExtractEntityError.left("NoColumn", { columnName: "name", entityName });
       const pseudoType = all.at(1)?.text;
       if (!pseudoType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });

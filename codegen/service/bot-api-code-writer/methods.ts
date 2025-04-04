@@ -15,7 +15,7 @@ export const writeMethods =
       src.addImportDeclaration({
         moduleSpecifier: "./types.js",
         namespaceImport: typeNamespace
-      })
+      });
 
       src.addInterface({
         name: "Api",

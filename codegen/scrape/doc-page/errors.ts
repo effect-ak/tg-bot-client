@@ -1,8 +1,6 @@
 import { Data } from "effect";
 
-type DocPageErrorCode = [
-  "EntityNoFound"
-][number];
+type DocPageErrorCode = "EntityNoFound"
 
 type ErrorDetails = {
   entityName?: string,

@@ -9,4 +9,4 @@ export const parseStringToHtml =
     const node = Either.try(() => html_parser.parse(html));
     if (Either.isLeft(node)) return Either.left("InvalidHtml");
     return Either.right(node.right)
-  }
+  };

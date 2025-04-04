@@ -1,15 +1,15 @@
 import { describe, assert } from "vitest";
 import { Effect } from "effect";
 
-import { fixture } from "../fixture.js";
+import { fixture } from "../../fixture/codegen-main";
 
 describe("code writer service", () => {
 
-  fixture("create file and write one line", async ({ codeWriter, skip }) => {    
+  fixture("create file and write one line", async ({ tsMorph, skip }) => {    
 
     skip();
 
-    const src = codeWriter.createTsFile("test2");
+    const src = tsMorph.createTsFile("test2");
 
     assert(src._tag == "Right");
 
@@ -17,7 +17,7 @@ describe("code writer service", () => {
       writer.writeLine("//** fist line")
     );
 
-    const saved = await codeWriter.saveFiles.pipe(Effect.runPromiseExit);
+    const saved = await tsMorph.saveFiles.pipe(Effect.runPromiseExit);
 
     assert(saved._tag == "Success")
 

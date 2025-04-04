@@ -1,6 +1,6 @@
 import { describe, expect, assert } from "vitest"
 
-import { fixture } from "../fixture.js";
+import { fixture } from "../../fixture/codegen-main";
 
 describe("extracted-entity", () => {
 

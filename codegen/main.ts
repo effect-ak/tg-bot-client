@@ -1,18 +1,21 @@
-import { ConfigProvider, Effect, Layer, Logger, LogLevel, ManagedRuntime } from "effect";
+import { Config, Effect, Logger, LogLevel } from "effect";
 
 import { ExtractedEntities } from "./scrape/extracted-entities/_model.js";
-import { CodeWriterService, PageProviderService } from "./service/index.js";
+import { BotApiCodeWriterService, PageProviderService, WebAppCodeWriterService } from "./service/index.js";
 import { OpenapiWriterService } from "./service/openapi-writer/_service.js";
+import { BotApiCodegenRuntime, WebAppCodegenRuntime } from "./runtime.js";
+import { TsMorpthWriter } from "./service/ts-morph-writer/_service.js";
 
-const generateApi =
-  Effect.gen(function* () {
+const generateBotApi =
+  Effect.fn("generate bot api")(function* () {
 
     const pageProvider = yield* PageProviderService;
     const apiPage = yield* pageProvider.api;
 
-    const apiVersion = yield* Effect.fromNullable(apiPage.getLatestVersion());
+    const apiVersion = yield* apiPage.getLatestVersion();
 
-    const codeWriter = yield* CodeWriterService;
+    const tsMorph = yield* TsMorpthWriter;
+    const codeWriter = yield* BotApiCodeWriterService;
     const openapiWriter = yield* OpenapiWriterService;
     const entities = yield* ExtractedEntities.make(apiPage);
 
@@ -24,30 +27,40 @@ const generateApi =
       apiVersion
     });
 
-    yield* codeWriter.saveFiles;
+    yield* tsMorph.saveFiles;
 
   });
 
-const configProvider =
-  ConfigProvider.fromJson({
-    "scrapper-out-dir": [__dirname, "..", "src", "specification"],
-    "openapi-out-dir": [__dirname, "..", "openapi"],
-  });
+const generateWebApp =
+  Effect.fn("generate web app")(function*() {
 
-export const live =
-  ManagedRuntime.make(
-    Layer.mergeAll(
-      PageProviderService.Default,
-      CodeWriterService.Default,
-      OpenapiWriterService.Default,
-    ).pipe(
-      Layer.provide(Layer.setConfigProvider(configProvider)),
-      Layer.provide(Logger.pretty)
-    )
-  );
+    const pageProvider = yield* PageProviderService;
+    const webappPage = yield* pageProvider.webapp;
 
-generateApi.pipe(
-  Effect.provide(live),
+    const tsMorph = yield* TsMorpthWriter;
+    const { writeWebApp } = yield* WebAppCodeWriterService;
+
+    writeWebApp(webappPage);
+
+    yield* tsMorph.saveFiles;
+
+  })
+
+const gen =
+  Effect.fn("Generate")(function*() {
+    const module = yield* Config.literal("bot_api", "webapp")("MODULE_NAME");
+    if (module == "bot_api") {
+      yield* generateBotApi().pipe(
+        Effect.provide(BotApiCodegenRuntime)
+      );
+    } else {
+      yield* generateWebApp().pipe(
+        Effect.provide(WebAppCodegenRuntime)
+      )
+    }
+  })
+
+gen().pipe(
   Logger.withMinimumLogLevel(LogLevel.Debug),
   Effect.runPromise
 ).then(() => console.log("done generating"))
