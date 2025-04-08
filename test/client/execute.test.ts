@@ -98,4 +98,4 @@ describe("telegram bot client, execute method", () => {
 
   });
 
-})
+});

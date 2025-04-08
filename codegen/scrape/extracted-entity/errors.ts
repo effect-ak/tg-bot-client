@@ -1,7 +1,7 @@
 import { Data, Either } from "effect";
 
 type ExtractEntityErrorCode = [
-  "UnexpectedValue", "NoTitle", "NoDescription", "NoColumn", "EmptyList", "NoTypes",
+  "UnexpectedValue", "NoTitle", "NoDescription", "NoColumn", "EmptyList", "NoTypes", "NoMethods",
   "TypeDefinition:StopTagEncountered",
   "TypeDefinition:TooManySteps",
   "TypeDefinition:NotFound",
@@ -10,6 +10,7 @@ type ExtractEntityErrorCode = [
   "Description:Empty",
   "Description:TooManyReturns",
   "Description:NoReturnTypes",
+  "Method:ReturnTypeNotFound"
 ][number]
 
 type ErrorDetails = {

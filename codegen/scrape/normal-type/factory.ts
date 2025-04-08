@@ -38,7 +38,9 @@ export const makeFrom =
     
     const override = typeOverrides[input.entityName]?.[input.fieldName];
 
-    if (override) return Either.right({ ...override, isOverridden: true });
+    if (override) {
+      return Either.right({ ...override, isOverridden: true });
+    }
 
     return makeNormalTypeFromPseudoTypes(input.pseudoType);
   }

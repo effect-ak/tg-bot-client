@@ -1,12 +1,13 @@
 import { Data, Either, pipe } from "effect";
-import { HtmlElement, parseStringToHtml } from "#codegen/types";
+import { HtmlElement, HtmlPageDocumentation, parseStringToHtml } from "#codegen/types";
 import { ExtractedEntity } from "#scrape/extracted-entity/_model";
-import { ExtractedType } from "../extracted-type/_model";
+import { ExtractedType } from "#scrape/extracted-type/_model";
+import { ExtractEntityError } from "#scrape/extracted-entity/errors";
 
 export class WebAppPage
   extends Data.Class<{
     node: HtmlElement
-  }> {
+  }> implements HtmlPageDocumentation {
 
   static fromHtmlString(html: string) {
     return parseStringToHtml(html).pipe(Either.andThen(node => new WebAppPage({ node })))
@@ -16,7 +17,7 @@ export class WebAppPage
     return pipe(
       Either.fromNullable(
         this.node.querySelector(`a.anchor[name="${name.toLowerCase().replaceAll(" ", "-")}"]`),
-        () => new Error("Entity not found")
+        () => ExtractEntityError.make("TypeDefinition:NotFound", { entityName: name })
       ),
       Either.andThen(_ => ExtractedEntity.makeFrom(_.parentNode))
     );
@@ -28,6 +29,8 @@ export class WebAppPage
       Either.andThen(ExtractedType.makeFrom)
     )
   }
+
+  getMethod = () => ExtractEntityError.left("NoMethods")
 
   getWebApp() {
     return pipe(

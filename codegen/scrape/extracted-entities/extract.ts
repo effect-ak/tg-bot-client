@@ -1,20 +1,19 @@
 import { Either, String } from "effect";
 
 import type { ExtractEntityError } from "#scrape/extracted-entity/errors.js";
-import type { DocPage } from "#scrape/doc-page/_model.js";
 import type { DocPageError } from "#scrape/doc-page/errors.js";
-import type { ExtractMethodError } from "#scrape/extracted-method/errors.js";
 import { isComplexType } from "#scrape/types.js";
 import type { ExtractedEntitiesShape } from "./_model.js";
 import { ExtractedEntitiesError } from "./errors.js";
+import type { HtmlPageDocumentation } from "#codegen/types.js";
 
 const method_type_name_regex = /^\w+$/;
 
 type ExtractError =
-  ExtractEntityError | ExtractedEntitiesError | DocPageError | ExtractMethodError
+  ExtractEntityError | ExtractedEntitiesError | DocPageError
 
-export const extractFromPage = (
-  page: DocPage,
+export const extractEntities = (
+  page: HtmlPageDocumentation,
 ): Either.Either<ExtractedEntitiesShape, ExtractError> => {
 
   const result: ExtractedEntitiesShape = {

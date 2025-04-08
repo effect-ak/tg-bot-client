@@ -1,12 +1,11 @@
 import { Effect } from "effect";
 import type { TsSourceFile } from "#codegen/types.js";
-import type { WebAppPage } from "#codegen/scrape/webapp/_model";
 import { TsMorpthWriter } from "../ts-morph-writer/_service";
-import { ExtractedEntity } from "#codegen/scrape/extracted-entity/_model";
+import { ExtractedWebApp } from "#codegen/scrape/extracted-webapp/_model";
 
 export class WebAppCodeWriterService
   extends Effect.Service<WebAppCodeWriterService>()("WebAppCodeWriterService", {
-    effect: 
+    effect:
       Effect.gen(function* () {
 
         const { createTsFile } = yield* TsMorpthWriter;
@@ -17,19 +16,20 @@ export class WebAppCodeWriterService
           writeWebApp: writeWebApp(srcFile)
         } as const;
       })
-  }) {}
+  }) { }
 
 const writeWebApp =
   (src: TsSourceFile) =>
-    (webapp: ExtractedEntity) => {
+    (extractedWebApp: ExtractedWebApp) => {
+
       src.addInterface({
         name: "TgWebApp",
         isExported: true,
-        properties: [
-          {
-            name: "one",
-            type: "never"
-          }
-        ]
-      })
+        properties:
+          extractedWebApp.fields.map(field => ({
+            name: field.name,
+            type: field.type.getTsType()
+          }))
+      });
+
     }

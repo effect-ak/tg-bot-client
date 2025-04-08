@@ -7,13 +7,13 @@ import { mapPseudoTypeToTsType } from "./pseudo-type.js";
 import { makeOpenApiType } from "./openapi-type.js";
 
 export type NormalTypeShape = {
-  typeNames: [ string, ...string[] ]
+  typeNames: Array.NonEmptyArray<string>
   openApiType?: OpenAPIV3_1.SchemaObject 
   isOverridden?: boolean
 }
 
 const union = (
-  input: NormalTypeShape["typeNames"]
+  input: Array.NonEmptyArray<string>
 ) => input.join(" | ")
 
 export class NormalType
@@ -34,7 +34,7 @@ export class NormalType
  
   }
 
-  static makeFromNames(...names: [string, ...string[]]) {
+  static makeFromNames(...names: Array.NonEmptyArray<string>) {
     return new NormalType({
       typeNames: Array.map(names, mapPseudoTypeToTsType)
     })

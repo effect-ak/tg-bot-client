@@ -1,22 +1,21 @@
 import { assert, describe, expect, it } from "vitest";
 import { webappFixture } from "../../fixture/codegen-webapp";
+import { ExtractedWebApp } from "#codegen/scrape/extracted-webapp/_model";
 
 describe("webapp", () => {
 
   webappFixture("parse main app object", ({ webAppPage }) => {
 
-    const page = webAppPage;
-
-    const a = webAppPage.getEntity("Initializing Mini Apps");
+    const a = ExtractedWebApp.make(webAppPage);
 
     assert(a._tag == "Right");
-
-    assert(a.right.type._tag == "EntityFields");
 
     expect(true);
 
 
-  })
+  });
+
+
 
 
 })

@@ -5,6 +5,7 @@ import { BotApiCodeWriterService, PageProviderService, WebAppCodeWriterService }
 import { OpenapiWriterService } from "./service/openapi-writer/_service.js";
 import { BotApiCodegenRuntime, WebAppCodegenRuntime } from "./runtime.js";
 import { TsMorpthWriter } from "./service/ts-morph-writer/_service.js";
+import { ExtractedWebApp } from "./scrape/extracted-webapp/_model.js";
 
 const generateBotApi =
   Effect.fn("generate bot api")(function* () {
@@ -40,7 +41,9 @@ const generateWebApp =
     const tsMorph = yield* TsMorpthWriter;
     const { writeWebApp } = yield* WebAppCodeWriterService;
 
-    writeWebApp(webappPage);
+    const extractedWebApp = yield* ExtractedWebApp.make(webappPage);
+
+    writeWebApp(extractedWebApp);
 
     yield* tsMorph.saveFiles;
 

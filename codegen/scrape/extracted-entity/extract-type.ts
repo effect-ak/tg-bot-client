@@ -1,4 +1,4 @@
-import { Either, Array } from "effect";
+import { Either, Array, Match, pipe } from "effect";
 
 import { HtmlElement } from "#codegen/types.js";
 import { EntityFields } from "#scrape/entity-fields/_model.js";
@@ -10,80 +10,83 @@ import { optional_field_label } from "./const.js";
 
 export const extractType = (
   node: HtmlElement, entityName: string
-): Either.Either<ExtractedEntityShape["type"], ExtractEntityError> => {
-  if (node.tagName == "TABLE") {
+): Either.Either<ExtractedEntityShape["type"], ExtractEntityError> =>
+  pipe(
+    Match.value(node.tagName),
+    Match.when("TABLE", () => extractFromTable(node, entityName)),
+    Match.when("UL", () => extractFromList(node)),
+    Match.orElse(() => ExtractEntityError.left("NoTypes"))
+  );
 
-    const fields = new EntityFields({ fields: [] });
+const extractFromList = (
+  node: HtmlElement
+) => {
+  const oneOf: string[] = [];
 
-    const rows = node.querySelectorAll("tbody tr");
+  const nodes = node.querySelectorAll("li");
 
-    for (const row of rows) {
-      const all = row.querySelectorAll("td");
-
-      let fieldName = all.at(0)?.childNodes.at(0)?.text?.trim();
-      if (!fieldName) return ExtractEntityError.left("NoColumn", { columnName: "name", entityName });
-      const pseudoType = all.at(1)?.text;
-      if (!pseudoType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });
-      const descriptionNode = all.at(all.length - 1); // description is the last column
-      if (!descriptionNode) return ExtractEntityError.left("NoColumn", { columnName: "description", entityName });
-
-      const description = extractFieldDescription(descriptionNode);
-
-      let required = false;
-
-      if (all.length == 3) {
-        const isOptional = description[0].includes(optional_field_label);
-        if (isOptional) description.shift();
-        required = isOptional == false;
-      } else {
-        const isRequired = all.at(2)?.text;
-        if (!isRequired) return ExtractEntityError.left("NoColumn", { columnName: "required", entityName });
-        if (isRequired != optional_field_label && isRequired != "Yes") {
-          return ExtractEntityError.left("UnexpectedValue", { columnName: "required", entityName })
-        }
-        required = isRequired != optional_field_label;
-      };
-
-      const normalType =
-        NormalType.makeFrom({ entityName, fieldName, pseudoType, description });
-
-      if (Either.isLeft(normalType)) {
-        console.warn(normalType.left)
-        continue;
-      }
-
-      fields.fields.push(
-        {
-          name: fieldName, description, required,
-          type: normalType.right
-        }
-      );
-    };
-
-    fields.fields.sort((a, b) => (b.required ? 1 : 0) - (a.required ? 1 : 0));
-    
-    return Either.right(fields);
-
+  for (const node of nodes) {
+    oneOf.push(node.text)
   }
 
-  if (node.tagName == "UL") {
-
-    const oneOf: string[] = [];
-
-    const nodes = node.querySelectorAll("li");
-
-    for (const node of nodes) {
-      oneOf.push(node.text)
-    }
-
-    if (Array.isNonEmptyArray(oneOf)) {
-      return Either.right(new NormalType({ typeNames: oneOf }));
-    }
-
-    return ExtractEntityError.left("NoTypes");
-
+  if (Array.isNonEmptyArray(oneOf)) {
+    return Either.right(new NormalType({ typeNames: oneOf }));
   }
 
   return ExtractEntityError.left("NoTypes");
+}
 
+const extractFromTable = (
+  node: HtmlElement, entityName: string
+) => {
+  const fields = new EntityFields({ fields: [] });
+
+  const rows = node.querySelectorAll("tbody tr");
+
+  for (const row of rows) {
+    const all = row.querySelectorAll("td");
+
+    let fieldName = all.at(0)?.childNodes.at(0)?.text?.trim();
+    if (!fieldName) return ExtractEntityError.left("NoColumn", { columnName: "name", entityName });
+    const pseudoType = all.at(1)?.text;
+    if (!pseudoType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });
+    const descriptionNode = all.at(all.length - 1); // description is the last column
+    if (!descriptionNode) return ExtractEntityError.left("NoColumn", { columnName: "description", entityName });
+
+    const description = extractFieldDescription(descriptionNode);
+
+    let required = false;
+
+    if (all.length == 3) {
+      const isOptional = description[0].includes(optional_field_label);
+      if (isOptional) description.shift();
+      required = isOptional == false;
+    } else {
+      const isRequired = all.at(2)?.text;
+      if (!isRequired) return ExtractEntityError.left("NoColumn", { columnName: "required", entityName });
+      if (isRequired != optional_field_label && isRequired != "Yes") {
+        return ExtractEntityError.left("UnexpectedValue", { columnName: "required", entityName })
+      }
+      required = isRequired != optional_field_label;
+    };
+
+    const normalType =
+      NormalType.makeFrom({ entityName, fieldName, pseudoType, description });
+
+    if (Either.isLeft(normalType)) {
+      console.warn(normalType.left)
+      continue;
+    }
+
+    fields.fields.push(
+      {
+        name: fieldName, description, required,
+        type: normalType.right
+      }
+    );
+  };
+
+  fields.fields.sort((a, b) => (b.required ? 1 : 0) - (a.required ? 1 : 0));
+
+  return Either.right(fields);
 }
