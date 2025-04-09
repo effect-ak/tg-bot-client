@@ -6,7 +6,7 @@ import { NormalType } from "#scrape/normal-type/_model.js";
 import { ExtractEntityError } from "./errors.js";
 import { ExtractedEntityShape } from "./_model.js";
 import { extractFieldDescription } from "./extract-description.js";
-import { optional_field_label } from "./const.js";
+import { INITIALING_MINI_APPS, optional_field_label } from "./const.js";
 
 export const extractType = (
   node: HtmlElement, entityName: string
@@ -48,8 +48,13 @@ const extractFromTable = (
 
     let fieldName = all.at(0)?.childNodes.at(0)?.text?.trim();
     if (!fieldName) return ExtractEntityError.left("NoColumn", { columnName: "name", entityName });
-    const pseudoType = all.at(1)?.text;
+    let pseudoType = all.at(1)?.text;
     if (!pseudoType) return ExtractEntityError.left("NoColumn", { columnName: "type", entityName });
+    if (pseudoType == "Function") {
+      const returnType = entityName == INITIALING_MINI_APPS ? "void" : entityName 
+      pseudoType = fieldName.endsWith("()") ? `() => ${returnType}` : "unknown"
+      fieldName = fieldName.substring(0, fieldName.indexOf("("));
+    }
     const descriptionNode = all.at(all.length - 1); // description is the last column
     if (!descriptionNode) return ExtractEntityError.left("NoColumn", { columnName: "description", entityName });
 

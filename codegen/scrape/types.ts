@@ -5,7 +5,7 @@ export type ExtractedEntityField = {
   description: string[]
 }
 
-const typeRegex = /^[A-Z][A-Za-z]+$/
+export const startsWithUpperCase = 
+  (input: string) => input.length > 0 && input.at(0)?.toUpperCase() == input.at(0)
 
-export const isComplexType =
-  (input: string) => input.match(typeRegex);
+export const isComplexType = startsWithUpperCase;

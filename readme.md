@@ -13,9 +13,9 @@ This client facilitates interaction with the **Telegram Bot API**. It was create
 
 ## Highlights:
 - **[Client](#client)**: Light TypeScript client
-- **[ChatBot runner](#chatbot-runner)**: Focus on the logic of your chat bot
 - **Complete and Up-to-Date Telegram Bot API**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts), ensuring this client remains in sync and supports every method and type provided by the **Telegram Bot API**.
-- **Readable Method Names**: Method names, such as `setChatAdministratorCustomTitle`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
+- **[Types for Webapps](#webapps-typings)** Types that describe `Telegram.WebApp`
+- **[ChatBot runner](#chatbot-runner)**: Focus on the logic of your chat bot
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
   - `Integer` → `number`
   - `True` → `boolean`
@@ -39,6 +39,8 @@ const client = makeTgBotClient({
 
 - the first is the API method, e.g. `send_message`
 - the second is an object containing the arguments for that method, e.g. `text`
+
+> Method names, such as `setChatAdministratorCustomTitle`, are converted to snake_case for easier code readability, e.g., `set_chat_administrator_custom_title`.
 
 #### 1. Sending a Message with an Effect
 
@@ -197,4 +199,30 @@ graph TD
   end
 
 
+```
+
+## Webapps typings
+
+Telegram provides a big [html](https://core.telegram.org/bots/webapps) page that describes `Telegram.WebApp`
+
+`@effect-ak/tg-bot-client` levereges scrapper's functionality to generate TypeScript types.
+
+```typescript
+import { TgWebApp } from "@effect-ak/tg-bot-client";
+
+interface Telegram {
+  WebApp: TgWebApp
+}
+
+declare const Telegram: Telegram;
+
+const saveData = () => {
+
+  Telegram.WebApp.CloudStorage.setItem("key1", "some data", (error) => {
+    if (error == null) {
+      console.log("Saved!")
+    }
+  })
+
+}
 ```

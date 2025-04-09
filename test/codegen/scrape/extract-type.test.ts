@@ -1,28 +1,36 @@
-import { extractType } from "#codegen/scrape/extracted-entity/extract-type";
-import { parse as parseHtml } from "node-html-parser";
-import { describe, it } from "vitest";
+import { describe, assert, expect } from "vitest";
+import { webappFixture } from "#test/fixture/codegen-webapp";
 
 describe("extract type", () => {
 
-  it("get json schema", () => {
+  webappFixture("extract fields from TgWebApp (checkHomeScreenStatus)", ({ webAppPage }) => {
 
-    const simpleTable = parseHtml(`
-      <table>
-        <tbody>
-        <tr>
-          <td>Field1</td>
-          <td>String</td>
-          <td>Some field description</td>
-        </tr>
-        </tbody>
-      </table>
-    `.trim());
+    const t = webAppPage.getType("accelerometer");
 
-    const a = extractType(simpleTable, "Entity1");
+    assert(t._tag == "Right" && t.right.type._tag == "EntityFields");
 
-    const b = 1
+    assert(t.right.type.fields.length == 6);
 
-  })
+    const fields = {
+      x: t.right.type.fields.find(_ => _.name == "x"),
+      y: t.right.type.fields.find(_ => _.name == "y"),
+      isStarted: t.right.type.fields.find(_ => _.name == "isStarted"),
+      start: t.right.type.fields.find(_ => _.name == "start")
+    }
 
+    expect(fields.x?.required).toBeTruthy();
+    expect(fields.x?.type.getTsType()).toEqual("number");
 
-})
+    expect(fields.y?.required).toBeTruthy();
+    expect(fields.y?.type.getTsType()).toEqual("number");
+
+    expect(fields.isStarted?.required).toBeTruthy();
+    expect(fields.isStarted?.type.getTsType()).toEqual("boolean");
+
+    expect(fields.start?.required).toBeTruthy();
+    expect(fields.start?.name).toEqual("start");
+    expect(fields.start?.type.getTsType()).toEqual("(params: AccelerometerStartParams, callback?: (isStarted: boolean) => void) => Accelerometer");
+
+  });
+
+});

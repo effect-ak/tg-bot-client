@@ -1,11 +1,11 @@
 import { Array, Either, pipe, Option } from "effect";
 
 import type { HtmlElement } from "#codegen/types.js";
-import type { ExtractedEntityShape } from "./_model.js";
 import { mapPseudoTypeToTsType } from "#codegen/scrape/normal-type/pseudo-type.js";
+import { isComplexType, startsWithUpperCase } from "#scrape/types.js";
+import type { ExtractedEntityShape } from "./_model.js";
 import { new_entity_tag_set, returnTypeOverrides } from "./const.js";
 import { ExtractEntityError } from "./errors.js";
-import { isComplexType } from "../types.js";
 
 const description_split_regex = /(\.\s{1,})|(\.<br>)/g;
 const contains_letters_regex = /\w{1,}/;
@@ -63,11 +63,6 @@ export const extractEntityDescription = (
         if (Array.isNonEmptyArray(typeNames)) {
           returnTypes.push(...typeNames);
           continue;
-        } else {
-          console.warn("No return type found for ", {
-            entityName,
-            sentenceWithReturn: line
-          })
         }
       };
 
@@ -93,7 +88,10 @@ export const extractEntityDescription = (
     } else {
       return Either.right({ lines, returns: undefined })
     }
-
+  } else if (returnTypes.length == 0 && !startsWithUpperCase(entityName)) {
+    console.warn("No return type found for", {
+      entityName,
+    });
   };
 
   return ExtractEntityError.left("Description:Empty", { entityName });

@@ -1,8 +1,30 @@
 import { describe, expect, assert } from "vitest"
 
-import { fixture } from "../../fixture/codegen-main";
+import { fixture } from "#test/fixture/codegen-main";
 
 describe("extracted-entity", () => {
+
+  fixture("getUpdates", ({ apiPage }) => {
+
+    const entity = apiPage.getMethod("getUpdates");
+
+    if (entity._tag == "Left") console.log(entity.left);
+
+    assert(entity._tag == "Right");
+    expect(entity.right.returnType.getTsType("T")).toEqual("T.Update[]");
+
+  });
+
+  fixture("getAvailableGifts", ({ apiPage }) => {
+
+    const entity = apiPage.getMethod("getAvailableGifts");
+
+    if (entity._tag == "Left") console.log(entity.left);
+
+    assert(entity._tag == "Right");
+    assert(entity.right.returnType._tag == "NormalType");
+
+  });
 
   fixture("ReactionTypeEmoji", ({ apiPage }) => {
 

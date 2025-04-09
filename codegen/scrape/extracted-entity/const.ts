@@ -1,5 +1,6 @@
 import type { OpenAPIV3_1 } from "openapi-types";
 
+export const INITIALING_MINI_APPS = "Initializing Mini Apps";
 export const type_node_set = new Set([ "TABLE", "UL" ]);
 export const new_entity_tag_set = new Set([...type_node_set, "H4"]);
 
@@ -16,5 +17,5 @@ export const typeAliasOverrides: Record<string, { tsType: string, openApi: OpenA
       type: "string",
       format: "binary"
     }
-  },
-}
+  }
+};

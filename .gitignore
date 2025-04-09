@@ -1,4 +1,5 @@
-src/specification
+src/specification/*
+!src/specification/event-handlers.ts
 node_modules
 dist
 config.json

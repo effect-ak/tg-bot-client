@@ -1,5 +1,5 @@
-import { assert, describe, expect, it } from "vitest";
-import { webappFixture } from "../../fixture/codegen-webapp";
+import { assert, describe, expect } from "vitest";
+import { webappFixture } from "#test/fixture/codegen-webapp";
 import { ExtractedWebApp } from "#codegen/scrape/extracted-webapp/_model";
 
 describe("webapp", () => {
@@ -12,10 +12,6 @@ describe("webapp", () => {
 
     expect(true);
 
-
   });
 
-
-
-
-})
+});
