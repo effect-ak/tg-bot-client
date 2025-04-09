@@ -1,9 +1,10 @@
 [![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)
+![Telegram Bot API](https://img.shields.io/badge/BotApi-8.3-blue)
+![Telegram WebApp](https://img.shields.io/badge/WebApp-8.0-blue)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue.svg)](https://effect-ak.github.io/telegram-bot-api/)
 ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40effect-ak%2Ftg-bot-client)
 ![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client)
-
-
+![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client)
 
 ## Motivation
 
