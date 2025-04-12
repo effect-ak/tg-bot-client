@@ -104,5 +104,22 @@ export const typeOverrides: Record<string, Record<string, NormalTypeShape>> = {
   SettingsButton: {
     onClick: T("(callback: () => void) => SettingsButton"),
     offClick: T("(callback: () => void) => SettingsButton"),
-  }
+  },
+  BackButton: {
+    onClick: T(`T.EventHandlers["backButtonClicked"]`),
+    offClick: T(`T.EventHandlers["backButtonClicked"]`),
+  },
+  DeviceStorage: {
+    setItem: T(`(key: string, value: string, callback?: (error: unknown | null, isStored: boolean) => void) => DeviceStorage`),
+    getItem: T(`(key: string, callback: (error: unknown | null, value: string | null) => void) => DeviceStorage`),
+    removeItem: T(`(key: string, callback?: (error: unknown | null, isRemoved: boolean) => void) => DeviceStorage`),
+    clear: T(`(callback?: (error: unknown | null, isCleared: boolean) => void) => DeviceStorage`),
+  },
+  SecureStorage: {
+    setItem: T(`(key: string, value: string, callback?: (error: unknown | null, isStored: boolean) => void) => SecureStorage`),
+    getItem: T(`(key: string, callback: (error: unknown | null, value: string | null, canBeRestored: boolean) => void) => SecureStorage`),
+    restoreItem: T(`(key: string, callback?: (error: unknown | null, value: string | null) => void) => SecureStorage`),
+    removeItem: T(`(key: string, callback?: (error: unknown | null, isRemoved: boolean) => void) => SecureStorage`),
+    clear: T(`(callback?: (error: unknown | null, isCleared: boolean) => void) => SecureStorage`),
+  },
 } as const;

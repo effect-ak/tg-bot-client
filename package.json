@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "homepage": "https://effect-ak.github.io/telegram-bot-playground/",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -9,18 +9,23 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Telegram bot client",
+  "description": "TypeScript types for Telegram Bot Api and Telegram.Webapp",
   "files": [
     "dist/index.js",
     "dist/index.mjs",
     "dist/index.d.ts"
   ],
   "keywords": [
-    "telegram",
-    "telegram bot api"
+    "telegram typescript types",
+    "telegram bot api client",
+    "telegram webapp"
   ],
   "repository": {
+    "type": "git",
     "url": "https://github.com/effect-ak/tg-bot-client"
+  },
+  "bugs": {
+    "url": "https://github.com/effect-ak/tg-bot-client/issues"
   },
   "license": "MIT",
   "types": "./dist/index.d.ts",

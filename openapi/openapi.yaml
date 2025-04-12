@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: '8.3'
+  version: '9.0'
   contact:
     name: Aleksandr Kondaurov
     url: https://github.com/effect-ak/tg-bot-client/issues
@@ -586,6 +586,44 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /convertGiftToStars:
+    post:
+      tags:
+        - updating-messages
+      summary: convert_gift_to_stars
+      description: >-
+        Converts a given regular gift to Telegram Stars<br/>Requires the
+        can_convert_gifts_to_stars business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#convertgifttostars
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                owned_gift_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the regular gift that should be
+                    converted to Telegram Stars
+              required:
+                - business_connection_id
+                - owned_gift_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /copyMessage:
     post:
       tags:
@@ -878,7 +916,7 @@ paths:
                   description: >-
                     The amount of Telegram Stars a user must pay initially and
                     after each subsequent subscription period to be a member of
-                    the chat; 1-2500
+                    the chat; 1-10000
                 name:
                   type: string
                   description: Invite link name; 0-32 characters
@@ -1012,7 +1050,7 @@ paths:
                     specified<br/>Any number of subscriptions can be active for
                     a given bot at the same time, including multiple concurrent
                     subscriptions from the same user<br/>Subscription price must
-                    no exceed 2500 Telegram Stars.
+                    no exceed 10000 Telegram Stars.
                 max_tip_amount:
                   type: number
                   description: >-
@@ -1208,6 +1246,52 @@ paths:
               required:
                 - chat_id
                 - user_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /deleteBusinessMessages:
+    post:
+      tags:
+        - updating-messages
+      summary: delete_business_messages
+      description: >-
+        Delete messages on behalf of a business account<br/>Requires the
+        can_delete_outgoing_messages business bot right to delete messages sent
+        by the bot itself, or the can_delete_all_messages business bot right to
+        delete any message
+      externalDocs:
+        url: https://core.telegram.org/bots/api#deletebusinessmessages
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the business connection on behalf of
+                    which to delete the messages
+                message_ids:
+                  type: array
+                  items:
+                    type: number
+                  description: >-
+                    A JSON-serialized list of 1-100 identifiers of messages to
+                    delete<br/>All messages must be from the same chat<br/>See
+                    deleteMessage for limitations on which messages can be
+                    deleted
+              required:
+                - business_connection_id
+                - message_ids
       responses:
         '200':
           description: success
@@ -1523,6 +1607,42 @@ paths:
                   description: Sticker set name
               required:
                 - name
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /deleteStory:
+    post:
+      tags:
+        - updating-messages
+      summary: delete_story
+      description: >-
+        Deletes a story previously posted by the bot on behalf of a managed
+        business account<br/>Requires the can_manage_stories business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#deletestory
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                story_id:
+                  type: number
+                  description: Unique identifier of the story to delete
+              required:
+                - business_connection_id
+                - story_id
       responses:
         '200':
           description: success
@@ -2148,6 +2268,74 @@ paths:
               example: Message | boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /editStory:
+    post:
+      tags:
+        - updating-messages
+      summary: edit_story
+      description: >-
+        Edits a story previously posted by the bot on behalf of a managed
+        business account<br/>Requires the can_manage_stories business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#editstory
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                story_id:
+                  type: number
+                  description: Unique identifier of the story to edit
+                content:
+                  $ref: '#/components/schemas/InputStoryContent'
+                  description: Content of the story
+                caption:
+                  type: string
+                  description: >-
+                    Caption of the story, 0-2048 characters after entities
+                    parsing
+                parse_mode:
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
+                  description: >-
+                    Mode for parsing entities in the story caption<br/>See
+                    formatting options for more details.
+                caption_entities:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MessageEntity'
+                  description: >-
+                    A JSON-serialized list of special entities that appear in
+                    the caption, which can be specified instead of parse_mode
+                areas:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/StoryArea'
+                  description: >-
+                    A JSON-serialized list of clickable areas to be shown on the
+                    story
+              required:
+                - business_connection_id
+                - story_id
+                - content
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+              example: Story
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /editUserStarSubscription:
     post:
       tags:
@@ -2374,7 +2562,7 @@ paths:
   /getAvailableGifts:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: get_available_gifts
       description: >-
         Returns the list of gifts that can be sent by the bot to users and
@@ -2393,6 +2581,109 @@ paths:
               schema:
                 $ref: '#/components/schemas/Gifts'
               example: Gifts
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /getBusinessAccountGifts:
+    post:
+      tags:
+        - updating-messages
+      summary: get_business_account_gifts
+      description: >-
+        Returns the gifts received and owned by a managed business
+        account<br/>Requires the can_view_gifts_and_stars business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#getbusinessaccountgifts
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                exclude_unsaved:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that aren&#39;t saved to the
+                    account&#39;s profile page
+                exclude_saved:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that are saved to the
+                    account&#39;s profile page
+                exclude_unlimited:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased an
+                    unlimited number of times
+                exclude_limited:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times
+                exclude_unique:
+                  type: boolean
+                  description: Pass True to exclude unique gifts
+                sort_by_price:
+                  type: boolean
+                  description: >-
+                    Pass True to sort results by gift price instead of send
+                    date<br/>Sorting is applied before pagination.
+                offset:
+                  type: string
+                  description: >-
+                    Offset of the first entry to return as received from the
+                    previous request; use empty string to get the first chunk of
+                    results
+                limit:
+                  type: number
+                  description: >-
+                    The maximum number of gifts to be returned;
+                    1-100<br/>Defaults to 100
+              required:
+                - business_connection_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnedGifts'
+              example: OwnedGifts
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /getBusinessAccountStarBalance:
+    post:
+      tags:
+        - updating-messages
+      summary: get_business_account_star_balance
+      description: >-
+        Returns the amount of Telegram Stars owned by a managed business
+        account<br/>Requires the can_view_gifts_and_stars business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#getbusinessaccountstarbalance
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+              required:
+                - business_connection_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StarAmount'
+              example: StarAmount
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /getBusinessConnection:
@@ -3184,6 +3475,77 @@ paths:
               example: WebhookInfo
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /giftPremiumSubscription:
+    post:
+      tags:
+        - updating-messages
+      summary: gift_premium_subscription
+      description: Gifts a Telegram Premium subscription to the given user
+      externalDocs:
+        url: https://core.telegram.org/bots/api#giftpremiumsubscription
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  description: >-
+                    Unique identifier of the target user who will receive a
+                    Telegram Premium subscription
+                month_count:
+                  type: number
+                  description: >-
+                    Number of months the Telegram Premium subscription will be
+                    active for the user; must be one of 3, 6, or 12
+                star_count:
+                  type: number
+                  description: >-
+                    Number of Telegram Stars to pay for the Telegram Premium
+                    subscription; must be 1000 for 3 months, 1500 for 6 months,
+                    and 2500 for 12 months
+                text:
+                  type: string
+                  description: >-
+                    Text that will be shown along with the service message about
+                    the subscription; 0-128 characters
+                text_parse_mode:
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
+                  description: >-
+                    Mode for parsing entities in the text<br/>See formatting
+                    options for more details<br/>Entities other than “bold”,
+                    “italic”, “underline”, “strikethrough”, “spoiler”, and
+                    “custom_emoji” are ignored.
+                text_entities:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MessageEntity'
+                  description: >-
+                    A JSON-serialized list of special entities that appear in
+                    the gift text<br/>It can be specified instead of
+                    text_parse_mode<br/>Entities other than “bold”, “italic”,
+                    “underline”, “strikethrough”, “spoiler”, and “custom_emoji”
+                    are ignored.
+              required:
+                - user_id
+                - month_count
+                - star_count
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /hideGeneralForumTopic:
     post:
       tags:
@@ -3340,6 +3702,85 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /postStory:
+    post:
+      tags:
+        - updating-messages
+      summary: post_story
+      description: >-
+        Posts a story on behalf of a managed business account<br/>Requires the
+        can_manage_stories business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#poststory
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                content:
+                  $ref: '#/components/schemas/InputStoryContent'
+                  description: Content of the story
+                active_period:
+                  type: number
+                  description: >-
+                    Period after which the story is moved to the archive, in
+                    seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 *
+                    86400
+                caption:
+                  type: string
+                  description: >-
+                    Caption of the story, 0-2048 characters after entities
+                    parsing
+                parse_mode:
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
+                  description: >-
+                    Mode for parsing entities in the story caption<br/>See
+                    formatting options for more details.
+                caption_entities:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MessageEntity'
+                  description: >-
+                    A JSON-serialized list of special entities that appear in
+                    the caption, which can be specified instead of parse_mode
+                areas:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/StoryArea'
+                  description: >-
+                    A JSON-serialized list of clickable areas to be shown on the
+                    story
+                post_to_chat_page:
+                  type: boolean
+                  description: Pass True to keep the story accessible after it expires
+                protect_content:
+                  type: boolean
+                  description: >-
+                    Pass True if the content of the story must be protected from
+                    forwarding and screenshotting
+              required:
+                - business_connection_id
+                - content
+                - active_period
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+              example: Story
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /promoteChatMember:
     post:
       tags:
@@ -3459,6 +3900,51 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /readBusinessMessage:
+    post:
+      tags:
+        - updating-messages
+      summary: read_business_message
+      description: >-
+        Marks incoming message as read on behalf of a business
+        account<br/>Requires the can_read_messages business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#readbusinessmessage
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the business connection on behalf of
+                    which to read the message
+                chat_id:
+                  type: number
+                  description: >-
+                    Unique identifier of the chat in which the message was
+                    received<br/>The chat must have been active in the last 24
+                    hours.
+                message_id:
+                  type: number
+                  description: Unique identifier of the message to mark as read
+              required:
+                - business_connection_id
+                - chat_id
+                - message_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /refundStarPayment:
     post:
       tags:
@@ -3493,10 +3979,49 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /removeBusinessAccountProfilePhoto:
+    post:
+      tags:
+        - updating-messages
+      summary: remove_business_account_profile_photo
+      description: >-
+        Removes the current profile photo of a managed business
+        account<br/>Requires the can_edit_profile_photo business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#removebusinessaccountprofilephoto
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                is_public:
+                  type: boolean
+                  description: >-
+                    Pass True to remove the public photo, which is visible even
+                    if the main photo is hidden by the business account&#39;s
+                    privacy settings<br/>After the main photo is removed, the
+                    previous profile photo (if present) becomes the main photo.
+              required:
+                - business_connection_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /removeChatVerification:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: remove_chat_verification
       description: >-
         Removes verification from a chat that is currently verified on behalf of
@@ -3532,7 +4057,7 @@ paths:
   /removeUserVerification:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: remove_user_verification
       description: >-
         Removes verification from a user who is currently verified on behalf of
@@ -4612,7 +5137,7 @@ paths:
   /sendGift:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: send_gift
       description: >-
         Sends a gift to the given user or channel chat<br/>The gift can&#39;t be
@@ -5214,7 +5739,7 @@ paths:
                   type: number
                   description: >-
                     The number of Telegram Stars that must be paid to buy access
-                    to the media; 1-2500
+                    to the media; 1-10000
                 media:
                   type: array
                   items:
@@ -6200,6 +6725,209 @@ paths:
               schema:
                 $ref: '#/components/schemas/Message'
               example: Message
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /setBusinessAccountBio:
+    post:
+      tags:
+        - updating-messages
+      summary: set_business_account_bio
+      description: >-
+        Changes the bio of a managed business account<br/>Requires the
+        can_change_bio business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#setbusinessaccountbio
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                bio:
+                  type: string
+                  description: >-
+                    The new value of the bio for the business account; 0-140
+                    characters
+              required:
+                - business_connection_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /setBusinessAccountGiftSettings:
+    post:
+      tags:
+        - updating-messages
+      summary: set_business_account_gift_settings
+      description: >-
+        Changes the privacy settings pertaining to incoming gifts in a managed
+        business account<br/>Requires the can_change_gift_settings business bot
+        right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#setbusinessaccountgiftsettings
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                show_gift_button:
+                  type: boolean
+                  description: >-
+                    Pass True, if a button for sending a gift to the user or by
+                    the business account must always be shown in the input field
+                accepted_gift_types:
+                  $ref: '#/components/schemas/AcceptedGiftTypes'
+                  description: Types of gifts accepted by the business account
+              required:
+                - business_connection_id
+                - show_gift_button
+                - accepted_gift_types
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /setBusinessAccountName:
+    post:
+      tags:
+        - updating-messages
+      summary: set_business_account_name
+      description: >-
+        Changes the first and last name of a managed business
+        account<br/>Requires the can_change_name business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#setbusinessaccountname
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                first_name:
+                  type: string
+                  description: >-
+                    The new value of the first name for the business account;
+                    1-64 characters
+                last_name:
+                  type: string
+                  description: >-
+                    The new value of the last name for the business account;
+                    0-64 characters
+              required:
+                - business_connection_id
+                - first_name
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /setBusinessAccountProfilePhoto:
+    post:
+      tags:
+        - updating-messages
+      summary: set_business_account_profile_photo
+      description: >-
+        Changes the profile photo of a managed business account<br/>Requires the
+        can_edit_profile_photo business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#setbusinessaccountprofilephoto
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                photo:
+                  $ref: '#/components/schemas/InputProfilePhoto'
+                  description: The new profile photo to set
+                is_public:
+                  type: boolean
+                  description: >-
+                    Pass True to set the public photo, which will be visible
+                    even if the main photo is hidden by the business
+                    account&#39;s privacy settings<br/>An account can have only
+                    one public photo.
+              required:
+                - business_connection_id
+                - photo
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /setBusinessAccountUsername:
+    post:
+      tags:
+        - updating-messages
+      summary: set_business_account_username
+      description: >-
+        Changes the username of a managed business account<br/>Requires the
+        can_change_username business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#setbusinessaccountusername
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                username:
+                  type: string
+                  description: >-
+                    The new value of the username for the business account; 0-32
+                    characters
+              required:
+                - business_connection_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /setChatAdministratorCustomTitle:
@@ -7399,6 +8127,93 @@ paths:
               example: Poll
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /transferBusinessAccountStars:
+    post:
+      tags:
+        - updating-messages
+      summary: transfer_business_account_stars
+      description: >-
+        Transfers Telegram Stars from the business account balance to the
+        bot&#39;s balance<br/>Requires the can_transfer_stars business bot right
+      externalDocs:
+        url: https://core.telegram.org/bots/api#transferbusinessaccountstars
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                star_count:
+                  type: number
+                  description: Number of Telegram Stars to transfer; 1-10000
+              required:
+                - business_connection_id
+                - star_count
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /transferGift:
+    post:
+      tags:
+        - updating-messages
+      summary: transfer_gift
+      description: >-
+        Transfers an owned unique gift to another user<br/>Requires the
+        can_transfer_and_upgrade_gifts business bot right<br/>Requires
+        can_transfer_stars business bot right if the transfer is paid
+      externalDocs:
+        url: https://core.telegram.org/bots/api#transfergift
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                owned_gift_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the regular gift that should be
+                    transferred
+                new_owner_chat_id:
+                  type: number
+                  description: >-
+                    Unique identifier of the chat which will own the
+                    gift<br/>The chat must be active in the last 24 hours.
+                star_count:
+                  type: number
+                  description: >-
+                    The amount of Telegram Stars that will be paid for the
+                    transfer from the business account balance<br/>If positive,
+                    then the can_transfer_stars business bot right is required.
+              required:
+                - business_connection_id
+                - owned_gift_id
+                - new_owner_chat_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /unbanChatMember:
     post:
       tags:
@@ -7697,6 +8512,59 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /upgradeGift:
+    post:
+      tags:
+        - updating-messages
+      summary: upgrade_gift
+      description: >-
+        Upgrades a given regular gift to a unique gift<br/>Requires the
+        can_transfer_and_upgrade_gifts business bot right<br/>Additionally
+        requires the can_transfer_stars business bot right if the upgrade is
+        paid
+      externalDocs:
+        url: https://core.telegram.org/bots/api#upgradegift
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                owned_gift_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the regular gift that should be
+                    upgraded to a unique one
+                keep_original_details:
+                  type: boolean
+                  description: >-
+                    Pass True to keep the original gift text, sender and
+                    receiver in the upgraded gift
+                star_count:
+                  type: number
+                  description: >-
+                    The amount of Telegram Stars that will be paid for the
+                    upgrade from the business account balance<br/>If
+                    gift.prepaid_upgrade_star_count &gt; 0, then pass 0,
+                    otherwise, the can_transfer_stars business bot right is
+                    required and gift.upgrade_star_count must be passed.
+              required:
+                - business_connection_id
+                - owned_gift_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /uploadStickerFile:
     post:
       tags:
@@ -7751,7 +8619,7 @@ paths:
   /verifyChat:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: verify_chat
       description: >-
         Verifies a chat on behalf of the organization which is represented by
@@ -7793,7 +8661,7 @@ paths:
   /verifyUser:
     post:
       tags:
-        - stickers
+        - updating-messages
       summary: verify_user
       description: >-
         Verifies a user on behalf of the organization which is represented by
@@ -7844,6 +8712,28 @@ components:
             required:
               - error_code
   schemas:
+    AcceptedGiftTypes:
+      type: object
+      properties:
+        unlimited_gifts:
+          type: boolean
+          description: True, if unlimited regular gifts are accepted
+        limited_gifts:
+          type: boolean
+          description: True, if limited regular gifts are accepted
+        unique_gifts:
+          type: boolean
+          description: >-
+            True, if unique gifts or gifts that can be upgraded to unique for
+            free are accepted
+        premium_subscription:
+          type: boolean
+          description: True, if a Telegram Premium subscription is accepted
+      required:
+        - unlimited_gifts
+        - limited_gifts
+        - unique_gifts
+        - premium_subscription
     AffiliateInfo:
       type: object
       properties:
@@ -8281,6 +9171,68 @@ components:
           description: The bot&#39;s short description
       required:
         - short_description
+    BusinessBotRights:
+      type: object
+      properties:
+        can_reply:
+          type: boolean
+          description: >-
+            True, if the bot can send and edit messages in the private chats
+            that had incoming messages in the last 24 hours
+        can_read_messages:
+          type: boolean
+          description: True, if the bot can mark incoming private messages as read
+        can_delete_outgoing_messages:
+          type: boolean
+          description: True, if the bot can delete messages sent by the bot
+        can_delete_all_messages:
+          type: boolean
+          description: True, if the bot can delete all private messages in managed chats
+        can_edit_name:
+          type: boolean
+          description: >-
+            True, if the bot can edit the first and last name of the business
+            account
+        can_edit_bio:
+          type: boolean
+          description: True, if the bot can edit the bio of the business account
+        can_edit_profile_photo:
+          type: boolean
+          description: True, if the bot can edit the profile photo of the business account
+        can_edit_username:
+          type: boolean
+          description: True, if the bot can edit the username of the business account
+        can_change_gift_settings:
+          type: boolean
+          description: >-
+            True, if the bot can change the privacy settings pertaining to gifts
+            for the business account
+        can_view_gifts_and_stars:
+          type: boolean
+          description: >-
+            True, if the bot can view gifts and the amount of Telegram Stars
+            owned by the business account
+        can_convert_gifts_to_stars:
+          type: boolean
+          description: >-
+            True, if the bot can convert regular gifts owned by the business
+            account to Telegram Stars
+        can_transfer_and_upgrade_gifts:
+          type: boolean
+          description: >-
+            True, if the bot can transfer and upgrade gifts owned by the
+            business account
+        can_transfer_stars:
+          type: boolean
+          description: >-
+            True, if the bot can transfer Telegram Stars received by the
+            business account to its own account, or use them to upgrade and
+            transfer gifts
+        can_manage_stories:
+          type: boolean
+          description: >-
+            True, if the bot can post, edit and delete stories on behalf of the
+            business account
     BusinessConnection:
       type: object
       properties:
@@ -8302,20 +9254,17 @@ components:
         date:
           type: number
           description: Date the connection was established in Unix time
-        can_reply:
-          type: boolean
-          description: >-
-            True, if the bot can act on behalf of the business account in chats
-            that were active in the last 24 hours
         is_enabled:
           type: boolean
           description: True, if the connection is active
+        rights:
+          $ref: '#/components/schemas/BusinessBotRights'
+          description: Rights of the business bot
       required:
         - id
         - user
         - user_chat_id
         - date
-        - can_reply
         - is_enabled
     BusinessIntro:
       type: object
@@ -8727,6 +9676,11 @@ components:
           description: >-
             The maximum number of reactions that can be set on a message in the
             chat
+        accepted_gift_types:
+          $ref: '#/components/schemas/AcceptedGiftTypes'
+          description: >-
+            Information about types of gifts that are accepted by the chat or by
+            the corresponding user for private chats
         title:
           type: string
           description: Title, for supergroups, channels and group chats
@@ -8839,9 +9793,6 @@ components:
         permissions:
           $ref: '#/components/schemas/ChatPermissions'
           description: Default chat member permissions, for groups and supergroups
-        can_send_gift:
-          type: boolean
-          description: True, if gifts can be sent to the chat
         can_send_paid_media:
           type: boolean
           description: >-
@@ -8913,6 +9864,7 @@ components:
         - type
         - accent_color_id
         - max_reaction_count
+        - accepted_gift_types
     ChatInviteLink:
       type: object
       properties:
@@ -9938,6 +10890,46 @@ components:
         - id
         - sticker
         - star_count
+    GiftInfo:
+      type: object
+      properties:
+        gift:
+          $ref: '#/components/schemas/Gift'
+          description: Information about the gift
+        owned_gift_id:
+          type: string
+          description: >-
+            Unique identifier of the received gift for the bot; only present for
+            gifts received on behalf of business accounts
+        convert_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that can be claimed by the receiver by
+            converting the gift; omitted if conversion to Telegram Stars is
+            impossible
+        prepaid_upgrade_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that were prepaid by the sender for the
+            ability to upgrade the gift
+        can_be_upgraded:
+          type: boolean
+          description: True, if the gift can be upgraded to a unique gift
+        text:
+          type: string
+          description: Text of the message that was added to the gift
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: Special entities that appear in the text
+        is_private:
+          type: boolean
+          description: >-
+            True, if the sender and gift text are shown only to the gift
+            receiver; otherwise, everyone will be able to see them
+      required:
+        - gift
     Gifts:
       type: object
       properties:
@@ -11965,22 +12957,66 @@ components:
             option text<br/>It can be specified instead of text_parse_mode
       required:
         - text
+    InputProfilePhoto:
+      oneOf:
+        - $ref: '#/components/schemas/InputProfilePhotoStatic'
+        - $ref: '#/components/schemas/InputProfilePhotoAnimated'
+    InputProfilePhotoAnimated:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - animated
+          description: Type of the profile photo, must be “animated”
+        animation:
+          type: string
+          description: >-
+            The animated profile photo<br/>Profile photos can&#39;t be reused
+            and can only be uploaded as a new file, so you can pass
+            “attach://&lt;file_attach_name&gt;” if the photo was uploaded using
+            multipart/form-data under &lt;file_attach_name&gt;<br/>More
+            information on Sending Files »
+        main_frame_timestamp:
+          type: number
+          description: >-
+            Timestamp in seconds of the frame that will be used as the static
+            profile photo<br/>Defaults to 0.0.
+      required:
+        - type
+        - animation
+    InputProfilePhotoStatic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - static
+          description: Type of the profile photo, must be “static”
+        photo:
+          type: string
+          description: >-
+            The static profile photo<br/>Profile photos can&#39;t be reused and
+            can only be uploaded as a new file, so you can pass
+            “attach://&lt;file_attach_name&gt;” if the photo was uploaded using
+            multipart/form-data under &lt;file_attach_name&gt;<br/>More
+            information on Sending Files »
+      required:
+        - type
+        - photo
     InputSticker:
       type: object
       properties:
         sticker:
-          oneOf:
-            - $ref: '#/components/schemas/InputFile'
-            - type: string
+          type: string
           description: >-
             The added sticker<br/>Pass a file_id as a String to send a file that
             already exists on the Telegram servers, pass an HTTP URL as a String
-            for Telegram to get a file from the Internet, upload a new one using
-            multipart/form-data, or pass “attach://&lt;file_attach_name&gt;” to
-            upload a new one using multipart/form-data under
-            &lt;file_attach_name&gt; name<br/>Animated and video stickers
-            can&#39;t be uploaded via HTTP URL<br/>More information on Sending
-            Files »
+            for Telegram to get a file from the Internet, or pass
+            “attach://&lt;file_attach_name&gt;” to upload a new file using
+            multipart/form-data under &lt;file_attach_name&gt; name<br/>Animated
+            and video stickers can&#39;t be uploaded via HTTP URL<br/>More
+            information on Sending Files »
         format:
           type: string
           enum:
@@ -12012,6 +13048,62 @@ components:
         - sticker
         - format
         - emoji_list
+    InputStoryContent:
+      oneOf:
+        - $ref: '#/components/schemas/InputStoryContentPhoto'
+        - $ref: '#/components/schemas/InputStoryContentVideo'
+    InputStoryContentPhoto:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - photo
+          description: Type of the content, must be “photo”
+        photo:
+          type: string
+          description: >-
+            The photo to post as a story<br/>The photo must be of the size
+            1080x1920 and must not exceed 10 MB<br/>The photo can&#39;t be
+            reused and can only be uploaded as a new file, so you can pass
+            “attach://&lt;file_attach_name&gt;” if the photo was uploaded using
+            multipart/form-data under &lt;file_attach_name&gt;<br/>More
+            information on Sending Files »
+      required:
+        - type
+        - photo
+    InputStoryContentVideo:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - video
+          description: Type of the content, must be “video”
+        video:
+          type: string
+          description: >-
+            The video to post as a story<br/>The video must be of the size
+            720x1280, streamable, encoded with H.265 codec, with key frames
+            added each second in the MPEG4 format, and must not exceed 30
+            MB<br/>The video can&#39;t be reused and can only be uploaded as a
+            new file, so you can pass “attach://&lt;file_attach_name&gt;” if the
+            video was uploaded using multipart/form-data under
+            &lt;file_attach_name&gt;<br/>More information on Sending Files »
+        duration:
+          type: number
+          description: Precise duration of the video in seconds; 0-60
+        cover_frame_timestamp:
+          type: number
+          description: >-
+            Timestamp in seconds of the frame that will be used as the static
+            cover for the story<br/>Defaults to 0.0.
+        is_animation:
+          type: boolean
+          description: Pass True if the video has no sound
+      required:
+        - type
+        - video
     InputTextMessageContent:
       type: object
       properties:
@@ -12330,6 +13422,25 @@ components:
       required:
         - latitude
         - longitude
+    LocationAddress:
+      type: object
+      properties:
+        country_code:
+          type: string
+          description: >-
+            The two-letter ISO 3166-1 alpha-2 country code of the country where
+            the location is located
+        state:
+          type: string
+          description: State of the location
+        city:
+          type: string
+          description: City of the location
+        street:
+          type: string
+          description: Street address of the location
+      required:
+        - country_code
     LoginUrl:
       type: object
       properties:
@@ -12557,6 +13668,11 @@ components:
           description: >-
             Signature of the post author for messages in channels, or the custom
             title of an anonymous group administrator
+        paid_star_count:
+          type: number
+          description: >-
+            The number of Telegram Stars that were paid by the sender of the
+            message to send it
         text:
           type: string
           description: For text messages, the actual UTF-8 text of the message
@@ -12739,6 +13855,12 @@ components:
         chat_shared:
           $ref: '#/components/schemas/ChatShared'
           description: 'Service message: a chat was shared with the bot'
+        gift:
+          $ref: '#/components/schemas/GiftInfo'
+          description: 'Service message: a regular gift was sent or received'
+        unique_gift:
+          $ref: '#/components/schemas/UniqueGiftInfo'
+          description: 'Service message: a unique gift was sent or received'
         connected_website:
           type: string
           description: >-
@@ -12795,6 +13917,9 @@ components:
         giveaway_completed:
           $ref: '#/components/schemas/GiveawayCompleted'
           description: 'Service message: a giveaway without public winners was completed'
+        paid_message_price_changed:
+          $ref: '#/components/schemas/PaidMessagePriceChanged'
+          description: 'Service message: the price for paid messages has changed in the chat'
         video_chat_scheduled:
           $ref: '#/components/schemas/VideoChatScheduled'
           description: 'Service message: video chat scheduled'
@@ -13068,6 +14193,133 @@ components:
         shipping_address:
           $ref: '#/components/schemas/ShippingAddress'
           description: User shipping address
+    OwnedGift:
+      oneOf:
+        - $ref: '#/components/schemas/OwnedGiftRegular'
+        - $ref: '#/components/schemas/OwnedGiftUnique'
+    OwnedGiftRegular:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - regular
+          description: Type of the gift, always “regular”
+        gift:
+          $ref: '#/components/schemas/Gift'
+          description: Information about the regular gift
+        send_date:
+          type: number
+          description: Date the gift was sent in Unix time
+        owned_gift_id:
+          type: string
+          description: >-
+            Unique identifier of the gift for the bot; for gifts received on
+            behalf of business accounts only
+        sender_user:
+          $ref: '#/components/schemas/User'
+          description: Sender of the gift if it is a known user
+        text:
+          type: string
+          description: Text of the message that was added to the gift
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: Special entities that appear in the text
+        is_private:
+          type: boolean
+          description: >-
+            True, if the sender and gift text are shown only to the gift
+            receiver; otherwise, everyone will be able to see them
+        is_saved:
+          type: boolean
+          description: >-
+            True, if the gift is displayed on the account&#39;s profile page;
+            for gifts received on behalf of business accounts only
+        can_be_upgraded:
+          type: boolean
+          description: >-
+            True, if the gift can be upgraded to a unique gift; for gifts
+            received on behalf of business accounts only
+        was_refunded:
+          type: boolean
+          description: True, if the gift was refunded and isn&#39;t available anymore
+        convert_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that can be claimed by the receiver instead
+            of the gift; omitted if the gift cannot be converted to Telegram
+            Stars
+        prepaid_upgrade_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that were paid by the sender for the
+            ability to upgrade the gift
+      required:
+        - type
+        - gift
+        - send_date
+    OwnedGifts:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: The total number of gifts owned by the user or the chat
+        gifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnedGift'
+          description: The list of gifts
+        next_offset:
+          type: string
+          description: >-
+            Offset for the next request<br/>If empty, then there are no more
+            results
+      required:
+        - total_count
+        - gifts
+    OwnedGiftUnique:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - unique
+          description: Type of the gift, always “unique”
+        gift:
+          $ref: '#/components/schemas/UniqueGift'
+          description: Information about the unique gift
+        send_date:
+          type: number
+          description: Date the gift was sent in Unix time
+        owned_gift_id:
+          type: string
+          description: >-
+            Unique identifier of the received gift for the bot; for gifts
+            received on behalf of business accounts only
+        sender_user:
+          $ref: '#/components/schemas/User'
+          description: Sender of the gift if it is a known user
+        is_saved:
+          type: boolean
+          description: >-
+            True, if the gift is displayed on the account&#39;s profile page;
+            for gifts received on behalf of business accounts only
+        can_be_transferred:
+          type: boolean
+          description: >-
+            True, if the gift can be transferred to another owner; for gifts
+            received on behalf of business accounts only
+        transfer_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that must be paid to transfer the gift;
+            omitted if the bot cannot transfer the gift
+      required:
+        - type
+        - gift
+        - send_date
     PaidMedia:
       oneOf:
         - $ref: '#/components/schemas/PaidMediaPreview'
@@ -13150,6 +14402,16 @@ components:
       required:
         - type
         - video
+    PaidMessagePriceChanged:
+      type: object
+      properties:
+        paid_message_star_count:
+          type: number
+          description: >-
+            The new number of Telegram Stars that must be paid by
+            non-administrator users of the supergroup chat for each sent message
+      required:
+        - paid_message_star_count
     PassportData:
       type: object
       properties:
@@ -14167,6 +15429,19 @@ components:
         - from
         - invoice_payload
         - shipping_address
+    StarAmount:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Integer amount of Telegram Stars, rounded to 0; can be negative
+        nanostar_amount:
+          type: number
+          description: >-
+            The number of 1/1000000000 shares of Telegram Stars; from -999999999
+            to 999999999; can be negative if and only if amount is non-positive
+      required:
+        - amount
     StarTransaction:
       type: object
       properties:
@@ -14329,6 +15604,154 @@ components:
       required:
         - chat
         - id
+    StoryArea:
+      type: object
+      properties:
+        position:
+          $ref: '#/components/schemas/StoryAreaPosition'
+          description: Position of the area
+        type:
+          $ref: '#/components/schemas/StoryAreaType'
+          description: Type of the area
+      required:
+        - position
+        - type
+    StoryAreaPosition:
+      type: object
+      properties:
+        x_percentage:
+          type: number
+          description: >-
+            The abscissa of the area&#39;s center, as a percentage of the media
+            width
+        y_percentage:
+          type: number
+          description: >-
+            The ordinate of the area&#39;s center, as a percentage of the media
+            height
+        width_percentage:
+          type: number
+          description: >-
+            The width of the area&#39;s rectangle, as a percentage of the media
+            width
+        height_percentage:
+          type: number
+          description: >-
+            The height of the area&#39;s rectangle, as a percentage of the media
+            height
+        rotation_angle:
+          type: number
+          description: The clockwise rotation angle of the rectangle, in degrees; 0-360
+        corner_radius_percentage:
+          type: number
+          description: >-
+            The radius of the rectangle corner rounding, as a percentage of the
+            media width
+      required:
+        - x_percentage
+        - y_percentage
+        - width_percentage
+        - height_percentage
+        - rotation_angle
+        - corner_radius_percentage
+    StoryAreaType:
+      oneOf:
+        - $ref: '#/components/schemas/StoryAreaTypeLocation'
+        - $ref: '#/components/schemas/StoryAreaTypeSuggestedReaction'
+        - $ref: '#/components/schemas/StoryAreaTypeLink'
+        - $ref: '#/components/schemas/StoryAreaTypeWeather'
+        - $ref: '#/components/schemas/StoryAreaTypeUniqueGift'
+    StoryAreaTypeLink:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - link
+          description: Type of the area, always “link”
+        url:
+          type: string
+          description: HTTP or tg:// URL to be opened when the area is clicked
+      required:
+        - type
+        - url
+    StoryAreaTypeLocation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - location
+          description: Type of the area, always “location”
+        latitude:
+          type: number
+          description: Location latitude in degrees
+        longitude:
+          type: number
+          description: Location longitude in degrees
+        address:
+          $ref: '#/components/schemas/LocationAddress'
+          description: Address of the location
+      required:
+        - type
+        - latitude
+        - longitude
+    StoryAreaTypeSuggestedReaction:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - suggested_reaction
+          description: Type of the area, always “suggested_reaction”
+        reaction_type:
+          $ref: '#/components/schemas/ReactionType'
+          description: Type of the reaction
+        is_dark:
+          type: boolean
+          description: Pass True if the reaction area has a dark background
+        is_flipped:
+          type: boolean
+          description: Pass True if reaction area corner is flipped
+      required:
+        - type
+        - reaction_type
+    StoryAreaTypeUniqueGift:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - unique_gift
+          description: Type of the area, always “unique_gift”
+        name:
+          type: string
+          description: Unique name of the gift
+      required:
+        - type
+        - name
+    StoryAreaTypeWeather:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - weather
+          description: Type of the area, always “weather”
+        temperature:
+          type: number
+          description: Temperature, in degree Celsius
+        emoji:
+          type: string
+          description: Emoji representing the weather
+        background_color:
+          type: number
+          description: A color of the area background in the ARGB format
+      required:
+        - type
+        - temperature
+        - emoji
+        - background_color
     SuccessfulPayment:
       type: object
       properties:
@@ -14530,6 +15953,21 @@ components:
           enum:
             - user
           description: Type of the transaction partner, always “user”
+        transaction_type:
+          type: string
+          enum:
+            - invoice_payment
+            - paid_media_payment
+            - gift_purchase
+            - premium_purchase
+            - business_account_transfer
+          description: >-
+            Type of the transaction, currently one of “invoice_payment” for
+            payments via invoices, “paid_media_payment” for payments for paid
+            media, “gift_purchase” for gifts sent by the bot, “premium_purchase”
+            for Telegram Premium subscriptions gifted by the bot,
+            “business_account_transfer” for direct transfers from managed
+            business accounts
         user:
           $ref: '#/components/schemas/User'
           description: Information about the user
@@ -14537,27 +15975,174 @@ components:
           $ref: '#/components/schemas/AffiliateInfo'
           description: >-
             Information about the affiliate that received a commission via this
-            transaction
+            transaction<br/>Can be available only for “invoice_payment” and
+            “paid_media_payment” transactions.
         invoice_payload:
           type: string
-          description: Bot-specified invoice payload
+          description: >-
+            Bot-specified invoice payload<br/>Can be available only for
+            “invoice_payment” transactions.
         subscription_period:
           type: number
-          description: The duration of the paid subscription
+          description: >-
+            The duration of the paid subscription<br/>Can be available only for
+            “invoice_payment” transactions.
         paid_media:
           type: array
           items:
             $ref: '#/components/schemas/PaidMedia'
-          description: Information about the paid media bought by the user
+          description: >-
+            Information about the paid media bought by the user; for
+            “paid_media_payment” transactions only
         paid_media_payload:
           type: string
-          description: Bot-specified paid media payload
+          description: >-
+            Bot-specified paid media payload<br/>Can be available only for
+            “paid_media_payment” transactions.
         gift:
           $ref: '#/components/schemas/Gift'
-          description: The gift sent to the user by the bot
+          description: >-
+            The gift sent to the user by the bot; for “gift_purchase”
+            transactions only
+        premium_subscription_duration:
+          type: number
+          description: >-
+            Number of months the gifted Telegram Premium subscription will be
+            active for; for “premium_purchase” transactions only
       required:
         - type
+        - transaction_type
         - user
+    UniqueGift:
+      type: object
+      properties:
+        base_name:
+          type: string
+          description: >-
+            Human-readable name of the regular gift from which this unique gift
+            was upgraded
+        name:
+          type: string
+          description: >-
+            Unique name of the gift<br/>This name can be used in
+            https://t.me/nft/... links and story areas
+        number:
+          type: number
+          description: >-
+            Unique number of the upgraded gift among gifts upgraded from the
+            same regular gift
+        model:
+          $ref: '#/components/schemas/UniqueGiftModel'
+          description: Model of the gift
+        symbol:
+          $ref: '#/components/schemas/UniqueGiftSymbol'
+          description: Symbol of the gift
+        backdrop:
+          $ref: '#/components/schemas/UniqueGiftBackdrop'
+          description: Backdrop of the gift
+      required:
+        - base_name
+        - name
+        - number
+        - model
+        - symbol
+        - backdrop
+    UniqueGiftBackdrop:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the backdrop
+        colors:
+          $ref: '#/components/schemas/UniqueGiftBackdropColors'
+          description: Colors of the backdrop
+        rarity_per_mille:
+          type: number
+          description: >-
+            The number of unique gifts that receive this backdrop for every 1000
+            gifts upgraded
+      required:
+        - name
+        - colors
+        - rarity_per_mille
+    UniqueGiftBackdropColors:
+      type: object
+      properties:
+        center_color:
+          type: number
+          description: The color in the center of the backdrop in RGB format
+        edge_color:
+          type: number
+          description: The color on the edges of the backdrop in RGB format
+        symbol_color:
+          type: number
+          description: The color to be applied to the symbol in RGB format
+        text_color:
+          type: number
+          description: The color for the text on the backdrop in RGB format
+      required:
+        - center_color
+        - edge_color
+        - symbol_color
+        - text_color
+    UniqueGiftInfo:
+      type: object
+      properties:
+        gift:
+          $ref: '#/components/schemas/UniqueGift'
+          description: Information about the gift
+        origin:
+          type: string
+          description: Origin of the gift<br/>Currently, either “upgrade” or “transfer”
+        owned_gift_id:
+          type: string
+          description: >-
+            Unique identifier of the received gift for the bot; only present for
+            gifts received on behalf of business accounts
+        transfer_star_count:
+          type: number
+          description: >-
+            Number of Telegram Stars that must be paid to transfer the gift;
+            omitted if the bot cannot transfer the gift
+      required:
+        - gift
+        - origin
+    UniqueGiftModel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the model
+        sticker:
+          $ref: '#/components/schemas/Sticker'
+          description: The sticker that represents the unique gift
+        rarity_per_mille:
+          type: number
+          description: >-
+            The number of unique gifts that receive this model for every 1000
+            gifts upgraded
+      required:
+        - name
+        - sticker
+        - rarity_per_mille
+    UniqueGiftSymbol:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the symbol
+        sticker:
+          $ref: '#/components/schemas/Sticker'
+          description: The sticker that represents the unique gift
+        rarity_per_mille:
+          type: number
+          description: >-
+            The number of unique gifts that receive this model for every 1000
+            gifts upgraded
+      required:
+        - name
+        - sticker
+        - rarity_per_mille
     Update:
       type: object
       properties:

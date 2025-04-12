@@ -1,20 +1,19 @@
 [![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)
-![Telegram Bot API](https://img.shields.io/badge/BotApi-8.3-blue?link=)
-![Telegram WebApp](https://img.shields.io/badge/Telegram.WebApp-8.0-blue?link=)
+![Telegram Bot API](https://img.shields.io/badge/BotApi-9.0-blue?link=)
+![Telegram WebApp](https://img.shields.io/badge/Telegram.WebApp-9.0-blue?link=)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue.svg)](https://effect-ak.github.io/telegram-bot-api/)
 ![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/%40effect-ak%2Ftg-bot-client?link=)
 ![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-client?link=)
 
 ## Motivation
+**Telegram** does not offer an official TypeScript **SDK** for their **API** but they provide documentation in HTML format.
 
-The official documentation is available as a comprehensive [HTML page](https://core.telegram.org/bots/api), providing basic navigation. While functional, relying solely on this format can be somewhat inconvenient during bot **development**.
-
-This client facilitates interaction with the **Telegram Bot API**. It was created primarily because **Telegram** does not offer an official TypeScript **SDK** for their **API**.
+This package aims to parse official documentation of [Bot Api](https://core.telegram.org/bots/api) and [Telegram.Webapp](https://core.telegram.org/bots/api)  and generate **TypeScript types**!
 
 ## Highlights:
 - **[Client](#client)**: Light TypeScript client
 - **Complete and Up-to-Date Telegram Bot API**: The entire API is generated from [the official documentation](https://core.telegram.org/bots/api) using a [code generator](./codegen/main.ts), ensuring this client remains in sync and supports every method and type provided by the **Telegram Bot API**.
-- **[Types for Webapps](#webapps-typings)** Types that describe `Telegram.WebApp`
+- **[Types for Webapps](#webapps-typings)** Types that describe `Telegram.WebApp`. Created by [code generator](./codegen/main.ts) as well.
 - **[ChatBot runner](#chatbot-runner)**: Focus on the logic of your chat bot
 - **Type Mapping**: Types from the documentation are converted to TypeScript types:
   - `Integer` → `number`
@@ -205,7 +204,7 @@ graph TD
 
 Telegram provides a big [html](https://core.telegram.org/bots/webapps) page that describes `Telegram.WebApp`
 
-`@effect-ak/tg-bot-client` levereges scrapper's functionality to generate TypeScript types.
+`@effect-ak/tg-bot-client` leverages scrapper's functionality to generate TypeScript types.
 
 ```typescript
 import { TgWebApp } from "@effect-ak/tg-bot-client";
