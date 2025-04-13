@@ -122,7 +122,7 @@ Take a look at examples [here](example)
 
    ```json
    {
-     "bot-token": "your-token"
+     "bot_token": "your-token"
    }
    ```
 
