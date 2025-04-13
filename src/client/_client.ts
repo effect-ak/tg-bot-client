@@ -1,8 +1,8 @@
-import * as Micro from "effect/Micro";
+import { Micro } from "effect";
 
 import { makeTgBotClientConfig, TgBotClientConfig } from "./config.js";
 import { ClientFileService, ClientFileServiceInterface, ClientFileServiceDefault } from "./file/_service.js";
-import { Api } from "#/specification/api.js";
+import type { Api } from "#/client/specification/api.js";
 import type { TgBotClientSettingsInput } from "./guards.js";
 import { execute } from "./execute-request/execute.js";
 

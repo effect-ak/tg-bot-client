@@ -1,8 +1,6 @@
-import * as Data from "effect/Data";
-import * as Context from "effect/Context";
-
-import type { Api } from "#/specification/api.js";
-import type { Update } from "#/specification/types.js";
+import { Data, Context } from "effect";
+import type { Api } from "#/client/specification/api.js";
+import type { Update } from "#/client/specification/types.js";
 
 export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>
 

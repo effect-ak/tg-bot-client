@@ -1,5 +1,4 @@
-import * as Context from "effect/Context";
-import * as Data from "effect/Data";
+import { Context, Data } from "effect";
 
 export type PollSettings = {
   log_level: "info" | "debug"

@@ -1,8 +1,8 @@
-import * as Micro from "effect/Micro";
+import { Micro } from "effect";
 
-import { TgBotClientError } from "../errors.js";
-import { TgBotClientConfig } from "../config.js";
-import { execute } from "../execute-request/execute.js";
+import { TgBotClientError } from "../errors";
+import { TgBotClientConfig } from "../config";
+import { execute } from "../execute-request/execute";
 
 export const getFile = (
   fileId: string,

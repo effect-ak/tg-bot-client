@@ -1,7 +1,7 @@
-import { TgWebApp } from "#/index";
+import type { WebApp } from "#dist/webapp";
 
 interface Telegram {
-  WebApp: TgWebApp
+  WebApp: WebApp
 }
 
 declare const Telegram: Telegram;

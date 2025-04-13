@@ -5,7 +5,7 @@ import { TsMorpthWriter } from "./service/ts-morph-writer/_service";
 
 const configProvider =
   ConfigProvider.fromJson({
-    "scrapper-out-dir": [ __dirname, "..", "src", "specification" ],
+    "scrapper-out-dir": [ __dirname, "..", "src" ],
     "openapi-out-dir": [ __dirname, "..", "openapi" ],
   });
 

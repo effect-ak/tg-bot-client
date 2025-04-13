@@ -10,9 +10,9 @@ export class BotApiCodeWriterService
 
         const { createTsFile } = yield* TsMorpthWriter;
 
-        const typeSrcFile = yield* createTsFile("types");
+        const typeSrcFile = yield* createTsFile("types", "client", "specification");
 
-        const apiSrcFile = yield* createTsFile("api");
+        const apiSrcFile = yield* createTsFile("api", "client", "specification");
 
         return {
           writeTypes: writeTypes(typeSrcFile),

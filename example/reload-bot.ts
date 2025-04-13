@@ -1,4 +1,4 @@
-import { BotResponse, runTgChatBot } from "#/index.js";
+import { BotResponse, runTgChatBot } from "#dist/bot";
 
 main();
 

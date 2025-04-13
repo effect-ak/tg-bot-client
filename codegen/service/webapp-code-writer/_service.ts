@@ -10,7 +10,7 @@ export class WebAppCodeWriterService
       Effect.gen(function* () {
 
         const { createTsFile } = yield* TsMorpthWriter;
-        const srcFile = yield* createTsFile("webapp");
+        const srcFile = yield* createTsFile("webapp", "webapp", "specification");
 
         return {
           writeWebApp: writeWebApp(srcFile)
@@ -24,13 +24,16 @@ const writeWebApp =
 
       const eventHandlerNamespaceAlias = "T";
 
+      src.addStatements("// GENERATED CODE ");
+
       src.addImportDeclaration({
-        moduleSpecifier: "./event-handlers.js",
-        namespaceImport: eventHandlerNamespaceAlias
+        moduleSpecifier: "../event-handlers",
+        namespaceImport: eventHandlerNamespaceAlias,
+        isTypeOnly: true
       });
 
       src.addInterface({
-        name: "TgWebApp",
+        name: "WebApp",
         isExported: true,
         properties:
           extractedWebApp.fields.map(field => ({

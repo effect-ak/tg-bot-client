@@ -7,6 +7,9 @@ import type { ExtractedMethodShape } from "#scrape/extracted-method/_model.js";
 export const writeMethods =
   (src: TsSourceFile) =>
     (methods: ExtractedMethodShape[]) => {
+
+      src.addStatements("// GENERATED CODE ");
+
       const makeMethodInterfaceInputName =
         (_: string) => `${String.snakeToPascal(_)}Input`;
 

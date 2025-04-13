@@ -1,6 +1,4 @@
-import * as Micro from "effect/Micro";
-import * as Context from "effect/Context";
-
+import { Micro, Context } from "effect";
 import { TgBotClientConfig } from "#/client/config.js";
 import { BotMode, BotUpdateHandlersTag } from "#/bot/internal/types.js";
 import { BotRunService } from "#/bot/service/run.js";

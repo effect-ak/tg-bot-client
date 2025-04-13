@@ -5,6 +5,9 @@ import type { ExtractedTypeShape } from "#scrape/extracted-type/_model.js";
 export const writeTypes =
   (src: TsSourceFile) =>
     (types: ExtractedTypeShape[]) => {
+
+      src.addStatements("// GENERATED CODE ");
+      
       for (const type of types) {
 
         if (type.type._tag == "EntityFields") {

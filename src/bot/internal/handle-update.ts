@@ -1,10 +1,8 @@
-import * as Micro from "effect/Micro";
-import * as Data from "effect/Data";
-
+import { Micro, Data } from "effect";
 import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "#/bot/internal/types.js";
 import { extractUpdate } from "#/bot/internal/utils.js";
 import { execute } from "#/client/execute-request/execute.js";
-import { Update } from "#/specification/types.js";
+import { Update } from "#/client/specification/types.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
 import { BotPollSettingsTag, PollSettings } from "./poll-settings.js";
 
@@ -25,15 +23,14 @@ export const handleUpdates = (
     if (updateHandler.type == "single") {
       return yield* handleOneByOne(updates, updateHandler, pollSettings);
     } else {
-      return yield* handleEntireBatch(updates, updateHandler, pollSettings)
+      return yield* handleEntireBatch(updates, updateHandler)
     }
 
   });
 
-const handleEntireBatch = (
+export const handleEntireBatch = (
   updates: Update[],
   handlers: HandleBatchUpdateFunction,
-  pollSettings: PollSettings
 ) =>
   Micro.try({
     try: () => handlers.on_batch(updates),

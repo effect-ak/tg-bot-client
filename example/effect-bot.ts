@@ -1,6 +1,5 @@
 import { Effect, Micro, pipe } from "effect";
-
-import { BotResponse, launchBot } from "#/index";
+import { BotResponse, launchBot } from "#dist/bot";
 
 Effect.gen(function* () {
 

@@ -1,4 +1,4 @@
-import type { Update } from "#/specification/types.js";
+import type { Update } from "#/client/specification/types.js";
 import { AvailableUpdateTypes } from "./types.js";
 
 export type ExtractedUpdate<K extends AvailableUpdateTypes> = { type: K } & Update[K]

@@ -1,4 +1,5 @@
-import { BotUpdatesHandlers, BotResponse, MESSAGE_EFFECTS, runTgChatBot } from "#/index";
+import { BotUpdatesHandlers, BotResponse, runTgChatBot } from "#dist/bot";
+import { MESSAGE_EFFECTS } from "#dist/index";
 import { Effect, pipe } from "effect";
 
 const ECHO_BOT: BotUpdatesHandlers = {

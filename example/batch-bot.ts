@@ -1,4 +1,5 @@
-import { makeTgBotClient, runTgChatBot } from "#/index"
+import { makeTgBotClient } from "#dist/index"
+import { runTgChatBot } from "#dist/bot"
 import config from "../config.json"
 
 const tgClient = 

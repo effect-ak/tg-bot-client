@@ -1,4 +1,4 @@
-import { TaggedError } from "effect/Data";
+import { Data } from "effect";
 
 type ErrorReason = Readonly<{
   type: "NotOkResponse"
@@ -19,7 +19,7 @@ type ErrorReason = Readonly<{
 }>
 
 export class TgBotClientError
-  extends TaggedError("TgBotClientError")<{
+  extends Data.TaggedError("TgBotClientError")<{
     reason: ErrorReason
   }> {
 

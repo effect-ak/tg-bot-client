@@ -56,6 +56,8 @@ await client.execute("send_message", {
 #### 2. Sending a Dice
 
 ```typescript
+import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
+
 await client.execute("send_dice", {
   chat_id: "???", // replace ??? with the chat number
   emoji: "🎲"
@@ -65,6 +67,8 @@ await client.execute("send_dice", {
 #### 3. Sending a Document
 
 ```typescript
+import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
+
 await client.execute("send_document", {
   chat_id: "???", // replace ??? with the chat number
   message_effect_id: MESSAGE_EFFECTS["🎉"],
@@ -129,7 +133,8 @@ Take a look at examples [here](example)
    Create a file named `bot.js` and add your bot's logic as shown below:
 
    ```typescript
-   import { MESSAGE_EFFECTS, runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot-client"
+   import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
+   import { runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot-client/bot"
 
    const BOT = defineBot({
       on_message: (msg) => {
@@ -207,7 +212,7 @@ Telegram provides a big [html](https://core.telegram.org/bots/webapps) page that
 `@effect-ak/tg-bot-client` leverages scrapper's functionality to generate TypeScript types.
 
 ```typescript
-import { TgWebApp } from "@effect-ak/tg-bot-client";
+import type { WebApp } from "@effect-ak/tg-bot-client/webapp";
 
 interface Telegram {
   WebApp: TgWebApp

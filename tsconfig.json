@@ -17,6 +17,7 @@
     "noErrorTruncation": true,
     "paths": {
       "#/*": ["./src/*"],
+      "#dist/*": ["./dist/*"],
       "#test/*": ["./test/*"],
       "#codegen/*": ["./codegen/*"],
       "#codegen-service/*": ["./codegen/service/*"],

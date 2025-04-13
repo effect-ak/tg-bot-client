@@ -1,7 +1,6 @@
-import * as Micro from "effect/Micro";
-import * as String from "effect/String";
+import { Micro, String } from "effect";
 
-import type { Api } from "#/specification/api.js";
+import type { Api } from "#/client/specification/api";
 
 import { TgBotClientError } from "../errors.js";
 import { TgBotClientConfig } from "../config.js";

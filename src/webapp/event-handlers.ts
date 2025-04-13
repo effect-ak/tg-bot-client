@@ -1,4 +1,4 @@
-import type { LocationData } from "./webapp"
+import type { LocationData } from "./specification/webapp"
 
 export type BindOrUnbindEventHandler =
   <K extends keyof EventHandlers>(

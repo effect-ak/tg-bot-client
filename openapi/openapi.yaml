@@ -12968,7 +12968,7 @@ components:
           type: string
           enum:
             - animated
-          description: Type of the profile photo, must be “animated”
+          description: Type of the profile photo, must be animated
         animation:
           type: string
           description: >-
@@ -12992,7 +12992,7 @@ components:
           type: string
           enum:
             - static
-          description: Type of the profile photo, must be “static”
+          description: Type of the profile photo, must be static
         photo:
           type: string
           description: >-
@@ -13059,7 +13059,7 @@ components:
           type: string
           enum:
             - photo
-          description: Type of the content, must be “photo”
+          description: Type of the content, must be photo
         photo:
           type: string
           description: >-
@@ -13079,7 +13079,7 @@ components:
           type: string
           enum:
             - video
-          description: Type of the content, must be “video”
+          description: Type of the content, must be video
         video:
           type: string
           description: >-

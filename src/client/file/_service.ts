@@ -1,7 +1,6 @@
-import * as Micro from "effect/Micro";
-import * as Context from "effect/Context";
+import { Micro, Context } from "effect";
 
-import { getFile } from "./get-file.js";
+import { getFile } from "./get-file";
 
 export type ClientFileServiceInterface =
   Context.Tag.Service<typeof ClientFileService>;

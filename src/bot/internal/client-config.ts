@@ -1,9 +1,4 @@
-/**
- * This module provides utility functions for input configuration
- */
-
-import * as Micro from "effect/Micro";
-
+import { Micro } from "effect";
 import { makeTgBotClientConfig } from "#/client/config.js";
 import { isTgBotClientSettingsInput } from "#/client/guards.js";
 import type { TgBotClientSettingsInput } from "#/client/guards.js";
