@@ -9,9 +9,6 @@
   "format": ["esm", "cjs"],
   "splitting": false,
   "sourcemap": false,
-  "noExternal": [
-    "effect"
-  ],
   "minify": true,
   "clean": true,
   "dts": true

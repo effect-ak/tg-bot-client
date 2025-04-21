@@ -59,6 +59,9 @@
     "typescript": "^5.8.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1",
-    "effect": "^3.14.7"
+    "effect": "3.12.0"
+  },
+  "peerDependencies": {
+    "effect": "^3.12.0"
   }
 }

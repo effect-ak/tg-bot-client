@@ -1,9 +1,9 @@
-import { Micro, Context } from "effect";
-import { TgBotClientConfig } from "#/client/config.js";
-import { BotMode, BotUpdateHandlersTag } from "#/bot/internal/types.js";
+import * as Micro from "effect/Micro";
 import { BotRunService } from "#/bot/service/run.js";
-import { BotPollSettings, BotPollSettingsTag } from "#/bot/internal/poll-settings.js";
-import { makeClientConfigFrom, RunBotInput } from "./client-config.js";
+import { BotMode, BotUpdateHandlersTag, RunBotInput } from "./types.js";
+import { BotPollSettings, BotPollSettingsTag } from "./poll-settings.js";
+import { TgBotApiToken } from "#/client/config.js";
+import { Context } from "effect";
 
 export type BotInstance = Micro.Micro.Success<ReturnType<typeof launchBot>>
 
@@ -12,23 +12,23 @@ export const launchBot = (
 ) =>
   Micro.gen(function* () {
 
-    const clientConfig =
-      Context.make(TgBotClientConfig, yield* makeClientConfigFrom(input));
-
     const service =
       yield* Micro.service(BotRunService);
 
+    const contextWithToken =
+      Context.make(TgBotApiToken, input.bot_token)
+
     yield* service.runBotInBackground.pipe(
-      Micro.provideContext(clientConfig),
       Micro.provideService(BotUpdateHandlersTag, input.mode),
       Micro.provideService(BotPollSettingsTag, BotPollSettings.make(input.poll ?? {})),
+      Micro.provideContext(contextWithToken)
     );
 
     const reload =
       (mode: BotMode) =>
         service.runBotInBackground.pipe(
           Micro.provideService(BotUpdateHandlersTag, mode),
-          Micro.provideContext(clientConfig),
+          Micro.provideContext(contextWithToken),
           Micro.runPromise
         );
 

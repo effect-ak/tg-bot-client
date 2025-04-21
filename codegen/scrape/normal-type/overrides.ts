@@ -8,6 +8,28 @@ const T = (T: string) => ({
 });
 
 export const typeOverrides: Record<string, Record<string, NormalTypeShape>> = {
+  setWebhook: {
+    allowed_updates: {
+      typeNames: [ "T.AllowedUpdateName[]"],
+      openApiType: {
+        type: "array",
+        items: {
+          type: "string"
+        }
+      }
+    }
+  },
+  getUpdates: {
+    allowed_updates: {
+      typeNames: [ "T.AllowedUpdateName[]"],
+      openApiType: {
+        type: "array",
+        items: {
+          type: "string"
+        }
+      }
+    }
+  },
   sendMediaGroup: {
     media: { 
       typeNames: [ "(T.InputMediaAudio | T.InputMediaDocument | T.InputMediaPhoto | T.InputMediaVideo)[]"],

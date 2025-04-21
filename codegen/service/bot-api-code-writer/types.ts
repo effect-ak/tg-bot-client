@@ -7,6 +7,12 @@ export const writeTypes =
     (types: ExtractedTypeShape[]) => {
 
       src.addStatements("// GENERATED CODE ");
+
+      src.addTypeAlias({
+        name: "AllowedUpdateName",
+        type: `Exclude<keyof Update, "update_id">`,
+        isExported: true
+      });
       
       for (const type of types) {
 

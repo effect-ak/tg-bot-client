@@ -8,7 +8,7 @@ const tgClient =
   });
 
 runTgChatBot({
-  type: "fromJsonFile",
+  bot_token: config.bot_token,
   poll: {
     log_level: "debug",
     batch_size: 100

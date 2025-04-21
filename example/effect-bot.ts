@@ -1,11 +1,12 @@
 import { Effect, Micro, pipe } from "effect";
 import { BotResponse, launchBot } from "#dist/bot";
+import config from "../config.json"
 
 Effect.gen(function* () {
 
   const bot = 
     yield* launchBot({
-        type: "fromJsonFile",
+        bot_token: config.bot_token,
         poll: {
           log_level: "debug",
           max_empty_responses: 3,

@@ -1,10 +1,29 @@
-import { Micro, Data } from "effect";
-import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "#/bot/internal/types.js";
-import { extractUpdate } from "#/bot/internal/utils.js";
+import * as Micro from "effect/Micro";
+import * as Data from "effect/Data";
 import { execute } from "#/client/execute-request/execute.js";
 import { Update } from "#/client/specification/types.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
+import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "./types.js";
+import type { AvailableUpdateTypes, ExtractedUpdate } from "./types.js";
 import { BotPollSettingsTag, PollSettings } from "./poll-settings.js";
+
+export const extractUpdate =
+  <U extends AvailableUpdateTypes>(input: Update) => {
+
+    for (const [field, value] of Object.entries(input) ) {
+      if (field == "update_id") {
+        continue;
+      }
+      return {
+        type: field,
+        ...value
+      } as ExtractedUpdate<U>
+    }
+
+    return;
+
+  }
+
 
 export class BatchUpdateResult
   extends Data.Class<{
@@ -105,9 +124,7 @@ export const handleOneByOne = (
       })
     })
   );
-/**
- * Processes a Telegram update using the appropriate handler.
- */
+
 export const handleOneUpdate = (
   updateObject: Update,
   handlers: BotUpdatesHandlers

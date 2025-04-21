@@ -1,26 +1,28 @@
-import { Micro, String } from "effect";
+import * as String from "effect/String";
+import * as Micro from "effect/Micro";
 
 import type { Api } from "#/client/specification/api";
 
 import { TgBotClientError } from "../errors.js";
-import { TgBotClientConfig } from "../config.js";
 import { makePayload } from "./payload.js";
 import { isTgBotApiResponse } from "../guards.js";
+import { TgBotApiBaseUrl, TgBotApiToken } from "../config.js";
 
 export const execute = <M extends keyof Api>(
   method: M,
   input: Parameters<Api[M]>[0]
-): Micro.Micro<ReturnType<Api[M]>, TgBotClientError, TgBotClientConfig> =>
+): Micro.Micro<ReturnType<Api[M]>, TgBotClientError, TgBotApiToken> =>
 
   Micro.gen(function* () {
 
-    const config = yield* Micro.service(TgBotClientConfig);
+    const botToken = yield* Micro.service(TgBotApiToken);
+    const baseUrl = yield* Micro.service(TgBotApiBaseUrl);
 
     const httpResponse =
       yield* Micro.tryPromise({
         try: () =>
           fetch(
-            `${config.base_url}/bot${config.bot_token}/${String.snakeToCamel(method)}`, {
+            `${baseUrl}/bot${botToken}/${String.snakeToCamel(method)}`, {
             body: makePayload(input) ?? null,
             method: "POST",
           }),

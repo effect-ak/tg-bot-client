@@ -1,8 +1,8 @@
 import type { OpenAPIV3_1 } from "openapi-types";
 
-import { defaultBaseUrl } from "#/const.js";
 import { ExtractedMethod } from "#scrape/extracted-method/_model.js";
 import { ExtractedType } from "#scrape/extracted-type/_model.js";
+import { TG_BOT_API_URL } from "#/const.js";
 import { responsesObject } from "./components.js";
 import { makePath } from "./paths.js";
 
@@ -45,7 +45,7 @@ export const makeOpenApiDocument =
     },
     servers: [
       {
-        url: `${defaultBaseUrl}/bot{bot-token}`,
+        url: `${TG_BOT_API_URL}/bot{bot-token}`,
         variables: {
           "bot-token": {
             default: "put-your-token",

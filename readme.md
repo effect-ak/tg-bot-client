@@ -116,21 +116,9 @@ Take a look at examples [here](example)
 
 ### Setup Instructions
 
-1. **Create a `config.json` File**
+1. **Create `bot.js` and Implement Your Bot's Logic**
 
-   In the root of your project, create a `config.json` file with the following content:
-
-   ```json
-   {
-     "bot_token": "your-token"
-   }
-   ```
-
-   Replace `"your-token"` with your actual Telegram bot token.
-
-2. **Create `bot.js` and Implement Your Bot's Logic**
-
-   Create a file named `bot.js` and add your bot's logic as shown below:
+   Create a file (for example `bot.js`) and add your bot's logic as shown below:
 
    ```typescript
    import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
@@ -157,7 +145,7 @@ Take a look at examples [here](example)
    })
 
    runTgChatBot({
-     type: "fromJsonFile",
+     bot_token: "your-token" // PUT YOUR TOKEN HERE
      mode: {
       type: "single",
       ...BOT
@@ -165,7 +153,7 @@ Take a look at examples [here](example)
    })
    ```
 
-3. **Run the Bot**
+2. **Run the Bot**
 
    To start your chatbot, execute the following command in your terminal:
 

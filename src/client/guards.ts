@@ -1,3 +1,5 @@
+import type { Update } from "./specification/types";
+
 export type FileContent = {
   file_content: Uint8Array
   file_name: string
@@ -21,12 +23,7 @@ export const isTgBotApiResponse =
     (typeof input == "object" && input != null) &&
     ("ok" in input && typeof input.ok == "boolean");
 
-export type TgBotClientSettingsInput = {
-  bot_token: string
-  base_url?: string
-}
-
-export const isTgBotClientSettingsInput = 
-  (input: unknown): input is TgBotClientSettingsInput =>
-    (typeof input == "object" && input != null) &&
-    ("bot_token" in input && typeof input.bot_token == "string");
+export const isTgBotApiUpdate =
+(input: unknown): input is Update =>
+  (typeof input == "object" && input != null) &&
+  ("update_id" in input && typeof input.update_id == "number");

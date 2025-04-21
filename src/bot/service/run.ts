@@ -1,4 +1,5 @@
-import { Micro, Context } from "effect";
+import * as Context from "effect/Context";
+import * as Micro from "effect/Micro";
 import type { TgBotClientError } from "#/client/errors.js";
 import { BatchUpdateResult, handleUpdates } from "#/bot/internal/handle-update.js";
 import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates.js";

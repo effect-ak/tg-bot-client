@@ -2,13 +2,13 @@ import { test } from "vitest";
 
 import { makeTgBotClient, TgBotClient } from "#/client/_client.js";
 import { Context } from "effect";
-import { makeTgBotClientConfig, TgBotClientConfig } from "#/client/config";
+import { TgBotApiToken } from "#/client";
 
 type Fixture = {
   readonly token: string
   readonly client: TgBotClient
   readonly chat_id: string
-  readonly context: Context.Context<TgBotClientConfig>
+  readonly context: Context.Context<TgBotApiToken>
 };
 
 export const fixture = test.extend<Fixture>(({
@@ -33,6 +33,6 @@ export const fixture = test.extend<Fixture>(({
     use(chatId)
   },
   context: async ({ token}, use) => {
-    use(Context.make(TgBotClientConfig, makeTgBotClientConfig({ bot_token: token })))
+    use(Context.make(TgBotApiToken, token))
   }
 }));

@@ -1,4 +1,6 @@
-import { Micro, Data, Context } from "effect";
+import * as Context from "effect/Context";
+import * as Data from "effect/Data";
+import * as Micro from "effect/Micro";
 import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
 import { execute } from "#/client/execute-request/execute";
 

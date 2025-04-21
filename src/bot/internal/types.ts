@@ -1,7 +1,16 @@
-import { Data, Context } from "effect";
+import * as Context from "effect/Context";
+import * as Data from "effect/Data";
 import type { Api } from "#/client/specification/api.js";
 import type { Update } from "#/client/specification/types.js";
+import { PollSettings } from "./poll-settings";
 
+export interface RunBotInput {
+  bot_token: string
+  mode: BotMode
+  poll?: Partial<PollSettings>
+}
+
+export type ExtractedUpdate<K extends AvailableUpdateTypes> = { type: K } & Update[K]
 export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>
 
 type BotResult = {

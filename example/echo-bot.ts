@@ -1,8 +1,9 @@
-import { BotUpdatesHandlers, BotResponse, runTgChatBot } from "#dist/bot";
+import { BotResponse, runTgChatBot, defineBot } from "#dist/bot";
 import { MESSAGE_EFFECTS } from "#dist/index";
 import { Effect, pipe } from "effect";
+import config from "../config.json"
 
-const ECHO_BOT: BotUpdatesHandlers = {
+const ECHO_BOT = defineBot({
   on_message: async (msg) => {
 
     if (msg.text?.includes("+")) {
@@ -69,10 +70,10 @@ const ECHO_BOT: BotUpdatesHandlers = {
     return BotResponse.ignore;
 
   }
-};
+});
 
 runTgChatBot({
-  type: "fromJsonFile",
+  bot_token: config.bot_token,
   poll: {
     log_level: "debug",
     batch_size: 20,

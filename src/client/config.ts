@@ -1,18 +1,11 @@
-import { Context } from "effect";
+import * as Context from "effect/Context";
 
-import { defaultBaseUrl } from "#/const.js";
-import { TgBotClientSettingsInput } from "./guards.js";
+import { TG_BOT_API_URL } from "#/const.js";
 
-export type TgBotClientConfigObject =
-  Required<TgBotClientSettingsInput>;
+export class TgBotApiBaseUrl
+  extends Context.Reference<TgBotApiBaseUrl>()(
+    "TgBotApiBaseUrl", { defaultValue: () => TG_BOT_API_URL}
+  ) { }
 
-export const makeTgBotClientConfig = (
-  input: TgBotClientSettingsInput
-) =>
-  TgBotClientConfig.of({
-    ...input,
-    base_url: input.base_url ?? defaultBaseUrl
-  });
-
-export class TgBotClientConfig
-  extends Context.Tag("TgBotClientConfig")<TgBotClientConfig, TgBotClientConfigObject>() { }
+export class TgBotApiToken
+  extends Context.Tag("TgBotApiToken")<TgBotApiToken, string>() { }

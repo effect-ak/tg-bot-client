@@ -1,17 +1,19 @@
-import { Micro } from "effect";
+import * as Micro from "effect/Micro";
 
 import { TgBotClientError } from "../errors";
-import { TgBotClientConfig } from "../config";
+import { TgBotApiBaseUrl, TgBotApiToken } from "../config";
 import { execute } from "../execute-request/execute";
 
 export const getFile = (
   fileId: string,
-): Micro.Micro<File, TgBotClientError, TgBotClientConfig> =>
+  type?: string
+): Micro.Micro<File, TgBotClientError, TgBotApiToken> =>
 
   Micro.gen(function* () {
 
     const response = yield* execute("get_file", { file_id: fileId });
-    const config = yield* Micro.service(TgBotClientConfig);
+    const baseUrl = yield* Micro.service(TgBotApiBaseUrl);
+    const botToken = yield* Micro.service(TgBotApiToken);
 
     const file_path = response.file_path;
 
@@ -28,7 +30,7 @@ export const getFile = (
 
     const file_name = file_path.replaceAll("/", "-");
 
-    const url = `${config.base_url}/file/bot${config.bot_token}/${file_path}`;
+    const url = `${baseUrl}/file/bot${botToken}/${file_path}`;
 
     const fileContent =
       yield* Micro.tryPromise({
@@ -39,7 +41,11 @@ export const getFile = (
           })
       });
 
-    const file = new File([new Uint8Array(fileContent)], file_name);
+    const file = new File([new Uint8Array(fileContent)], file_name, {
+      ...(type ? {
+        type
+      }: undefined)
+    });
 
     return file;
 

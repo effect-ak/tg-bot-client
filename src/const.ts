@@ -1,4 +1,4 @@
-export const defaultBaseUrl = "https://api.telegram.org";
+export const TG_BOT_API_URL = "https://api.telegram.org";
 
 export const MESSAGE_EFFECTS = {
   "🔥": "5104841245755180586",

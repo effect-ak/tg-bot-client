@@ -1,4 +1,4 @@
-import { Data } from "effect";
+import * as Data from "effect/Data";
 
 type ErrorReason = Readonly<{
   type: "NotOkResponse"

@@ -1,4 +1,5 @@
 import { BotResponse, runTgChatBot } from "#dist/bot";
+import config from "../config.json"
 
 main();
 
@@ -6,7 +7,7 @@ async function main() {
 
   const bot =
     await runTgChatBot({
-      type: "fromJsonFile",
+      bot_token: config.bot_token,
       mode: {
         type: "single",
         on_message: (msg) => {
