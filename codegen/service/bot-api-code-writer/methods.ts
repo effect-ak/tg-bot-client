@@ -34,7 +34,7 @@ export const writeMethods =
               }
             ]
           } as MethodSignatureStructure))
-      });
+      }).formatText();
 
       for (const method of methods) {
 
@@ -52,7 +52,7 @@ export const writeMethods =
               } as PropertySignatureStructure))
           })
 
-        });
+        }).formatText();
 
       }
     }

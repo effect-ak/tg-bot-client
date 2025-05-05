@@ -57,5 +57,3 @@ export class BotUpdateHandlersTag
     BotUpdateHandlersTag,
     BotMode
   >() { }
-
-

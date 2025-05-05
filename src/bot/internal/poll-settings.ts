@@ -24,9 +24,9 @@ export class BotPollSettings
       batch_size = 10;
     }
 
-    if (poll_timeout < 2 || poll_timeout > 10) {
-      console.warn("Wrong poll_timeout, must be in [2..10], using 2 instead");
-      poll_timeout = 10;
+    if (poll_timeout < 2 || poll_timeout > 120) {
+      console.warn("Wrong poll_timeout, must be in [2..120], using 20 instead");
+      poll_timeout = 20;
     }
 
     if (max_empty_responses && (max_empty_responses < 2)) {

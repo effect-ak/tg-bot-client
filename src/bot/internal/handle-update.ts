@@ -1,5 +1,6 @@
 import * as Micro from "effect/Micro";
 import * as Data from "effect/Data";
+import * as Fn from "effect/Function";
 import { execute } from "#/client/execute-request/execute.js";
 import { Update } from "#/client/specification/types.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
@@ -53,13 +54,13 @@ export const handleEntireBatch = (
 ) =>
   Micro.try({
     try: () => handlers.on_batch(updates),
-    catch: _ => _
+    catch: Fn.identity
   }).pipe(
     Micro.andThen(result => {
       if (result instanceof Promise) {
         return Micro.tryPromise({
           try: () => result,
-          catch: _ => _
+          catch: Fn.identity
         })
       } else {
         return Micro.succeed(result as boolean)
@@ -72,9 +73,10 @@ export const handleEntireBatch = (
       })
     ),
     Micro.catchAll(error => {
-      console.log("handle batch error", {
+      console.warn("handle batch error", {
         errorMessage: (error instanceof Error) ? error.message : undefined,
-        updates: updates.map(_ => Object.keys(_).at(1))
+        updates: updates.map(_ => Object.keys(_).at(1)),
+        error
       });
       return Micro.succeed(
         new BatchUpdateResult({

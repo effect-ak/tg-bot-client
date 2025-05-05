@@ -4,27 +4,27 @@ import config from "../config.json"
 
 Effect.gen(function* () {
 
-  const bot = 
+  const bot =
     yield* launchBot({
-        bot_token: config.bot_token,
-        poll: {
-          log_level: "debug",
-          max_empty_responses: 3,
-        },
-        mode: {
-          type: "single",
-          on_message: (message) => {
-      
-            if (!message.text) return BotResponse.ignore;
-  
-            return BotResponse.make({
-              type: "message",
-              text: "hello!!!"
-            })
-        
-          }
+      bot_token: config.bot_token,
+      poll: {
+        log_level: "debug",
+        max_empty_responses: 3,
+      },
+      mode: {
+        type: "single",
+        on_message: (message) => {
+
+          if (!message.text) return BotResponse.ignore;
+
+          return BotResponse.make({
+            type: "message",
+            text: "hello!!!"
+          })
+
         }
-      });
+      }
+    });
 
   yield* pipe(
     Micro.fiberAwait(bot.fiber()!),

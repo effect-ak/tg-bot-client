@@ -11,7 +11,9 @@ runTgChatBot({
   bot_token: config.bot_token,
   poll: {
     log_level: "debug",
-    batch_size: 100
+    batch_size: 100,
+    on_error: "stop",
+    poll_timeout: 60
   },
   mode: {
     type: "batch",

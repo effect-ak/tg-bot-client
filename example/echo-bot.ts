@@ -77,6 +77,7 @@ runTgChatBot({
   poll: {
     log_level: "debug",
     batch_size: 20,
+    on_error: "continue"
   },
   mode: {
     type: "single",

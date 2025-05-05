@@ -19,6 +19,17 @@ export const typeOverrides: Record<string, Record<string, NormalTypeShape>> = {
       }
     }
   },
+  sendChatAction: {
+    action: {
+      typeNames: [`
+        "typing" | "upload_photo" | "record_video" | "upload_video" | "record_voice" | "upload_voice" |
+        "upload_document" | "choose_sticker" | "find_location" | "record_video_note" | "upload_video_note"
+      `],
+      openApiType: {
+        type: "string"
+      }
+    }
+  },
   getUpdates: {
     allowed_updates: {
       typeNames: [ "T.AllowedUpdateName[]"],

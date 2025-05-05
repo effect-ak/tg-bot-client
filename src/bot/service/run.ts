@@ -2,6 +2,7 @@ import * as Context from "effect/Context";
 import * as Micro from "effect/Micro";
 import type { TgBotClientError } from "#/client/errors.js";
 import { BatchUpdateResult, handleUpdates } from "#/bot/internal/handle-update.js";
+import { BotPollSettingsTag } from "#/bot/internal/poll-settings.js";
 import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates.js";
 
 type State = {
@@ -36,23 +37,28 @@ const _runBotDaemon = (
 ) =>
   Micro.gen(function* () {
 
-    console.log("run bot");
+    console.log("running telegram chat bot");
 
     const fetchService = yield* Micro.service(BotFetchUpdatesService);
+    const settings = yield* Micro.service(BotPollSettingsTag);
+
+    const continueOnError = (hasError: boolean) => {
+      if (settings.on_error == "continue") return true;
+      return !hasError;
+    }
 
     const startFiber =
       Micro.delay(1000)(
         fetchService.fetchUpdates.pipe(
-          Micro.andThen(updates =>
-            handleUpdates(updates)
-          ),
-          Micro.tap(({ updates }) =>
-            updates.length > 0 ? fetchService.commit : Micro.void
-          )
+          Micro.andThen(handleUpdates),
+          Micro.tap(result => {
+            const hasUpdates = result.updates.length > 0;
+            return hasUpdates && continueOnError(result.hasErrors) ? fetchService.commit : Micro.void
+          })
         )
       ).pipe(
         Micro.repeat({
-          while: _ => !_.hasErrors
+          while: _ => continueOnError(_.hasErrors)
         }),
         Micro.forkDaemon,
         Micro.tap(fiber =>

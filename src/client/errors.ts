@@ -20,12 +20,12 @@ type ErrorReason = Readonly<{
 
 export class TgBotClientError
   extends Data.TaggedError("TgBotClientError")<{
-    reason: ErrorReason
+    cause: ErrorReason
   }> {
 
   static readonly missingSuccess =
     new TgBotClientError({
-      reason: {
+      cause: {
         type: "ClientInternalError",
         cause: "Expected 'success' to be defined"
       },
