@@ -3,7 +3,7 @@ import { describe, expect, assert, vi } from "vitest";
 import { fixture } from "./fixture.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
 import { Micro } from "effect";
-import { execute } from "#/client/execute-request/execute.js";
+import { executeTgBotMethod } from "#/client/execute-request/execute.js";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 
@@ -14,7 +14,7 @@ describe("telegram bot client, execute method", () => {
     // skip();
 
     const response =
-      await execute("send_dice", {
+      await executeTgBotMethod("send_dice", {
         chat_id,
         emoji: "🎲",
         message_effect_id: MESSAGE_EFFECTS["🔥"]

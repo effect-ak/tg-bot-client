@@ -32,7 +32,7 @@ const client = makeTgBotClient({
 });
 ```
 
-### Executing api methods
+### Executing api methods (Promise based)
 
 `client` has an `execute` method which requires two arguments
 
@@ -94,6 +94,22 @@ const file =
   await client.getFile({ 
     file_id: fileId
   });
+```
+
+### Executing api methods (Effect based)
+
+If you want to use [Effect](https://effect.website/) instead of `Promise`:
+```typescript
+import { executeTgBotMethod, TgBotApiToken } from "@effect-ak/tg-bot-client";
+import { Effect } from "effect";
+
+executeTgBotMethod("send_message", {
+  text: "hello",
+  chat_id: config.chat_id
+}).pipe(
+  Effect.provideService(TgBotApiToken, 'your-token-from-bot-father'),
+  Effect.runPromiseExit
+)
 ```
 
 ## ChatBot runner

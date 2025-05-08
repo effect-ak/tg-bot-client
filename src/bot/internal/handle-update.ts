@@ -1,7 +1,7 @@
 import * as Micro from "effect/Micro";
 import * as Data from "effect/Data";
 import * as Fn from "effect/Function";
-import { execute } from "#/client/execute-request/execute.js";
+import { executeTgBotMethod } from "#/client/execute-request/execute.js";
 import { Update } from "#/client/specification/types.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
 import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "./types.js";
@@ -221,7 +221,7 @@ export const handleOneUpdate = (
 
     if ("chat" in update && handleResult.response) {
       const response =
-        yield* execute(`send_${handleResult.response.type}`, {
+        yield* executeTgBotMethod(`send_${handleResult.response.type}`, {
           ...handleResult.response,
           chat_id: update.chat.id
         });

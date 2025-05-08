@@ -20,7 +20,7 @@ describe("telegram bot client, download file", () => {
     assert(fileId, "file id is null");
 
     const response =
-      await client.getFile({ file_id: fileId });
+      await client.getFile({ fileId });
 
     expect(response).toBeDefined();
   });

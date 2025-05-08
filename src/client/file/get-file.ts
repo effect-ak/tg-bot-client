@@ -2,15 +2,40 @@ import * as Micro from "effect/Micro";
 
 import { TgBotClientError } from "../errors";
 import { TgBotApiBaseUrl, TgBotApiToken } from "../config";
-import { execute } from "../execute-request/execute";
+import { executeTgBotMethod } from "../execute-request/execute";
 
-export const getFile = (
-  fileId: string
-) =>
+export type GetFile = {
+  fileId: string;
+  type?: string;
+};
 
+export const getFile = ({ fileId, type }: GetFile) =>
+  getFileBytes(fileId).pipe(
+    Micro.andThen(
+      ({ content, file_name }) =>
+        new File([ content ], file_name, {
+          ...(type ? { type } : undefined),
+        })
+    )
+  );
+
+export const getFileAsBase64String = ({
+  fileId,
+  type,
+}: GetFile & { type: string }) =>
+  getFileBytes(fileId).pipe(
+    Micro.andThen(({ content, file_name }) => {
+      const encoded = Buffer.from(content).toString("base64");
+      return {
+        encoded: `data:${type};base64,${encoded}`,
+        file_name
+      }
+    })
+  );
+
+export const getFileBytes = (fileId: string) =>
   Micro.gen(function* () {
-
-    const response = yield* execute("get_file", { file_id: fileId });
+    const response = yield* executeTgBotMethod("get_file", { file_id: fileId });
     const file_path = response.file_path;
 
     if (!file_path || file_path.length == 0) {
@@ -18,10 +43,10 @@ export const getFile = (
         new TgBotClientError({
           cause: {
             type: "UnableToGetFile",
-            cause: "File path not defined"
-          }
+            cause: "File path not defined",
+          },
         })
-      )
+      );
     }
 
     const file_name = file_path.replaceAll("/", "-");
@@ -30,18 +55,16 @@ export const getFile = (
 
     const url = `${baseUrl}/file/bot${botToken}/${file_path}`;
 
-    const fileContent =
-      yield* Micro.tryPromise({
-        try: () => fetch(url).then(_ => _.arrayBuffer()),
-        catch: cause =>
-          new TgBotClientError({
-            cause: { type: "UnableToGetFile", cause }
-          })
-      });
+    const content = yield* Micro.tryPromise({
+      try: () => fetch(url).then((_) => _.arrayBuffer()),
+      catch: (cause) =>
+        new TgBotClientError({
+          cause: { type: "UnableToGetFile", cause },
+        }),
+    });
 
     return {
-      content: fileContent,
-      file_name
-    }
-
+      content,
+      file_name,
+    };
   });

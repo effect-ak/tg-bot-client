@@ -1,9 +1,10 @@
 import * as Micro from "effect/Micro";
 
-import { ClientFileService, ClientFileServiceInterface, ClientFileServiceDefault } from "./file/_service.js";
+import { ClientFileService, ClientFileServiceDefault } from "./file/_service.js";
 import type { Api } from "#/client/specification/api.js";
-import { execute } from "./execute-request/execute.js";
+import { executeTgBotMethod } from "./execute-request/execute.js";
 import { TgBotApiToken } from "./config.js";
+import { GetFile } from "./file/get-file.js";
 
 export type TgBotClient = ReturnType<typeof makeTgBotClient>;
 
@@ -22,11 +23,11 @@ export const makeTgBotClient = ({
 
         return {
           execute: <M extends keyof Api>(method: M, input: Parameters<Api[M]>[0]) =>
-            execute(method, input).pipe(
+            executeTgBotMethod(method, input).pipe(
               Micro.provideService(TgBotApiToken, bot_token),
               Micro.runPromise
             ),
-          getFile: (input: Parameters<ClientFileServiceInterface["getFile"]>[0]) =>
+          getFile: (input: GetFile) =>
             file.getFile(input).pipe(
               Micro.provideService(TgBotApiToken, bot_token),
               Micro.runPromise

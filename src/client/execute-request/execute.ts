@@ -8,7 +8,7 @@ import { makePayload } from "./payload.js";
 import { isTgBotApiResponse } from "../guards.js";
 import { TgBotApiBaseUrl, TgBotApiToken } from "../config.js";
 
-export const execute = <M extends keyof Api>(
+export const executeTgBotMethod = <M extends keyof Api>(
   method: M,
   input: Parameters<Api[M]>[0]
 ): Micro.Micro<ReturnType<Api[M]>, TgBotClientError, TgBotApiToken> =>

@@ -2,7 +2,7 @@ import * as Context from "effect/Context";
 import * as Data from "effect/Data";
 import * as Micro from "effect/Micro";
 import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
-import { execute } from "#/client/execute-request/execute";
+import { executeTgBotMethod } from "#/client/execute-request/execute";
 
 type State = {
   lastUpdateId: number | undefined
@@ -64,7 +64,7 @@ const _fetchUpdates = (
     }
 
     const updates =
-      yield* execute("get_updates", {
+      yield* executeTgBotMethod("get_updates", {
         timeout: pollSettings.poll_timeout,
         ...(updateId ? { offset: updateId } : undefined),
       }).pipe(
@@ -89,7 +89,7 @@ const _commitLastBatch = (
 
     console.log("commit", { pollState })
     if (pollState.lastUpdateId) { // next batch
-      return yield* execute("get_updates", {
+      return yield* executeTgBotMethod("get_updates", {
         offset: pollState.lastUpdateId,
         limit: 0
       }).pipe(
