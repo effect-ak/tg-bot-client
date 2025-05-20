@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "homepage": "https://effect-ak.github.io/telegram-bot-playground/",
   "author": {
     "name": "Aleksandr Kondaurov",
