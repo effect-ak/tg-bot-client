@@ -1,12 +1,15 @@
 import * as Micro from "effect/Micro";
 import * as Data from "effect/Data";
 import * as Fn from "effect/Function";
-import { executeTgBotMethod } from "#/client/execute-request/execute.js";
-import { Update } from "#/client/specification/types.js";
-import { MESSAGE_EFFECTS } from "#/const.js";
-import { BotUpdateHandlersTag, BotResponse, HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction } from "./types.js";
-import type { AvailableUpdateTypes, ExtractedUpdate } from "./types.js";
-import { BotPollSettingsTag, PollSettings } from "./poll-settings.js";
+import { executeTgBotMethod } from "#/client/execute-request/execute";
+import { Update } from "#/client/specification/types";
+import { MESSAGE_EFFECTS } from "#/const";
+import type {
+  AvailableUpdateTypes, ExtractedUpdate,
+  HandleUpdateFunction, BotUpdatesHandlers, HandleBatchUpdateFunction 
+} from "./types";
+import { BotPollSettingsTag, BotUpdateHandlersTag, PollSettings } from "./poll-settings";
+import { BotResponse } from "./bot-response";
 
 export const extractUpdate =
   <U extends AvailableUpdateTypes>(input: Update) => {

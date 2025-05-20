@@ -1,6 +1,6 @@
 import * as Micro from "effect/Micro";
-import type { BotUpdatesHandlers, RunBotInput } from "./internal/types.js";
-import { launchBot } from "./internal/launch.js";
+import type { BotUpdatesHandlers, RunBotInput } from "./internal/types";
+import { launchBot } from "./internal/launch";
 
 export const runTgChatBot =
   (input: RunBotInput) =>

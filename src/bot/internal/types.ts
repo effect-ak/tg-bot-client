@@ -1,8 +1,6 @@
-import * as Context from "effect/Context";
-import * as Data from "effect/Data";
-import type { Api } from "#/client/specification/api.js";
-import type { Update } from "#/client/specification/types.js";
-import { PollSettings } from "./poll-settings";
+import type { Update } from "#/client/specification/types";
+import type { BotResponse } from "./bot-response";
+import type { PollSettings } from "./poll-settings";
 
 export interface RunBotInput {
   bot_token: string
@@ -12,24 +10,6 @@ export interface RunBotInput {
 
 export type ExtractedUpdate<K extends AvailableUpdateTypes> = { type: K } & Update[K]
 export type AvailableUpdateTypes = Exclude<keyof Update, 'update_id'>
-
-type BotResult = {
-  [K in keyof Api]: K extends `send_${infer R}`
-  ? { type: R } & Omit<Parameters<Api[K]>[0], 'chat_id'>
-  : never
-}[keyof Api];
-
-export class BotResponse
-  extends Data.TaggedClass("BotResponse")<{
-    response?: BotResult
-  }> {
-
-  static make(result: BotResult): BotResponse {
-    return new BotResponse({ response: result })
-  }
-
-  static readonly ignore = new BotResponse({})
-}
 
 export type HandleUpdateFunction<U> =
   (update: U) => BotResponse | PromiseLike<BotResponse>
@@ -51,9 +31,3 @@ export interface BotBatchMode extends HandleBatchUpdateFunction {
 }
 
 export type BotMode = BotSingleMode | BotBatchMode
-
-export class BotUpdateHandlersTag
-  extends Context.Tag("BotUpdateHandlers")<
-    BotUpdateHandlersTag,
-    BotMode
-  >() { }

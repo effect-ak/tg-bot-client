@@ -16,6 +16,9 @@ type ErrorReason = Readonly<{
 } | {
   type: "BotHandlerError"
   cause: unknown
+} | {
+  type: "NotJsonResponse"
+  response: unknown
 }>
 
 export class TgBotClientError

@@ -1,9 +1,10 @@
 import * as Micro from "effect/Micro";
-import { BotRunService } from "#/bot/service/run.js";
-import { BotMode, BotUpdateHandlersTag, RunBotInput } from "./types.js";
-import { BotPollSettings, BotPollSettingsTag } from "./poll-settings.js";
-import { TgBotApiToken } from "#/client/config.js";
-import { Context } from "effect";
+import * as Context from "effect/Context";
+
+import { BotRunService } from "#/bot/service/run";
+import { TgBotApiToken } from "#/client/config";
+import type { BotMode, RunBotInput } from "./types";
+import { BotPollSettings, BotPollSettingsTag, BotUpdateHandlersTag } from "./poll-settings";
 
 export type BotInstance = Micro.Micro.Success<ReturnType<typeof launchBot>>
 

@@ -1,9 +1,9 @@
 import * as Context from "effect/Context";
 import * as Micro from "effect/Micro";
-import type { TgBotClientError } from "#/client/errors.js";
-import { BatchUpdateResult, handleUpdates } from "#/bot/internal/handle-update.js";
-import { BotPollSettingsTag } from "#/bot/internal/poll-settings.js";
-import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates.js";
+import type { TgBotClientError } from "#/client/errors";
+import { BatchUpdateResult, handleUpdates } from "#/bot/internal/handle-update";
+import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
+import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates";
 
 type State = {
   fiber: Micro.MicroFiber<BatchUpdateResult, TgBotClientError | FetchUpdatesError> | undefined

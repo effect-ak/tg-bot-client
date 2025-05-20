@@ -1,9 +1,7 @@
-import { Micro, Context } from "effect";
+import * as Micro from "effect/Micro";
+import * as Context from "effect/Context";
 
 import { GetFile, getFile } from "./get-file";
-
-export type ClientFileServiceInterface =
-  Context.Tag.Service<typeof ClientFileService>;
 
 export class ClientFileService
   extends Context.Tag("ClientFileService")<ClientFileService, {

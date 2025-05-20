@@ -2,11 +2,10 @@ import * as String from "effect/String";
 import * as Micro from "effect/Micro";
 
 import type { Api } from "#/client/specification/api";
-
-import { TgBotClientError } from "../errors.js";
-import { makePayload } from "./payload.js";
-import { isTgBotApiResponse } from "../guards.js";
-import { TgBotApiBaseUrl, TgBotApiToken } from "../config.js";
+import { TgBotClientError } from "#/client/errors";
+import { isTgBotApiResponse } from "#/client/guards";
+import { TgBotApiBaseUrl, TgBotApiToken } from "#/client/config";
+import { makePayload } from "./payload";
 
 export const executeTgBotMethod = <M extends keyof Api>(
   method: M,
@@ -37,7 +36,7 @@ export const executeTgBotMethod = <M extends keyof Api>(
         try: () => httpResponse.json(),
         catch: () =>
           new TgBotClientError({
-            cause: { type: "UnexpectedResponse", response: httpResponse }
+            cause: { type: "NotJsonResponse", response: httpResponse }
           })
       });
 

@@ -1,16 +1,5 @@
-/**
- * This module provides utility functions for working with arrays in TypeScript.
- *
- * @since 2.0.0
- */
+import { isFileContent } from "../guards";
 
-
-import { isFileContent } from "../guards.js";
-
-/**
- * @category utils
- * @since 2.0.0
- */
 export const makePayload = (
   body: object
 ): FormData | undefined => {

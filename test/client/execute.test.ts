@@ -63,7 +63,7 @@ describe("telegram bot client, execute method", () => {
           inline_keyboard: [
             [
               {
-                text: "api documentation", 
+                text: "api documentation",
                 web_app: {
                   url: "https://core.telegram.org/api"
                 }
@@ -93,6 +93,26 @@ describe("telegram bot client, execute method", () => {
       });
 
     expect(response.document?.file_id).toBeDefined();
+
+    expect(response.chat.id).toBeDefined();
+
+  });
+
+  fixture("send message with action", async ({ chat_id, client, skip }) => {
+
+    await client.execute("send_chat_action", {
+      chat_id,
+      action: "upload_voice",
+    })
+
+    await new Promise(res => setTimeout(res, 5000))
+
+    const response =
+      await client.execute("send_message", {
+        chat_id,
+        text: "hey again with typings",
+        message_effect_id: MESSAGE_EFFECTS["🔥"]
+      });
 
     expect(response.chat.id).toBeDefined();
 
