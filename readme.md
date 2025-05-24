@@ -143,9 +143,11 @@ Take a look at examples [here](example)
    const BOT = defineBot({
       on_message: (msg) => {
 
+      // ignore messages without text
       if (!msg.text) return BotResponse.ignore;
 
-      if (msg?.text === "bye") {
+      // if user sends 'bye'
+      if (msg.text === "bye") {
         return BotResponse.make({
           type: "message",
           text: "See you later!",
@@ -153,6 +155,7 @@ Take a look at examples [here](example)
         })
       }
 
+      // send this message otherwise
       return BotResponse.make({
         type: "message",
         text: "I'm a simple bot"

@@ -1,51 +1,47 @@
-import { BotResponse, runTgChatBot, defineBot } from "#dist/bot";
+import { BotResponse, runTgChatBot, defineBot, extractCommand } from "#dist/bot";
 import { MESSAGE_EFFECTS } from "#dist/index";
-import { Effect, pipe } from "effect";
+import { Effect } from "effect";
 import config from "../config.json"
 
 const ECHO_BOT = defineBot({
+
   on_message: async (msg) => {
 
-    if (msg.text?.includes("+")) {
-      const numbers = msg.text.split("+");
-      let result = 0;
-      for (const num of numbers) {
-        result += parseInt(num);
-      }
+    const command = extractCommand(msg)
+    console.info("echo bot", { command })
+
+    if (!command) {
       return BotResponse.make({
-        type: "document",
-        caption: "sum result",
-        document: {
-          file_content: new TextEncoder().encode(`your sum is ${result}`),
-          file_name: "hello.txt"
+        type: "message",
+        text: "I'm expecting a command from you",
+        reply_parameters: {
+          message_id: msg.message_id
         }
       })
     }
 
-    const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
-    const command =
-      commandEntity ? msg.text?.slice(commandEntity?.offset, commandEntity?.length) : undefined;
-
-    console.info("echo bot", { command });
-
-    if (command == "/bye") {
-      return pipe(
-        Effect.sleep("5 seconds"),
-        Effect.andThen(() =>
-          BotResponse.make({
-            type: "message",
-            text: "See you later!",
-            reply_parameters: {
-              message_id: msg.message_id
-            },
-            message_effect_id: MESSAGE_EFFECTS["❤️"]
-          })
-        ),
-        Effect.runPromise
-      )
+    if (command.name == "/sum") {
+      const numbers = command.args.split(" ");
+      let result = numbers.reduce((result, num) => result + (parseInt(num) || 0), 0);
+      return BotResponse.make({
+        type: "message",
+        text: `your sum is ${result}`
+      })
     }
 
-    if (command == "/echo") {
+    if (command.name == "/bye") {
+      await Effect.sleep("2 seconds").pipe(Effect.runPromise)
+      return BotResponse.make({
+        type: "message",
+        text: "See you later!",
+        reply_parameters: {
+          message_id: msg.message_id
+        },
+        message_effect_id: MESSAGE_EFFECTS["❤️"]
+      })
+    }
+
+    if (command.name == "/echo") {
       return BotResponse.make({
         type: "message",
         text: `<pre language="json">${JSON.stringify(msg, undefined, 2)}</pre>`,
@@ -53,21 +49,14 @@ const ECHO_BOT = defineBot({
       })
     }
 
-    if (command == "/error") {
-      throw new Error("boom");
+    if (command.name == "/error") {
+      throw new Error(`Boom! ${command.args}`);
     }
 
-    if (msg.text) {
-      return BotResponse.make({
-        type: "message",
-        text: "hey :)",
-        reply_parameters: {
-          message_id: msg.message_id
-        }
-      })
-    }
-
-    return BotResponse.ignore;
+    return BotResponse.make({
+      type: "message",
+      text: "Unknown command :/"
+    })
 
   }
 });
