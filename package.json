@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot-client",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "homepage": "https://effect-ak.github.io/telegram-bot-playground/",
   "author": {
     "name": "Aleksandr Kondaurov",
@@ -13,7 +13,9 @@
   "files": [
     "dist/*.js",
     "dist/*.mjs",
-    "dist/*.d.ts"
+    "dist/*.d.ts",
+    "!dist/bot-bundle.d.ts",
+    "!dist/bot-bundle.d.mts"
   ],
   "keywords": [
     "telegram typescript types",
@@ -42,6 +44,11 @@
       "require": "./dist/bot.js",
       "import": "./dist/bot.mjs"
     },
+    "./bot-bundle": {
+      "types": "./dist/bot.d.ts",
+      "require": "./dist/bot-bundle.js",
+      "import": "./dist/bot-bundle.mjs"
+    },
     "./webapp": {
       "types": "./dist/webapp.d.ts",
       "require": "./dist/webapp.js",
@@ -59,7 +66,8 @@
     "typescript": "^5.8.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.1.1",
-    "effect": "3.12.0"
+    "effect": "3.12.0",
+    "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "effect": "^3.12.0"

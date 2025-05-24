@@ -5,8 +5,8 @@ import { TgBotApiBaseUrl, TgBotApiToken } from "../config";
 import { executeTgBotMethod } from "../execute-request/execute";
 
 export type GetFile = {
-  fileId: string;
-  type?: string;
+  fileId: string
+  type?: string
 };
 
 export const getFile = ({ fileId, type }: GetFile) =>
@@ -42,7 +42,7 @@ export const getFileBytes = (fileId: string) =>
       return yield* Micro.fail(
         new TgBotClientError({
           cause: {
-            type: "UnableToGetFile",
+            _tag: "UnableToGetFile",
             cause: "File path not defined",
           },
         })
@@ -57,9 +57,9 @@ export const getFileBytes = (fileId: string) =>
 
     const content = yield* Micro.tryPromise({
       try: () => fetch(url).then((_) => _.arrayBuffer()),
-      catch: (cause) =>
+      catch: cause =>
         new TgBotClientError({
-          cause: { type: "UnableToGetFile", cause },
+          cause: { _tag: "UnableToGetFile", cause },
         }),
     });
 

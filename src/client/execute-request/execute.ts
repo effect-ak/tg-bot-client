@@ -27,7 +27,7 @@ export const executeTgBotMethod = <M extends keyof Api>(
           }),
         catch: cause =>
           new TgBotClientError({
-            cause: { type: "ClientInternalError", cause }
+            cause: { _tag: "ClientInternalError", cause }
           })
       });
 
@@ -36,20 +36,20 @@ export const executeTgBotMethod = <M extends keyof Api>(
         try: () => httpResponse.json(),
         catch: () =>
           new TgBotClientError({
-            cause: { type: "NotJsonResponse", response: httpResponse }
+            cause: { _tag: "NotJsonResponse", response: httpResponse }
           })
       });
 
     if (!isTgBotApiResponse(response)) {
       return yield* Micro.fail(new TgBotClientError({
-        cause: { type: "UnexpectedResponse", response }
+        cause: { _tag: "UnexpectedResponse", response }
       }));
     }
 
     if (!httpResponse.ok) {
       return yield* Micro.fail(new TgBotClientError({
         cause: {
-          type: "NotOkResponse",
+          _tag: "NotOkResponse",
           ...(response.error_code ? { errorCode: response.error_code } : undefined),
           ...(response.description ? { details: response.description } : undefined)
         }

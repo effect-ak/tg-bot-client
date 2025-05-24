@@ -8,18 +8,9 @@ gen-bot-api:
 gen-webapp:
 	MODULE_NAME=webapp tsx ./codegen/main
 
-run-echo-bot:
-	tsx ./example/echo-bot.ts
-
-run-effect-bot:
-	tsx ./example/effect-bot.ts
-
-run-reload-bot:
-	tsx ./example/reload-bot.ts
-
-run-batch-bot:
-	tsx ./example/batch-bot.ts
+serve:
+	http-server . --cors
 
 publish:
-	tsup
+	tsx ./build.mts
 	pnpm publish
