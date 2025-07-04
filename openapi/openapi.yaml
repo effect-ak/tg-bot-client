@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: '9.0'
+  version: '9.1'
   contact:
     name: Aleksandr Kondaurov
     url: https://github.com/effect-ak/tg-bot-client/issues
@@ -1967,6 +1967,57 @@ paths:
               example: Message | boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /editMessageChecklist:
+    post:
+      tags:
+        - updating-messages
+      summary: edit_message_checklist
+      description: >-
+        Use this method to edit a checklist on behalf of a connected business
+        account
+      externalDocs:
+        url: https://core.telegram.org/bots/api#editmessagechecklist
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the business connection on behalf of
+                    which the message will be sent
+                chat_id:
+                  type: number
+                  description: Unique identifier for the target chat
+                message_id:
+                  type: number
+                  description: Unique identifier for the target message
+                checklist:
+                  $ref: '#/components/schemas/InputChecklist'
+                  description: A JSON-serialized object for the new checklist
+                reply_markup:
+                  $ref: '#/components/schemas/InlineKeyboardMarkup'
+                  description: >-
+                    A JSON-serialized object for the new inline keyboard for the
+                    message
+              required:
+                - business_connection_id
+                - chat_id
+                - message_id
+                - checklist
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example: Message
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /editMessageLiveLocation:
     post:
       tags:
@@ -3240,6 +3291,30 @@ paths:
               example: BotShortDescription
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /getMyStarBalance:
+    post:
+      tags:
+        - payments
+      summary: get_my_star_balance
+      description: >-
+        A method to get the current Telegram Stars balance of the
+        bot<br/>Requires no parameters
+      externalDocs:
+        url: https://core.telegram.org/bots/api#getmystarbalance
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json: {}
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StarAmount'
+              example: StarAmount
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /getStarTransactions:
     post:
       tags:
@@ -3820,8 +3895,9 @@ paths:
                   description: >-
                     Pass True if the administrator can access the chat event
                     log, get boost list, see hidden supergroup and channel
-                    members, report spam messages and ignore slow
-                    mode<br/>Implied by any other administrator privilege.
+                    members, report spam messages, ignore slow mode, and send
+                    messages to the chat without paying Telegram
+                    Stars<br/>Implied by any other administrator privilege.
                 can_delete_messages:
                   type: boolean
                   description: >-
@@ -3871,7 +3947,8 @@ paths:
                   type: boolean
                   description: >-
                     Pass True if the administrator can post messages in the
-                    channel, or access channel statistics; for channels only
+                    channel, approve suggested posts, or access channel
+                    statistics; for channels only
                 can_edit_messages:
                   type: boolean
                   description: >-
@@ -4730,6 +4807,71 @@ paths:
               schema:
                 type: boolean
               example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /sendChecklist:
+    post:
+      tags:
+        - available-methods
+      summary: send_checklist
+      description: >-
+        Use this method to send a checklist on behalf of a connected business
+        account
+      externalDocs:
+        url: https://core.telegram.org/bots/api#sendchecklist
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the business connection on behalf of
+                    which the message will be sent
+                chat_id:
+                  type: number
+                  description: Unique identifier for the target chat
+                checklist:
+                  $ref: '#/components/schemas/InputChecklist'
+                  description: A JSON-serialized object for the checklist to send
+                disable_notification:
+                  type: boolean
+                  description: >-
+                    Sends the message silently<br/>Users will receive a
+                    notification with no sound.
+                protect_content:
+                  type: boolean
+                  description: >-
+                    Protects the contents of the sent message from forwarding
+                    and saving
+                message_effect_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the message effect to be added to the
+                    message
+                reply_parameters:
+                  $ref: '#/components/schemas/ReplyParameters'
+                  description: >-
+                    A JSON-serialized object for description of the message to
+                    reply to
+                reply_markup:
+                  $ref: '#/components/schemas/InlineKeyboardMarkup'
+                  description: A JSON-serialized object for an inline keyboard
+              required:
+                - business_connection_id
+                - chat_id
+                - checklist
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+              example: Message
         '400':
           $ref: '#/components/responses/ErrorResponse'
   /sendContact:
@@ -5979,7 +6121,7 @@ paths:
                   type: array
                   items:
                     $ref: '#/components/schemas/InputPollOption'
-                  description: A JSON-serialized list of 2-10 answer options
+                  description: A JSON-serialized list of 2-12 answer options
                 business_connection_id:
                   type: string
                   description: >-
@@ -9436,7 +9578,8 @@ components:
           description: >-
             True, if the administrator can access the chat event log, get boost
             list, see hidden supergroup and channel members, report spam
-            messages and ignore slow mode<br/>Implied by any other administrator
+            messages, ignore slow mode, and send messages to the chat without
+            paying Telegram Stars<br/>Implied by any other administrator
             privilege.
         can_delete_messages:
           type: boolean
@@ -9479,8 +9622,8 @@ components:
         can_post_messages:
           type: boolean
           description: >-
-            True, if the administrator can post messages in the channel, or
-            access channel statistics; for channels only
+            True, if the administrator can post messages in the channel, approve
+            suggested posts, or access channel statistics; for channels only
         can_edit_messages:
           type: boolean
           description: >-
@@ -10001,7 +10144,8 @@ components:
           description: >-
             True, if the administrator can access the chat event log, get boost
             list, see hidden supergroup and channel members, report spam
-            messages and ignore slow mode<br/>Implied by any other administrator
+            messages, ignore slow mode, and send messages to the chat without
+            paying Telegram Stars<br/>Implied by any other administrator
             privilege.
         can_delete_messages:
           type: boolean
@@ -10044,8 +10188,8 @@ components:
         can_post_messages:
           type: boolean
           description: >-
-            True, if the administrator can post messages in the channel, or
-            access channel statistics; for channels only
+            True, if the administrator can post messages in the channel, approve
+            suggested posts, or access channel statistics; for channels only
         can_edit_messages:
           type: boolean
           description: >-
@@ -10192,7 +10336,7 @@ components:
           description: True, if the user is allowed to send voice notes
         can_send_polls:
           type: boolean
-          description: True, if the user is allowed to send polls
+          description: True, if the user is allowed to send polls and checklists
         can_send_other_messages:
           type: boolean
           description: >-
@@ -10307,7 +10451,7 @@ components:
           description: True, if the user is allowed to send voice notes
         can_send_polls:
           type: boolean
-          description: True, if the user is allowed to send polls
+          description: True, if the user is allowed to send polls and checklists
         can_send_other_messages:
           type: boolean
           description: >-
@@ -10402,6 +10546,97 @@ components:
       required:
         - request_id
         - chat_id
+    Checklist:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the checklist
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistTask'
+          description: List of tasks in the checklist
+        title_entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: Special entities that appear in the checklist title
+        others_can_add_tasks:
+          type: boolean
+          description: >-
+            True, if users other than the creator of the list can add tasks to
+            the list
+        others_can_mark_tasks_as_done:
+          type: boolean
+          description: >-
+            True, if users other than the creator of the list can mark tasks as
+            done or not done
+      required:
+        - title
+        - tasks
+    ChecklistTask:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Unique identifier of the task
+        text:
+          type: string
+          description: Text of the task
+        text_entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: Special entities that appear in the task text
+        completed_by_user:
+          $ref: '#/components/schemas/User'
+          description: >-
+            User that completed the task; omitted if the task wasn&#39;t
+            completed
+        completion_date:
+          type: number
+          description: >-
+            Point in time (Unix timestamp) when the task was completed; 0 if the
+            task wasn&#39;t completed
+      required:
+        - id
+        - text
+    ChecklistTasksAdded:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChecklistTask'
+          description: List of tasks added to the checklist
+        checklist_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the checklist to which the tasks were
+            added<br/>Note that the Message object in this field will not
+            contain the reply_to_message field even if it itself is a reply.
+      required:
+        - tasks
+    ChecklistTasksDone:
+      type: object
+      properties:
+        checklist_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the checklist whose tasks were marked as done or
+            not done<br/>Note that the Message object in this field will not
+            contain the reply_to_message field even if it itself is a reply.
+        marked_as_done_task_ids:
+          type: array
+          items:
+            type: number
+          description: Identifiers of the tasks that were marked as done
+        marked_as_not_done_task_ids:
+          type: array
+          items:
+            type: number
+          description: Identifiers of the tasks that were marked as not done
     ChosenInlineResult:
       type: object
       properties:
@@ -10475,6 +10710,22 @@ components:
       required:
         - emoji
         - value
+    DirectMessagePriceChanged:
+      type: object
+      properties:
+        are_direct_messages_enabled:
+          type: boolean
+          description: >-
+            True, if direct messages are enabled for the channel chat; false
+            otherwise
+        direct_message_star_count:
+          type: number
+          description: >-
+            The new number of Telegram Stars that must be paid by users for each
+            direct message sent to the channel<br/>Does not apply to users who
+            have been exempted by administrators<br/>Defaults to 0.
+      required:
+        - are_direct_messages_enabled
     Document:
       type: object
       properties:
@@ -10665,6 +10916,9 @@ components:
         has_media_spoiler:
           type: boolean
           description: True, if the message media is covered by a spoiler animation
+        checklist:
+          $ref: '#/components/schemas/Checklist'
+          description: Message is a checklist
         contact:
           $ref: '#/components/schemas/Contact'
           description: Message is a shared contact, information about the contact
@@ -12347,6 +12601,78 @@ components:
         - id
         - voice_url
         - title
+    InputChecklist:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the checklist; 1-255 characters after entities parsing
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/InputChecklistTask'
+          description: List of 1-30 tasks in the checklist
+        parse_mode:
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
+          description: >-
+            Mode for parsing entities in the title<br/>See formatting options
+            for more details.
+        title_entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: >-
+            List of special entities that appear in the title, which can be
+            specified instead of parse_mode<br/>Currently, only bold, italic,
+            underline, strikethrough, spoiler, and custom_emoji entities are
+            allowed.
+        others_can_add_tasks:
+          type: boolean
+          description: Pass True if other users can add tasks to the checklist
+        others_can_mark_tasks_as_done:
+          type: boolean
+          description: >-
+            Pass True if other users can mark tasks as done or not done in the
+            checklist
+      required:
+        - title
+        - tasks
+    InputChecklistTask:
+      type: object
+      properties:
+        id:
+          type: number
+          description: >-
+            Unique identifier of the task; must be positive and unique among all
+            task identifiers currently present in the checklist
+        text:
+          type: string
+          description: Text of the task; 1-100 characters after entities parsing
+        parse_mode:
+          oneOf:
+            - type: string
+              enum:
+                - HTML
+                - MarkdownV2
+          description: >-
+            Mode for parsing entities in the text<br/>See formatting options for
+            more details.
+        text_entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageEntity'
+          description: >-
+            List of special entities that appear in the text, which can be
+            specified instead of parse_mode<br/>Currently, only bold, italic,
+            underline, strikethrough, spoiler, and custom_emoji entities are
+            allowed.
+      required:
+        - id
+        - text
     InputContactMessageContent:
       type: object
       properties:
@@ -13744,6 +14070,9 @@ components:
         has_media_spoiler:
           type: boolean
           description: True, if the message media is covered by a spoiler animation
+        checklist:
+          $ref: '#/components/schemas/Checklist'
+          description: Message is a checklist
         contact:
           $ref: '#/components/schemas/Contact'
           description: Message is a shared contact, information about the contact
@@ -13887,6 +14216,19 @@ components:
         chat_background_set:
           $ref: '#/components/schemas/ChatBackground'
           description: 'Service message: chat background set'
+        checklist_tasks_done:
+          $ref: '#/components/schemas/ChecklistTasksDone'
+          description: >-
+            Service message: some tasks in a checklist were marked as done or
+            not done
+        checklist_tasks_added:
+          $ref: '#/components/schemas/ChecklistTasksAdded'
+          description: 'Service message: tasks were added to a checklist'
+        direct_message_price_changed:
+          $ref: '#/components/schemas/DirectMessagePriceChanged'
+          description: >-
+            Service message: the price for paid messages in the corresponding
+            direct messages chat of a channel has changed
         forum_topic_created:
           $ref: '#/components/schemas/ForumTopicCreated'
           description: 'Service message: forum topic created'
@@ -14316,6 +14658,12 @@ components:
           description: >-
             Number of Telegram Stars that must be paid to transfer the gift;
             omitted if the bot cannot transfer the gift
+        next_transfer_date:
+          type: number
+          description: >-
+            Point in time (Unix timestamp) when the gift can be
+            transferred<br/>If it is in the past, then the gift can be
+            transferred now
       required:
         - type
         - gift
@@ -15009,9 +15357,9 @@ components:
         emoji:
           type: string
           enum:
+            - ❤
             - 👍
             - 👎
-            - ❤
             - 🔥
             - 🥰
             - 👏
@@ -15083,7 +15431,7 @@ components:
             - 🤷‍♀
             - 😡
           description: >-
-            Reaction emoji<br/>Currently, it can be one of "👍", "👎", "❤",
+            Reaction emoji<br/>Currently, it can be one of "❤", "👍", "👎",
             "🔥", "🥰", "👏", "😁", "🤔", "🤯", "😱", "🤬", "😢", "🎉", "🤩",
             "🤮", "💩", "🙏", "👌", "🕊", "🤡", "🥱", "🥴", "😍", "🐳", "❤‍🔥",
             "🌚", "🌭", "💯", "🤣", "⚡", "🍌", "🏆", "💔", "🤨", "😐", "🍓",
@@ -16093,7 +16441,14 @@ components:
           description: Information about the gift
         origin:
           type: string
-          description: Origin of the gift<br/>Currently, either “upgrade” or “transfer”
+          description: >-
+            Origin of the gift<br/>Currently, either “upgrade” for gifts
+            upgraded from regular gifts, “transfer” for gifts transferred from
+            other users or channels, or “resale” for gifts bought from other
+            users
+        last_resale_star_count:
+          type: number
+          description: For gifts bought from other users, the price paid for the gift
         owned_gift_id:
           type: string
           description: >-
@@ -16104,6 +16459,12 @@ components:
           description: >-
             Number of Telegram Stars that must be paid to transfer the gift;
             omitted if the bot cannot transfer the gift
+        next_transfer_date:
+          type: number
+          description: >-
+            Point in time (Unix timestamp) when the gift can be
+            transferred<br/>If it is in the past, then the gift can be
+            transferred now
       required:
         - gift
         - origin
