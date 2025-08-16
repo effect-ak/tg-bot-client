@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: '9.1'
+  version: '9.2'
   contact:
     name: Aleksandr Kondaurov
     url: https://github.com/effect-ak/tg-bot-client/issues
@@ -376,6 +376,51 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
+  /approveSuggestedPost:
+    post:
+      tags:
+        - updating-messages
+      summary: approve_suggested_post
+      description: >-
+        Use this method to approve a suggested post in a direct messages
+        chat<br/>The bot must have the &#39;can_post_messages&#39; administrator
+        right in the corresponding channel chat
+      externalDocs:
+        url: https://core.telegram.org/bots/api#approvesuggestedpost
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: number
+                  description: Unique identifier for the target direct messages chat
+                message_id:
+                  type: number
+                  description: Identifier of a suggested post message to approve
+                send_date:
+                  type: number
+                  description: >-
+                    Point in time (Unix timestamp) when the post is expected to
+                    be published; omit if the date has already been specified
+                    when the suggested post was created<br/>If specified, then
+                    the date must be not more than 2678400 seconds (30 days) in
+                    the future
+              required:
+                - chat_id
+                - message_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /banChatMember:
     post:
       tags:
@@ -589,7 +634,7 @@ paths:
   /convertGiftToStars:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: convert_gift_to_stars
       description: >-
         Converts a given regular gift to Telegram Stars<br/>Requires the
@@ -668,6 +713,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 video_start_timestamp:
                   type: number
                   description: New start timestamp for the copied video in the message
@@ -715,6 +766,14 @@ paths:
                     broadcasting limits for a fee of 0.1 Telegram Stars per
                     message<br/>The relevant Stars will be withdrawn from the
                     bot&#39;s balance
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -793,6 +852,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the
+                    messages will be sent; required if the messages are sent to
+                    a direct messages chat
                 disable_notification:
                   type: boolean
                   description: >-
@@ -1256,10 +1321,52 @@ paths:
               example: boolean
         '400':
           $ref: '#/components/responses/ErrorResponse'
-  /deleteBusinessMessages:
+  /declineSuggestedPost:
     post:
       tags:
         - updating-messages
+      summary: decline_suggested_post
+      description: >-
+        Use this method to decline a suggested post in a direct messages
+        chat<br/>The bot must have the &#39;can_manage_direct_messages&#39;
+        administrator right in the corresponding channel chat
+      externalDocs:
+        url: https://core.telegram.org/bots/api#declinesuggestedpost
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: number
+                  description: Unique identifier for the target direct messages chat
+                message_id:
+                  type: number
+                  description: Identifier of a suggested post message to decline
+                comment:
+                  type: string
+                  description: >-
+                    Comment for the creator of the suggested post; 0-128
+                    characters
+              required:
+                - chat_id
+                - message_id
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /deleteBusinessMessages:
+    post:
+      tags:
+        - available-methods
       summary: delete_business_messages
       description: >-
         Delete messages on behalf of a business account<br/>Requires the
@@ -1438,8 +1545,11 @@ paths:
         messages in private chats<br/>.<br/>- Bots granted can_post_messages
         permissions can delete outgoing messages in channels<br/>.<br/>- If the
         bot is an administrator of a group, it can delete any message
-        there<br/>.<br/>- If the bot has can_delete_messages permission in a
-        supergroup or a channel, it can delete any message there<br/>.
+        there<br/>.<br/>- If the bot has can_delete_messages administrator right
+        in a supergroup or a channel, it can delete any message
+        there<br/>.<br/>- If the bot has can_manage_direct_messages
+        administrator right in a channel, it can delete any message in the
+        corresponding direct messages chat<br/>.
       externalDocs:
         url: https://core.telegram.org/bots/api#deletemessage
         description: telegram documentation
@@ -1620,7 +1730,7 @@ paths:
   /deleteStory:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: delete_story
       description: >-
         Deletes a story previously posted by the bot on behalf of a managed
@@ -2322,7 +2432,7 @@ paths:
   /editStory:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: edit_story
       description: >-
         Edits a story previously posted by the bot on behalf of a managed
@@ -2510,6 +2620,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be forwarded; required if the message is forwarded to a
+                    direct messages chat
                 video_start_timestamp:
                   type: number
                   description: New start timestamp for the forwarded video in the message
@@ -2523,6 +2639,11 @@ paths:
                   description: >-
                     Protects the contents of the forwarded message from
                     forwarding and saving
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats only
               required:
                 - chat_id
                 - from_chat_id
@@ -2584,6 +2705,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the
+                    messages will be forwarded; required if the messages are
+                    forwarded to a direct messages chat
                 disable_notification:
                   type: boolean
                   description: >-
@@ -2613,7 +2740,7 @@ paths:
   /getAvailableGifts:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: get_available_gifts
       description: >-
         Returns the list of gifts that can be sent by the bot to users and
@@ -2637,7 +2764,7 @@ paths:
   /getBusinessAccountGifts:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: get_business_account_gifts
       description: >-
         Returns the gifts received and owned by a managed business
@@ -2708,7 +2835,7 @@ paths:
   /getBusinessAccountStarBalance:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: get_business_account_star_balance
       description: >-
         Returns the amount of Telegram Stars owned by a managed business
@@ -3553,7 +3680,7 @@ paths:
   /giftPremiumSubscription:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: gift_premium_subscription
       description: Gifts a Telegram Premium subscription to the given user
       externalDocs:
@@ -3681,7 +3808,9 @@ paths:
                   description: >-
                     Unique identifier for the target chat or username of the
                     target supergroup or channel (in the format
-                    @channelusername)
+                    @channelusername)<br/>Channel direct messages chats
+                    aren&#39;t supported; leave the corresponding channel
+                    instead.
               required:
                 - chat_id
       responses:
@@ -3729,10 +3858,11 @@ paths:
       summary: pin_chat_message
       description: >-
         Use this method to add a message to the list of pinned messages in a
-        chat<br/>If the chat is not a private chat, the bot must be an
-        administrator in the chat for this to work and must have the
-        &#39;can_pin_messages&#39; administrator right in a supergroup or
-        &#39;can_edit_messages&#39; administrator right in a channel
+        chat<br/>In private chats and channel direct messages chats, all
+        non-service messages can be pinned<br/>Conversely, the bot must be an
+        administrator with the &#39;can_pin_messages&#39; right or the
+        &#39;can_edit_messages&#39; right to pin messages in groups and channels
+        respectively
       externalDocs:
         url: https://core.telegram.org/bots/api#pinchatmessage
         description: telegram documentation
@@ -3780,7 +3910,7 @@ paths:
   /postStory:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: post_story
       description: >-
         Posts a story on behalf of a managed business account<br/>Requires the
@@ -3964,6 +4094,12 @@ paths:
                   description: >-
                     Pass True if the user is allowed to create, rename, close,
                     and reopen forum topics; for supergroups only
+                can_manage_direct_messages:
+                  type: boolean
+                  description: >-
+                    Pass True if the administrator can manage direct messages
+                    within the channel and decline suggested posts; for channels
+                    only
               required:
                 - chat_id
                 - user_id
@@ -3980,7 +4116,7 @@ paths:
   /readBusinessMessage:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: read_business_message
       description: >-
         Marks incoming message as read on behalf of a business
@@ -4059,7 +4195,7 @@ paths:
   /removeBusinessAccountProfilePhoto:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: remove_business_account_profile_photo
       description: >-
         Removes the current profile photo of a managed business
@@ -4098,7 +4234,7 @@ paths:
   /removeChatVerification:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: remove_chat_verification
       description: >-
         Removes verification from a chat that is currently verified on behalf of
@@ -4134,7 +4270,7 @@ paths:
   /removeUserVerification:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: remove_user_verification
       description: >-
         Removes verification from a user who is currently verified on behalf of
@@ -4497,6 +4633,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 duration:
                   type: number
                   description: Duration of sent animation in seconds
@@ -4575,6 +4717,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -4649,6 +4799,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 caption:
                   type: string
                   description: Audio caption, 0-1024 characters after entities parsing
@@ -4715,6 +4871,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -4775,7 +4939,9 @@ paths:
                     - type: string
                   description: >-
                     Unique identifier for the target chat or username of the
-                    target channel (in the format @channelusername)
+                    target supergroup (in the format
+                    @supergroupusername)<br/>Channel chats and channel direct
+                    messages chats aren&#39;t supported.
                 action:
                   type: string
                   description: >-
@@ -4912,6 +5078,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 last_name:
                   type: string
                   description: Contact&#39;s last name
@@ -4942,6 +5114,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5003,6 +5183,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 emoji:
                   type: string
                   enum:
@@ -5038,6 +5224,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5108,6 +5302,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 thumbnail:
                   oneOf:
                     - $ref: '#/components/schemas/InputFile'
@@ -5172,6 +5372,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5215,7 +5423,9 @@ paths:
               properties:
                 chat_id:
                   type: number
-                  description: Unique identifier for the target chat
+                  description: >-
+                    Unique identifier for the target chat<br/>Games can&#39;t be
+                    sent to channel direct messages chats and channel chats.
                 game_short_name:
                   type: string
                   description: >-
@@ -5279,7 +5489,7 @@ paths:
   /sendGift:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: send_gift
       description: >-
         Sends a gift to the given user or channel chat<br/>The gift can&#39;t be
@@ -5405,6 +5615,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 provider_token:
                   type: string
                   description: >-
@@ -5523,6 +5739,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5588,6 +5812,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 horizontal_accuracy:
                   type: number
                   description: >-
@@ -5633,6 +5863,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5668,8 +5906,8 @@ paths:
       description: >-
         Use this method to send a group of photos, videos, documents or audios
         as an album<br/>Documents and audio files can be only grouped in an
-        album with messages of the same type<br/>On success, an array of
-        Messages that were sent is returned.
+        album with messages of the same type<br/>On success, an array of Message
+        objects that were sent is returned.
       externalDocs:
         url: https://core.telegram.org/bots/api#sendmediagroup
         description: telegram documentation
@@ -5707,6 +5945,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the
+                    messages will be sent; required if the messages are sent to
+                    a direct messages chat
                 disable_notification:
                   type: boolean
                   description: >-
@@ -5784,6 +6028,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 parse_mode:
                   oneOf:
                     - type: string
@@ -5825,6 +6075,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -5894,6 +6152,17 @@ paths:
                   description: >-
                     Unique identifier of the business connection on behalf of
                     which the message will be sent
+                message_thread_id:
+                  type: number
+                  description: >-
+                    Unique identifier for the target message thread (topic) of
+                    the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 payload:
                   type: string
                   description: >-
@@ -5941,6 +6210,14 @@ paths:
                     broadcasting limits for a fee of 0.1 Telegram Stars per
                     message<br/>The relevant Stars will be withdrawn from the
                     bot&#39;s balance
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6013,6 +6290,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 caption:
                   type: string
                   description: >-
@@ -6066,6 +6349,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6113,7 +6404,8 @@ paths:
                     - type: string
                   description: >-
                     Unique identifier for the target chat or username of the
-                    target channel (in the format @channelusername)
+                    target channel (in the format @channelusername)<br/>Polls
+                    can&#39;t be sent to channel direct messages chats.
                 question:
                   type: string
                   description: Poll question, 1-300 characters
@@ -6302,6 +6594,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 emoji:
                   type: string
                   description: >-
@@ -6329,6 +6627,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6399,6 +6705,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 foursquare_id:
                   type: string
                   description: Foursquare identifier of the venue
@@ -6436,6 +6748,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6511,6 +6831,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 duration:
                   type: number
                   description: Duration of sent video in seconds
@@ -6607,6 +6933,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6677,6 +7011,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 duration:
                   type: number
                   description: Duration of sent video in seconds
@@ -6723,6 +7063,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6797,6 +7145,12 @@ paths:
                   description: >-
                     Unique identifier for the target message thread (topic) of
                     the forum; for forum supergroups only
+                direct_messages_topic_id:
+                  type: number
+                  description: >-
+                    Identifier of the direct messages topic to which the message
+                    will be sent; required if the message is sent to a direct
+                    messages chat
                 caption:
                   type: string
                   description: >-
@@ -6843,6 +7197,14 @@ paths:
                   description: >-
                     Unique identifier of the message effect to be added to the
                     message; for private chats only
+                suggested_post_parameters:
+                  $ref: '#/components/schemas/SuggestedPostParameters'
+                  description: >-
+                    A JSON-serialized object containing the parameters of the
+                    suggested post to send; for direct messages chats
+                    only<br/>If the message is sent as a reply to another
+                    suggested post, then that suggested post is automatically
+                    declined.
                 reply_parameters:
                   $ref: '#/components/schemas/ReplyParameters'
                   description: Description of the message to reply to
@@ -6872,7 +7234,7 @@ paths:
   /setBusinessAccountBio:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: set_business_account_bio
       description: >-
         Changes the bio of a managed business account<br/>Requires the
@@ -6909,7 +7271,7 @@ paths:
   /setBusinessAccountGiftSettings:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: set_business_account_gift_settings
       description: >-
         Changes the privacy settings pertaining to incoming gifts in a managed
@@ -6952,7 +7314,7 @@ paths:
   /setBusinessAccountName:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: set_business_account_name
       description: >-
         Changes the first and last name of a managed business
@@ -6995,7 +7357,7 @@ paths:
   /setBusinessAccountProfilePhoto:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: set_business_account_profile_photo
       description: >-
         Changes the profile photo of a managed business account<br/>Requires the
@@ -7038,7 +7400,7 @@ paths:
   /setBusinessAccountUsername:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: set_business_account_username
       description: >-
         Changes the username of a managed business account<br/>Requires the
@@ -8272,7 +8634,7 @@ paths:
   /transferBusinessAccountStars:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: transfer_business_account_stars
       description: >-
         Transfers Telegram Stars from the business account balance to the
@@ -8308,7 +8670,7 @@ paths:
   /transferGift:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: transfer_gift
       description: >-
         Transfers an owned unique gift to another user<br/>Requires the
@@ -8490,11 +8852,12 @@ paths:
         - available-methods
       summary: unpin_all_chat_messages
       description: >-
-        Use this method to clear the list of pinned messages in a chat<br/>If
-        the chat is not a private chat, the bot must be an administrator in the
-        chat for this to work and must have the &#39;can_pin_messages&#39;
-        administrator right in a supergroup or &#39;can_edit_messages&#39;
-        administrator right in a channel
+        Use this method to clear the list of pinned messages in a chat<br/>In
+        private chats and channel direct messages chats, no additional rights
+        are required to unpin all pinned messages<br/>Conversely, the bot must
+        be an administrator with the &#39;can_pin_messages&#39; right or the
+        &#39;can_edit_messages&#39; right to unpin all pinned messages in groups
+        and channels respectively
       externalDocs:
         url: https://core.telegram.org/bots/api#unpinallchatmessages
         description: telegram documentation
@@ -8610,10 +8973,11 @@ paths:
       summary: unpin_chat_message
       description: >-
         Use this method to remove a message from the list of pinned messages in
-        a chat<br/>If the chat is not a private chat, the bot must be an
-        administrator in the chat for this to work and must have the
-        &#39;can_pin_messages&#39; administrator right in a supergroup or
-        &#39;can_edit_messages&#39; administrator right in a channel
+        a chat<br/>In private chats and channel direct messages chats, all
+        messages can be unpinned<br/>Conversely, the bot must be an
+        administrator with the &#39;can_pin_messages&#39; right or the
+        &#39;can_edit_messages&#39; right to unpin messages in groups and
+        channels respectively
       externalDocs:
         url: https://core.telegram.org/bots/api#unpinchatmessage
         description: telegram documentation
@@ -8657,7 +9021,7 @@ paths:
   /upgradeGift:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: upgrade_gift
       description: >-
         Upgrades a given regular gift to a unique gift<br/>Requires the
@@ -8761,7 +9125,7 @@ paths:
   /verifyChat:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: verify_chat
       description: >-
         Verifies a chat on behalf of the organization which is represented by
@@ -8781,7 +9145,8 @@ paths:
                     - type: string
                   description: >-
                     Unique identifier for the target chat or username of the
-                    target channel (in the format @channelusername)
+                    target channel (in the format @channelusername)<br/>Channel
+                    direct messages chats can&#39;t be verified.
                 custom_description:
                   type: string
                   description: >-
@@ -8803,7 +9168,7 @@ paths:
   /verifyUser:
     post:
       tags:
-        - updating-messages
+        - available-methods
       summary: verify_user
       description: >-
         Verifies a user on behalf of the organization which is represented by
@@ -9235,7 +9600,8 @@ components:
             - type: string
           description: >-
             Unique identifier for the target chat or username of the target
-            supergroup (in the format @supergroupusername)
+            supergroup (in the format @supergroupusername)<br/>Channel direct
+            messages chats and channel chats aren&#39;t supported.
       required:
         - type
         - chat_id
@@ -9253,7 +9619,8 @@ components:
             - type: string
           description: >-
             Unique identifier for the target chat or username of the target
-            supergroup (in the format @supergroupusername)
+            supergroup (in the format @supergroupusername)<br/>Channel direct
+            messages chats and channel chats aren&#39;t supported.
       required:
         - type
         - chat_id
@@ -9271,7 +9638,8 @@ components:
             - type: string
           description: >-
             Unique identifier for the target chat or username of the target
-            supergroup (in the format @supergroupusername)
+            supergroup (in the format @supergroupusername)<br/>Channel direct
+            messages chats and channel chats aren&#39;t supported.
         user_id:
           type: number
           description: Unique identifier of the target user
@@ -9564,6 +9932,9 @@ components:
         is_forum:
           type: boolean
           description: True, if the supergroup chat is a forum (has topics enabled)
+        is_direct_messages:
+          type: boolean
+          description: True, if the chat is the direct messages chat of a channel
       required:
         - id
         - type
@@ -9639,6 +10010,11 @@ components:
           description: >-
             True, if the user is allowed to create, rename, close, and reopen
             forum topics; for supergroups only
+        can_manage_direct_messages:
+          type: boolean
+          description: >-
+            True, if the administrator can manage direct messages of the channel
+            and decline suggested posts; for channels only
       required:
         - is_anonymous
         - can_manage_chat
@@ -9839,6 +10215,9 @@ components:
         is_forum:
           type: boolean
           description: True, if the supergroup chat is a forum (has topics enabled)
+        is_direct_messages:
+          type: boolean
+          description: True, if the chat is the direct messages chat of a channel
         photo:
           $ref: '#/components/schemas/ChatPhoto'
           description: Chat photo
@@ -9868,6 +10247,11 @@ components:
         personal_chat:
           $ref: '#/components/schemas/Chat'
           description: For private chats, the personal channel of the user
+        parent_chat:
+          $ref: '#/components/schemas/Chat'
+          description: >-
+            Information about the corresponding channel chat; for direct
+            messages chats only
         available_reactions:
           type: array
           items:
@@ -10205,6 +10589,11 @@ components:
           description: >-
             True, if the user is allowed to create, rename, close, and reopen
             forum topics; for supergroups only
+        can_manage_direct_messages:
+          type: boolean
+          description: >-
+            True, if the administrator can manage direct messages of the channel
+            and decline suggested posts; for channels only
         custom_title:
           type: string
           description: Custom title for this user
@@ -10726,6 +11115,19 @@ components:
             have been exempted by administrators<br/>Defaults to 0.
       required:
         - are_direct_messages_enabled
+    DirectMessagesTopic:
+      type: object
+      properties:
+        topic_id:
+          type: number
+          description: Unique identifier of the topic
+        user:
+          $ref: '#/components/schemas/User'
+          description: >-
+            Information about the user that created the topic<br/>Currently, it
+            is always present
+      required:
+        - topic_id
     Document:
       type: object
       properties:
@@ -11140,6 +11542,9 @@ components:
           description: >-
             The number of remaining gifts of this type that can be sent; for
             limited gifts only
+        publisher_chat:
+          $ref: '#/components/schemas/Chat'
+          description: Information about the chat that published the gift
       required:
         - id
         - sticker
@@ -11394,8 +11799,8 @@ components:
             their chats, open that chat and insert the bot&#39;s username and
             the specified inline query in the input field<br/>May be empty, in
             which case just the bot&#39;s username will be inserted<br/>Not
-            supported for messages sent on behalf of a Telegram Business
-            account.
+            supported for messages sent in channel direct messages chats and on
+            behalf of a Telegram Business account.
         switch_inline_query_current_chat:
           type: string
           description: >-
@@ -11405,15 +11810,16 @@ components:
             will be inserted<br/>.<br/>This offers a quick way for the user to
             open your bot in inline mode in the same chat - good for selecting
             something from multiple options<br/>Not supported in channels and
-            for messages sent on behalf of a Telegram Business account.
+            for messages sent in channel direct messages chats and on behalf of
+            a Telegram Business account.
         switch_inline_query_chosen_chat:
           $ref: '#/components/schemas/SwitchInlineQueryChosenChat'
           description: >-
             If set, pressing the button will prompt the user to select one of
             their chats of the specified type, open that chat and insert the
             bot&#39;s username and the specified inline query in the input
-            field<br/>Not supported for messages sent on behalf of a Telegram
-            Business account.
+            field<br/>Not supported for messages sent in channel direct messages
+            chats and on behalf of a Telegram Business account.
         copy_text:
           $ref: '#/components/schemas/CopyTextButton'
           description: >-
@@ -13905,6 +14311,11 @@ components:
           description: >-
             Unique identifier of a message thread to which the message belongs;
             for supergroups only
+        direct_messages_topic:
+          $ref: '#/components/schemas/DirectMessagesTopic'
+          description: >-
+            Information about the direct messages chat topic that contains the
+            message
         from:
           $ref: '#/components/schemas/User'
           description: >-
@@ -13970,6 +14381,9 @@ components:
         reply_to_story:
           $ref: '#/components/schemas/Story'
           description: For replies to a story, the original story
+        reply_to_checklist_task_id:
+          type: number
+          description: Identifier of the specific checklist task that is being replied to
         via_bot:
           $ref: '#/components/schemas/User'
           description: Bot through which the message was sent
@@ -13984,6 +14398,12 @@ components:
           description: >-
             True, if the message was sent by an implicit action, for example, as
             an away or a greeting business message, or as a scheduled message
+        is_paid_post:
+          type: boolean
+          description: >-
+            True, if the message is a paid post<br/>Note that such posts must
+            not be deleted for 24 hours to receive the payment and can&#39;t be
+            edited.
         media_group_id:
           type: string
           description: >-
@@ -14014,6 +14434,13 @@ components:
           description: >-
             Options used for link preview generation for the message, if it is a
             text message and link preview options were changed
+        suggested_post_info:
+          $ref: '#/components/schemas/SuggestedPostInfo'
+          description: >-
+            Information about suggested post parameters if the message is a
+            suggested post in a channel direct messages chat<br/>If the message
+            is an approved or declined suggested post, then it can&#39;t be
+            edited.
         effect_id:
           type: string
           description: Unique identifier of the message effect added to the message
@@ -14262,6 +14689,21 @@ components:
         paid_message_price_changed:
           $ref: '#/components/schemas/PaidMessagePriceChanged'
           description: 'Service message: the price for paid messages has changed in the chat'
+        suggested_post_approved:
+          $ref: '#/components/schemas/SuggestedPostApproved'
+          description: 'Service message: a suggested post was approved'
+        suggested_post_approval_failed:
+          $ref: '#/components/schemas/SuggestedPostApprovalFailed'
+          description: 'Service message: approval of a suggested post has failed'
+        suggested_post_declined:
+          $ref: '#/components/schemas/SuggestedPostDeclined'
+          description: 'Service message: a suggested post was declined'
+        suggested_post_paid:
+          $ref: '#/components/schemas/SuggestedPostPaid'
+          description: 'Service message: payment for a suggested post was received'
+        suggested_post_refunded:
+          $ref: '#/components/schemas/SuggestedPostRefunded'
+          description: 'Service message: payment for a suggested post was refunded'
         video_chat_scheduled:
           $ref: '#/components/schemas/VideoChatScheduled'
           description: 'Service message: video chat scheduled'
@@ -15574,7 +16016,7 @@ components:
             If the message to be replied to is from a different chat, unique
             identifier for the chat or username of the channel (in the format
             @channelusername)<br/>Not supported for messages sent on behalf of a
-            business account.
+            business account and messages from channel direct messages chats.
         allow_sending_without_reply:
           type: boolean
           description: >-
@@ -15610,6 +16052,9 @@ components:
         quote_position:
           type: number
           description: Position of the quote in the original message in UTF-16 code units
+        checklist_task_id:
+          type: number
+          description: Identifier of the specific checklist task to be replied to
       required:
         - message_id
     ResponseParameters:
@@ -16148,6 +16593,162 @@ components:
         - invoice_payload
         - telegram_payment_charge_id
         - provider_payment_charge_id
+    SuggestedPostApprovalFailed:
+      type: object
+      properties:
+        price:
+          $ref: '#/components/schemas/SuggestedPostPrice'
+          description: Expected price of the post
+        suggested_post_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the suggested post whose approval has
+            failed<br/>Note that the Message object in this field will not
+            contain the reply_to_message field even if it itself is a reply.
+      required:
+        - price
+    SuggestedPostApproved:
+      type: object
+      properties:
+        send_date:
+          type: number
+          description: Date when the post will be published
+        suggested_post_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the suggested post<br/>Note that the Message
+            object in this field will not contain the reply_to_message field
+            even if it itself is a reply.
+        price:
+          $ref: '#/components/schemas/SuggestedPostPrice'
+          description: Amount paid for the post
+      required:
+        - send_date
+    SuggestedPostDeclined:
+      type: object
+      properties:
+        suggested_post_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the suggested post<br/>Note that the Message
+            object in this field will not contain the reply_to_message field
+            even if it itself is a reply.
+        comment:
+          type: string
+          description: Comment with which the post was declined
+    SuggestedPostInfo:
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+            - pending
+            - approved
+            - declined
+          description: >-
+            State of the suggested post<br/>Currently, it can be one of
+            “pending”, “approved”, “declined”.
+        price:
+          $ref: '#/components/schemas/SuggestedPostPrice'
+          description: >-
+            Proposed price of the post<br/>If the field is omitted, then the
+            post is unpaid.
+        send_date:
+          type: number
+          description: >-
+            Proposed send date of the post<br/>If the field is omitted, then the
+            post can be published at any time within 30 days at the sole
+            discretion of the user or administrator who approves it.
+      required:
+        - state
+    SuggestedPostPaid:
+      type: object
+      properties:
+        currency:
+          type: string
+          enum:
+            - XTR
+            - TON
+          description: >-
+            Currency in which the payment was made<br/>Currently, one of “XTR”
+            for Telegram Stars or “TON” for toncoins
+        suggested_post_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the suggested post<br/>Note that the Message
+            object in this field will not contain the reply_to_message field
+            even if it itself is a reply.
+        amount:
+          type: number
+          description: >-
+            The amount of the currency that was received by the channel in
+            nanotoncoins; for payments in toncoins only
+        star_amount:
+          $ref: '#/components/schemas/StarAmount'
+          description: >-
+            The amount of Telegram Stars that was received by the channel; for
+            payments in Telegram Stars only
+      required:
+        - currency
+    SuggestedPostParameters:
+      type: object
+      properties:
+        price:
+          $ref: '#/components/schemas/SuggestedPostPrice'
+          description: >-
+            Proposed price for the post<br/>If the field is omitted, then the
+            post is unpaid.
+        send_date:
+          type: number
+          description: >-
+            Proposed send date of the post<br/>If specified, then the date must
+            be between 300 second and 2678400 seconds (30 days) in the
+            future<br/>If the field is omitted, then the post can be published
+            at any time within 30 days at the sole discretion of the user who
+            approves it.
+    SuggestedPostPrice:
+      type: object
+      properties:
+        currency:
+          type: string
+          enum:
+            - XTR
+            - TON
+          description: >-
+            Currency in which the post will be paid<br/>Currently, must be one
+            of “XTR” for Telegram Stars or “TON” for toncoins
+        amount:
+          type: number
+          description: >-
+            The amount of the currency that will be paid for the post in the
+            smallest units of the currency, i.e<br/>Telegram Stars or
+            nanotoncoins<br/>Currently, price in Telegram Stars must be between
+            5 and 100000, and price in nanotoncoins must be between 10000000 and
+            10000000000000.
+      required:
+        - currency
+        - amount
+    SuggestedPostRefunded:
+      type: object
+      properties:
+        reason:
+          type: string
+          enum:
+            - post_deleted
+            - payment_refunded
+          description: >-
+            Reason for the refund<br/>Currently, one of “post_deleted” if the
+            post was deleted within 24 hours of being posted or removed from
+            scheduled messages without being posted, or “payment_refunded” if
+            the payer refunded their payment.
+        suggested_post_message:
+          $ref: '#/components/schemas/Message'
+          description: >-
+            Message containing the suggested post<br/>Note that the Message
+            object in this field will not contain the reply_to_message field
+            even if it itself is a reply.
+      required:
+        - reason
     SwitchInlineQueryChosenChat:
       type: object
       properties:
@@ -16388,6 +16989,9 @@ components:
         backdrop:
           $ref: '#/components/schemas/UniqueGiftBackdrop'
           description: Backdrop of the gift
+        publisher_chat:
+          $ref: '#/components/schemas/Chat'
+          description: Information about the chat that published the gift
       required:
         - base_name
         - name
