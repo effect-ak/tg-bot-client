@@ -8,19 +8,20 @@ import { executeTgBotMethod } from "./execute";
 export class ClientFileService
   extends Context.Tag("ClientFileService")<ClientFileService, {
     getFile: (input: GetFile) => ReturnType<typeof getFile>
-  }>() { }
+  }>() {
 
-export const ClientFileServiceDefault =
-  Micro.gen(function* () {
-    return {
-      getFile
-    } as const;
-  });
+    static live = () => {
+      return ClientFileService.context({
+        getFile
+      })
+    }
 
-export type GetFile = {
+  }
+
+export interface GetFile {
   fileId: string
   type?: string
-};
+}
 
 const getFile = ({ fileId, type }: GetFile) =>
   getFileBytes(fileId).pipe(

@@ -6,7 +6,7 @@ import { WebAppPage } from "#codegen/scrape/webapp/_model";
 
 import { WebAppCodegenRuntime } from "#codegen/runtime";
 
-type WebappFixture = {
+interface WebappFixture {
   readonly webAppPage: WebAppPage
 }
 
@@ -29,7 +29,7 @@ const webappPromise =
 
 export const webappFixture =
   test.extend<WebappFixture>({
-    webAppPage: async ({}, use) => {
+    webAppPage: async (_, use) => {
       use((await webappPromise).webAppPage);
     }
   });

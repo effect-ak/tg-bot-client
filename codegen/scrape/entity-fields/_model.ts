@@ -3,7 +3,7 @@ import { Array, Data, Option } from "effect";
 import { OpenAPIV3_1 } from "openapi-types";
 import { NormalType } from "#scrape/normal-type/_model.js";
 
-export type EntityField = {
+export interface EntityField {
   name: string,
   type: NormalType,
   description: string[],

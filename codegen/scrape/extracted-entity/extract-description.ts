@@ -9,7 +9,7 @@ import { ExtractEntityError } from "./errors.js";
 
 const description_split_regex = /(\.\s{1,})|(\.<br>)/g;
 const contains_letters_regex = /\w{1,}/;
-const type_tags_regex = /\w+(?=\<\/(a|em)>)/g;
+const type_tags_regex = /\w+(?=<\/(a|em)>)/g;
 const html_tags_regex = /<\/?[^>]+>/g;
 
 const isReturnSentence =
@@ -27,7 +27,7 @@ export const extractEntityDescription = (
 
   const lines = [] as string[];
 
-  let returnTypes = [] as string[];
+  const returnTypes = [] as string[];
 
   const returnTypeOverridden = returnTypeOverrides[entityName];
 

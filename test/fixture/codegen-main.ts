@@ -7,12 +7,12 @@ import { OpenapiWriterService } from "#codegen-service/openapi-writer/_service.j
 import { TsMorpthWriter } from "#codegen-service/ts-morph-writer/_service";
 import { BotApiCodegenRuntime } from "#codegen/runtime";
 
-type Fixture = {
+interface Fixture {
   readonly apiPage: DocPage
   readonly codeWriter: BotApiCodeWriterService
   readonly openApiWriter: OpenapiWriterService
   readonly tsMorph: TsMorpthWriter
-};
+}
 
 const MainDependencies =
   Effect.gen(function* () {
@@ -37,19 +37,19 @@ const mainPromise =
 
 export const fixture =
   test.extend<Fixture>(({
-    apiPage: async ({ }, use) => {
+    apiPage: async (_, use) => {
       const { apiPage } = await mainPromise;
       use(apiPage);
     },
-    codeWriter: async ({ }, use) => {
+    codeWriter: async (_, use) => {
       const { codeWriter } = await mainPromise;
       use(codeWriter);
     },
-    openApiWriter: async ({ }, use) => {
+    openApiWriter: async (_, use) => {
       const { openApiWriter } = await mainPromise;
       use(openApiWriter);
     },
-    tsMorph: async ({ }, use) => {
+    tsMorph: async (_, use) => {
       const { tsMorph} = await mainPromise;
       use(tsMorph);
     },

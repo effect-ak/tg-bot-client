@@ -13,7 +13,7 @@ type ExtractEntityErrorCode = [
   "Method:ReturnTypeNotFound"
 ][number]
 
-type ErrorDetails = {
+interface ErrorDetails {
   entityName?: string,
   columnName?: "name" | "type" | "description" | "required",
   sentenceWithReturn?: string

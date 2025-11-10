@@ -18,7 +18,7 @@ export type BotUpdatesHandlers = {
   readonly [K in AvailableUpdateTypes as `on_${K}`]?: HandleUpdateFunction<NonNullable<Update[K]>>;
 };
 
-export type HandleBatchUpdateFunction = {
+export interface HandleBatchUpdateFunction {
   readonly on_batch: (update: Update[]) => boolean | PromiseLike<boolean>
 }
 

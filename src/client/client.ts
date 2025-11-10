@@ -4,14 +4,14 @@ import * as Context from "effect/Context";
 import type { Api } from "#/client/specification/api";
 import { executeTgBotMethod } from "./execute";
 import { TgBotApiToken } from "./config";
-import { GetFile, ClientFileService, ClientFileServiceDefault } from "./client-file";
+import { GetFile, ClientFileService } from "./client-file";
 
 export interface TgBotClient {
   readonly execute: <M extends keyof Api>(method: M, input: Parameters<Api[M]>[0]) => Promise<ReturnType<Api[M]>>
   readonly getFile: (input: GetFile) => Promise<File>
 }
 
-type MakeTgClient = {
+interface MakeTgClient {
   bot_token: string
 }
 
@@ -51,6 +51,5 @@ const createEffect = ({
     }
 
   }).pipe(
-    Micro.provideServiceEffect(ClientFileService, ClientFileServiceDefault)
+    Micro.provideContext(ClientFileService.live())
   );
-

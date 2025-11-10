@@ -23,7 +23,7 @@ export const makePath =
         requestBody: {
           content: {
             "application/json": {
-              ...(inputSchema ? { schema: inputSchema as any }: undefined)
+              ...(inputSchema ? { schema: inputSchema as object }: undefined)
             }
           }
         },
@@ -32,7 +32,7 @@ export const makePath =
             description: "success",
             content: {
               "application/json": {
-                schema: outputSchema as any,
+                schema: outputSchema as object,
                 example: method.returnType.getTsType()
               },
             }

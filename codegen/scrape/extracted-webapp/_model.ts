@@ -6,7 +6,7 @@ import { EntityField } from "#scrape/entity-fields/_model";
 import { WebAppPage } from "#scrape/webapp/_model";
 import { extractFromPage } from "./extract";
 
-export type ExtractedWebAppShape = {
+export interface ExtractedWebAppShape {
   webapp: ExtractedEntityShape,
   fields: EntityField[],
   types: ExtractedType[]

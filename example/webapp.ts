@@ -6,7 +6,7 @@ interface Telegram {
 
 declare const Telegram: Telegram;
 
-const saveData = () => {
+export const saveData = () => {
 
   Telegram.WebApp.CloudStorage.setItem("key1", "some data", (error) => {
     if (error == null) {
@@ -16,6 +16,6 @@ const saveData = () => {
 
 }
 
-const exit = () => {
+export const exit = () => {
   Telegram.WebApp.close();
 }

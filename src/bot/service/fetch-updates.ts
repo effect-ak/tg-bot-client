@@ -4,7 +4,7 @@ import * as Micro from "effect/Micro";
 import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
 import { executeTgBotMethod } from "#/client/execute";
 
-type State = {
+interface State {
   lastUpdateId: number | undefined
   emptyResponses: number
 }

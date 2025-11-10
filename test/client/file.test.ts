@@ -4,7 +4,7 @@ import { fixture } from "./fixture.js";
 
 describe("telegram bot client, download file", () => {
 
-  fixture("get file content", async ({ client, chat_id, skip }) => {
+  fixture("get file content", async ({ client, chat_id }) => {
 
     const document =
       await client.execute("send_document", {

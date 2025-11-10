@@ -5,7 +5,7 @@ import type { EntityFields } from "../entity-fields/_model.js"
 import type { ExtractedEntityShape } from "../extracted-entity/_model.js"
 import { makeFrom } from "./factory.js"
 
-export type ExtractedMethodShape = {
+export interface ExtractedMethodShape {
   methodName: string
   returnType: NormalType
   methodDescription: string[]

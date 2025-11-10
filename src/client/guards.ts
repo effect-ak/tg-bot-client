@@ -1,6 +1,6 @@
 import type { Update } from "./specification/types";
 
-export type FileContent = {
+export interface FileContent {
   file_content: Uint8Array<ArrayBuffer>
   file_name: string
 }
@@ -11,7 +11,7 @@ export const isFileContent =
     ("file_content" in input && input.file_content instanceof Uint8Array) &&
     ("file_name" in input && typeof input.file_name == "string");
 
-export type TgBotApiResponseSchema = {
+export interface TgBotApiResponseSchema {
   ok: boolean
   error_code?: number
   description?: string

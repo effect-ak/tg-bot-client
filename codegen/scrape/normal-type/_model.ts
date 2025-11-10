@@ -6,7 +6,7 @@ import { makeFrom } from "./factory.js"
 import { mapPseudoTypeToTsType } from "./pseudo-type.js";
 import { makeOpenApiType } from "./openapi-type.js";
 
-export type NormalTypeShape = {
+export interface NormalTypeShape {
   typeNames: Array.NonEmptyReadonlyArray<string>
   openApiType?: OpenAPIV3_1.SchemaObject 
   isOverridden?: boolean

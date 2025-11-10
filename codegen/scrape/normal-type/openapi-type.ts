@@ -61,6 +61,6 @@ const makeTypeOrReference =
     }
 
     return {
-      type: input as any
+      type: input as OpenAPIV3_1.NonArraySchemaObjectType
     }
   }

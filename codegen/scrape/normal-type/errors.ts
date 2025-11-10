@@ -1,6 +1,6 @@
 import { Data, Either } from "effect";
 
-type ErrorShape = {
+interface ErrorShape {
   error: [
     "Failed", "ReturnTypeSentenceNotFound", "EmptyType", "NoEnumFound"
   ][number],

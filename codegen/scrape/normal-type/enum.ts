@@ -1,7 +1,7 @@
 // Regex to match text within “ ” or " "
 const regexQuotes = /["“]([^"”]+)["”]/g;
 const regexFallback = /(?:must be|always|can be)\s+(?:one\s+of\s+)?["“]?([^"”.,]+)["”]?/i;
-const enumRegex = /^[A-Za-z0-9_\/\p{Emoji}\u200D]+$/u;
+const enumRegex = /^[A-Za-z0-9_/\p{Emoji}\u200D]+$/u;
 
 const enumPresenceIndicatiors = ["must be", "always", "one of", "can be"];
 

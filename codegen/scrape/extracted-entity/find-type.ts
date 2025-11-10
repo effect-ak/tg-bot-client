@@ -9,7 +9,7 @@ export const findTypeNode = (
 ): Either.Either<HtmlElement, ExtractEntityError> => {
 
   let resultNode = node.nextElementSibling;
-  let run = true;
+  const run = true;
   let step = 1;
 
   while (run) {

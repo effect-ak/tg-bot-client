@@ -5,7 +5,7 @@ import { BatchUpdateResult, handleUpdates } from "#/bot/internal/handle-update";
 import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
 import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates";
 
-type State = {
+interface State {
   fiber: Micro.MicroFiber<BatchUpdateResult, TgBotClientError | FetchUpdatesError> | undefined
 }
 

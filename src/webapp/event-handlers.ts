@@ -5,7 +5,7 @@ export type BindOrUnbindEventHandler =
     eventName: K, handler: EventHandlers[K]
   ) => void
 
-export type EventHandlers = {
+export interface EventHandlers {
   activated: () => void
   deactivated: () => void
   themeChanged: () => void

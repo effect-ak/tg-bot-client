@@ -8,7 +8,7 @@ export class BotUpdateHandlersTag
     BotMode
   >() { }
 
-export type PollSettings = {
+export interface PollSettings {
   log_level: "info" | "debug"
   on_error: "stop" | "continue"
   batch_size: number

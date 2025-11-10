@@ -5,7 +5,7 @@ import type { NormalType, NormalTypeShape } from "#scrape/normal-type/_model.js"
 import type { EntityFields } from "#codegen/scrape/entity-fields/_model.js"
 import { extractFromNode } from "./factory.js"
 
-export type ExtractedEntityShape = {
+export interface ExtractedEntityShape {
   entityName: string
   entityDescription: {
     lines: string[]

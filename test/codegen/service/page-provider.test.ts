@@ -5,7 +5,7 @@ import { fixture } from "../../fixture/codegen-main";
 
 describe("page provider service", () => {
 
-  fixture("extract all", async ({ apiPage, skip }) => {    
+  fixture("extract all", async ({ apiPage }) => {    
 
     const all = ExtractedEntities.make(apiPage);
 

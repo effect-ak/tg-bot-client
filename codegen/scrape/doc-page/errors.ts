@@ -2,7 +2,7 @@ import { Data } from "effect";
 
 type DocPageErrorCode = "EntityNoFound"
 
-type ErrorDetails = {
+interface ErrorDetails {
   entityName?: string,
 }
 

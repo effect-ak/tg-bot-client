@@ -9,7 +9,7 @@ const fetchSpy = vi.spyOn(global, "fetch");
 
 describe("telegram bot client, execute method", () => {
 
-  fixture("send dice", async ({ chat_id, skip, context }) => {
+  fixture("send dice", async ({ chat_id, context }) => {
 
     // skip();
 
@@ -98,7 +98,7 @@ describe("telegram bot client, execute method", () => {
 
   });
 
-  fixture("send message with action", async ({ chat_id, client, skip }) => {
+  fixture("send message with action", async ({ chat_id, client }) => {
 
     await client.execute("send_chat_action", {
       chat_id,

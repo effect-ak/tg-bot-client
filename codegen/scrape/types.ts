@@ -1,4 +1,4 @@
-export type ExtractedEntityField = {
+export interface ExtractedEntityField {
   entityName: string,
   fieldName: string,
   pseudoType: string,

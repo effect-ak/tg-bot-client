@@ -4,16 +4,16 @@ import { makeTgBotClient, TgBotClient } from "#/client/client.js";
 import { Context } from "effect";
 import { TgBotApiToken } from "#/client";
 
-type Fixture = {
+interface Fixture {
   readonly token: string
   readonly client: TgBotClient
   readonly chat_id: string
   readonly context: Context.Context<TgBotApiToken>
-};
+}
 
 export const fixture = test.extend<Fixture>(({
   
-  token: async ({}, use) => {
+  token: async (_, use) => {
     const token = process.env["bot_token"];
     if (!token) throw Error("bot_token not defined in config.json");
     use(token);
@@ -27,7 +27,7 @@ export const fixture = test.extend<Fixture>(({
       });
     use(client);
   },
-  chat_id: async ({}, use) => {
+  chat_id: async (_, use) => {
     const chatId = process.env["chat_id"];
     if (!chatId) throw Error("chat_id not defined in config.json");
     use(chatId)

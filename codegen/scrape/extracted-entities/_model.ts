@@ -5,7 +5,7 @@ import type { ExtractedType } from "#codegen/scrape/extracted-type/_model.js";
 import { extractEntities } from "./extract.js";
 import { DocPage } from "#scrape/doc-page/_model.js";
 
-export type ExtractedEntitiesShape = {
+export interface ExtractedEntitiesShape {
   methods: ExtractedMethod[],
   types: ExtractedType[]
 }
