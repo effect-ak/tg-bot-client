@@ -3,9 +3,8 @@ import * as Micro from "effect/Micro";
 
 import type { Api } from "#/client/specification/api";
 import { TgBotClientError } from "#/client/errors";
-import { isTgBotApiResponse } from "#/client/guards";
+import { isFileContent, isTgBotApiResponse } from "#/client/guards";
 import { TgBotApiBaseUrl, TgBotApiToken } from "#/client/config";
-import { makePayload } from "./payload";
 
 export const executeTgBotMethod = <M extends keyof Api>(
   method: M,
@@ -59,3 +58,29 @@ export const executeTgBotMethod = <M extends keyof Api>(
     return response.result as ReturnType<Api[M]>;
 
   });
+
+export const makePayload = (
+  body: object
+): FormData | undefined => {
+
+  const entries = Object.entries(body);
+
+  if (entries.length == 0) return undefined;
+
+  const result = new FormData();
+
+  for (const [key, value] of entries) {
+    if (!value) continue;
+
+    if (typeof value != "object") {
+      result.append(key, `${value}`)
+    } else if (isFileContent(value)) {
+      result.append(key, new Blob([value.file_content]), value.file_name);
+    } else {
+      result.append(key, JSON.stringify(value))
+    }
+
+  }
+
+  return result;
+}

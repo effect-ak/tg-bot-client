@@ -3,7 +3,7 @@ import { describe, expect, assert, vi } from "vitest";
 import { fixture } from "./fixture.js";
 import { MESSAGE_EFFECTS } from "#/const.js";
 import { Micro } from "effect";
-import { executeTgBotMethod } from "#/client/execute-request/execute.js";
+import { executeTgBotMethod } from "#/client/execute.js";
 
 const fetchSpy = vi.spyOn(global, "fetch");
 

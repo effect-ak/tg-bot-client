@@ -1,7 +1,7 @@
 import * as Micro from "effect/Micro";
 import * as Data from "effect/Data";
 import * as Fn from "effect/Function";
-import { executeTgBotMethod } from "#/client/execute-request/execute";
+import { executeTgBotMethod } from "#/client/execute";
 import { Update } from "#/client/specification/types";
 import { MESSAGE_EFFECTS } from "#/const";
 import type {

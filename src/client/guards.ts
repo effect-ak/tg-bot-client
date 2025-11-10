@@ -1,7 +1,7 @@
 import type { Update } from "./specification/types";
 
 export type FileContent = {
-  file_content: Uint8Array
+  file_content: Uint8Array<ArrayBuffer>
   file_name: string
 }
 

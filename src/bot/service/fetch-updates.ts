@@ -2,7 +2,7 @@ import * as Context from "effect/Context";
 import * as Data from "effect/Data";
 import * as Micro from "effect/Micro";
 import { BotPollSettingsTag } from "#/bot/internal/poll-settings";
-import { executeTgBotMethod } from "#/client/execute-request/execute";
+import { executeTgBotMethod } from "#/client/execute";
 
 type State = {
   lastUpdateId: number | undefined

@@ -1,6 +1,6 @@
 import { test } from "vitest";
 
-import { makeTgBotClient, TgBotClient } from "#/client/_client.js";
+import { makeTgBotClient, TgBotClient } from "#/client/client.js";
 import { Context } from "effect";
 import { TgBotApiToken } from "#/client";
 

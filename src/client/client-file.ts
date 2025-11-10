@@ -1,39 +1,38 @@
 import * as Micro from "effect/Micro";
+import * as Context from "effect/Context";
 
-import { TgBotClientError } from "../errors";
-import { TgBotApiBaseUrl, TgBotApiToken } from "../config";
-import { executeTgBotMethod } from "../execute-request/execute";
+import { TgBotClientError } from "./errors";
+import { TgBotApiBaseUrl, TgBotApiToken } from "./config";
+import { executeTgBotMethod } from "./execute";
+
+export class ClientFileService
+  extends Context.Tag("ClientFileService")<ClientFileService, {
+    getFile: (input: GetFile) => ReturnType<typeof getFile>
+  }>() { }
+
+export const ClientFileServiceDefault =
+  Micro.gen(function* () {
+    return {
+      getFile
+    } as const;
+  });
 
 export type GetFile = {
   fileId: string
   type?: string
 };
 
-export const getFile = ({ fileId, type }: GetFile) =>
+const getFile = ({ fileId, type }: GetFile) =>
   getFileBytes(fileId).pipe(
     Micro.andThen(
       ({ content, file_name }) =>
-        new File([ content ], file_name, {
+        new File([content], file_name, {
           ...(type ? { type } : undefined),
         })
     )
   );
 
-export const getFileAsBase64String = ({
-  fileId,
-  type,
-}: GetFile & { type: string }) =>
-  getFileBytes(fileId).pipe(
-    Micro.andThen(({ content, file_name }) => {
-      const encoded = Buffer.from(content).toString("base64");
-      return {
-        encoded: `data:${type};base64,${encoded}`,
-        file_name
-      }
-    })
-  );
-
-export const getFileBytes = (fileId: string) =>
+const getFileBytes = (fileId: string) =>
   Micro.gen(function* () {
     const response = yield* executeTgBotMethod("get_file", { file_id: fileId });
     const file_path = response.file_path;
