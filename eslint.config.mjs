@@ -1,9 +1,9 @@
 // @ts-check
 
-import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
-import tseslint from 'typescript-eslint';
-import eslintConfigPrettier from "eslint-config-prettier/flat";
+import eslint from "@eslint/js"
+import { defineConfig } from "eslint/config"
+import tseslint from "typescript-eslint"
+import eslintConfigPrettier from "eslint-config-prettier/flat"
 
 export default defineConfig(
   eslint.configs.recommended,
@@ -11,10 +11,6 @@ export default defineConfig(
   tseslint.configs.stylistic,
   eslintConfigPrettier,
   {
-    ignores: [
-      "src/client/specification",
-      "src/webapp/specification",
-      "dist"
-    ]
+    ignores: ["src/client/specification", "src/webapp/specification", "dist", "example"]
   }
-);
+)

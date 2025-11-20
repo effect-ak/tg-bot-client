@@ -1,77 +1,78 @@
-import { Array, Either, pipe, Option } from "effect";
+import { Array, Either, pipe, Option } from "effect"
 
-import type { HtmlElement } from "#codegen/types.js";
-import { mapPseudoTypeToTsType } from "#codegen/scrape/normal-type/pseudo-type.js";
-import { isComplexType, startsWithUpperCase } from "#scrape/types.js";
-import type { ExtractedEntityShape } from "./_model.js";
-import { new_entity_tag_set, returnTypeOverrides } from "./const.js";
-import { ExtractEntityError } from "./errors.js";
+import type { HtmlElement } from "#codegen/types.js"
+import { mapPseudoTypeToTsType } from "#codegen/scrape/normal-type/pseudo-type.js"
+import { isComplexType, startsWithUpperCase } from "#scrape/types.js"
+import type { ExtractedEntityShape } from "./_model.js"
+import { new_entity_tag_set, returnTypeOverrides } from "./const.js"
+import { ExtractEntityError } from "./errors.js"
 
-const description_split_regex = /(\.\s{1,})|(\.<br>)/g;
-const contains_letters_regex = /\w{1,}/;
-const type_tags_regex = /\w+(?=<\/(a|em)>)/g;
-const html_tags_regex = /<\/?[^>]+>/g;
+const description_split_regex = /(\.\s{1,})|(\.<br>)/g
+const contains_letters_regex = /\w{1,}/
+const type_tags_regex = /\w+(?=<\/(a|em)>)/g
+const html_tags_regex = /<\/?[^>]+>/g
 
-const isReturnSentence =
-  (_: string) =>
-    _.startsWith("On success") ||
-    _.endsWith("is returned") ||
-    _.startsWith("Returns ");
+const isReturnSentence = (_: string) =>
+  _.startsWith("On success") ||
+  _.endsWith("is returned") ||
+  _.startsWith("Returns ")
 
-export const removeHtmlTags =
-  (input: string) => input.replaceAll(html_tags_regex, "");
+export const removeHtmlTags = (input: string) =>
+  input.replaceAll(html_tags_regex, "")
 
 export const extractEntityDescription = (
-  node: HtmlElement, entityName: string
-): Either.Either<ExtractedEntityShape["entityDescription"], ExtractEntityError> => {
+  node: HtmlElement,
+  entityName: string
+): Either.Either<
+  ExtractedEntityShape["entityDescription"],
+  ExtractEntityError
+> => {
+  const lines = [] as string[]
 
-  const lines = [] as string[];
+  const returnTypes = [] as string[]
 
-  const returnTypes = [] as string[];
+  const returnTypeOverridden = returnTypeOverrides[entityName]
 
-  const returnTypeOverridden = returnTypeOverrides[entityName];
-
-  let currentNode: HtmlElement | null = node.nextElementSibling;
+  let currentNode: HtmlElement | null = node.nextElementSibling
 
   while (currentNode) {
+    if (!currentNode || new_entity_tag_set.has(currentNode.tagName)) break
 
-    if (!currentNode || new_entity_tag_set.has(currentNode.tagName)) break;
-
-    const splittedDescription = currentNode.innerHTML.split(description_split_regex);
+    const splittedDescription = currentNode.innerHTML.split(
+      description_split_regex
+    )
 
     for (const line of splittedDescription) {
+      if (!line || !contains_letters_regex.test(line)) continue
 
-      if (!line || !contains_letters_regex.test(line)) continue;
-
-      const plainLine = removeHtmlTags(line);
+      const plainLine = removeHtmlTags(line)
 
       if (!returnTypeOverridden && isReturnSentence(plainLine)) {
-        const typeNames =
-          pipe(
-            Array.fromIterable(line.matchAll(type_tags_regex)),
-            Array.filterMap(_ => {
-              const originName = _[0];
-              if (!isComplexType(originName)) {
-                return Option.none();
-              }
-              const name = mapPseudoTypeToTsType(originName);
-              const isArray = plainLine.toLowerCase().includes(`an array of ${name.toLowerCase()}`);
-              return Option.some(`${name}${isArray ? "[]" : ""}`);
-            })
-          );
+        const typeNames = pipe(
+          Array.fromIterable(line.matchAll(type_tags_regex)),
+          Array.filterMap((_) => {
+            const originName = _[0]
+            if (!isComplexType(originName)) {
+              return Option.none()
+            }
+            const name = mapPseudoTypeToTsType(originName)
+            const isArray = plainLine
+              .toLowerCase()
+              .includes(`an array of ${name.toLowerCase()}`)
+            return Option.some(`${name}${isArray ? "[]" : ""}`)
+          })
+        )
 
         if (Array.isNonEmptyArray(typeNames)) {
-          returnTypes.push(...typeNames);
-          continue;
+          returnTypes.push(...typeNames)
+          continue
         }
-      };
+      }
 
-      lines.push(plainLine);
-
+      lines.push(plainLine)
     }
 
-    currentNode = currentNode.nextElementSibling;
-
+    currentNode = currentNode.nextElementSibling
   }
 
   if (Array.isNonEmptyArray(lines) && lines[0].length != 0) {
@@ -90,33 +91,28 @@ export const extractEntityDescription = (
     }
   } else if (returnTypes.length == 0 && !startsWithUpperCase(entityName)) {
     console.warn("No return type found for", {
-      entityName,
-    });
-  };
-
-  return ExtractEntityError.left("Description:Empty", { entityName });
-}
-
-export const extractFieldDescription =
-  (input: HtmlElement) => {
-
-    const splitted = input.innerHTML.split(description_split_regex);
-
-    const result = [] as string[];
-
-    for (const line of splitted) {
-
-      if (!line || !contains_letters_regex.test(line)) continue;
-
-      result.push(removeHtmlTags(replaceImgWithAlt(line)));
-
-    }
-
-    return result
-
+      entityName
+    })
   }
 
+  return ExtractEntityError.left("Description:Empty", { entityName })
+}
+
+export const extractFieldDescription = (input: HtmlElement) => {
+  const splitted = input.innerHTML.split(description_split_regex)
+
+  const result = [] as string[]
+
+  for (const line of splitted) {
+    if (!line || !contains_letters_regex.test(line)) continue
+
+    result.push(removeHtmlTags(replaceImgWithAlt(line)))
+  }
+
+  return result
+}
+
 function replaceImgWithAlt(text: string): string {
-  const imgTagRegex = /<img[^>]*alt="([^"]*)"[^>]*>/g;
-  return text.replace(imgTagRegex, '$1').replaceAll("&quot;", "\"");
+  const imgTagRegex = /<img[^>]*alt="([^"]*)"[^>]*>/g
+  return text.replace(imgTagRegex, "$1").replaceAll("&quot;", '"')
 }

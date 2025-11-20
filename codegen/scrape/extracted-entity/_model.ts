@@ -10,16 +10,17 @@ export interface ExtractedEntityShape {
   entityDescription: {
     lines: string[]
     returns: NormalTypeShape | undefined
-  },
+  }
   type: NormalType | EntityFields
   groupName?: string
 }
 
-export class ExtractedEntity
-  extends Data.TaggedClass("ExtractedEntity")<ExtractedEntityShape> {
-
-    static makeFrom(node: HtmlElement) {
-      return extractFromNode(node).pipe(Either.andThen(_ => new ExtractedEntity(_)))
-    }
-
+export class ExtractedEntity extends Data.TaggedClass(
+  "ExtractedEntity"
+)<ExtractedEntityShape> {
+  static makeFrom(node: HtmlElement) {
+    return extractFromNode(node).pipe(
+      Either.andThen((_) => new ExtractedEntity(_))
+    )
   }
+}

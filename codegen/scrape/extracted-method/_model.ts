@@ -13,14 +13,13 @@ export interface ExtractedMethodShape {
   groupName?: string
 }
 
-export class ExtractedMethod
-  extends Data.TaggedClass("ExtractedMethod")<ExtractedMethodShape> {
-
-    static makeFrom(input: ExtractedEntityShape) {
-      return pipe(
-        makeFrom(input),
-        Either.andThen(_ => new ExtractedMethod(_))
-      )
-    }
-
+export class ExtractedMethod extends Data.TaggedClass(
+  "ExtractedMethod"
+)<ExtractedMethodShape> {
+  static makeFrom(input: ExtractedEntityShape) {
+    return pipe(
+      makeFrom(input),
+      Either.andThen((_) => new ExtractedMethod(_))
+    )
   }
+}

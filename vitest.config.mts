@@ -1,16 +1,14 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from "vitest/config"
 import tsconfigPaths from "vite-tsconfig-paths"
 
-import config from "./config.json" with { type: 'json' };
+import config from "./config.json" with { type: "json" }
 
 export default defineConfig({
-  plugins: [ 
-    tsconfigPaths()
-  ],
+  plugins: [tsconfigPaths()],
   test: {
     testTimeout: 30000,
     env: {
       ...config
     }
   }
-});
+})

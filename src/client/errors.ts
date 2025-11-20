@@ -1,7 +1,7 @@
-import * as Data from "effect/Data";
+import * as Data from "effect/Data"
 
 type ErrorReason = Data.TaggedEnum<{
-  NotOkResponse: { errorCode?: number, details?: string }
+  NotOkResponse: { errorCode?: number; details?: string }
   UnexpectedResponse: { response: unknown }
   ClientInternalError: { cause: unknown }
   UnableToGetFile: { cause: unknown }
@@ -9,9 +9,6 @@ type ErrorReason = Data.TaggedEnum<{
   NotJsonResponse: { response: unknown }
 }>
 
-export class TgBotClientError
-  extends Data.TaggedError("TgBotClientError")<{
-    cause: ErrorReason
-  }> {
-
-}
+export class TgBotClientError extends Data.TaggedError("TgBotClientError")<{
+  cause: ErrorReason
+}> {}

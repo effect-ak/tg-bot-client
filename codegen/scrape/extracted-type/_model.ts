@@ -8,15 +8,14 @@ export interface ExtractedTypeShape {
   type: ExtractedEntityShape["type"]
 }
 
-export class ExtractedType
-  extends Data.TaggedClass("ExtractedType")<ExtractedTypeShape> {
-
-    static makeFrom(entity: ExtractedEntityShape) {
-      return new ExtractedType({
-        typeName: entity.entityName,
-        description: entity.entityDescription.lines,
-        type: entity.type
-      });
-    }
-
+export class ExtractedType extends Data.TaggedClass(
+  "ExtractedType"
+)<ExtractedTypeShape> {
+  static makeFrom(entity: ExtractedEntityShape) {
+    return new ExtractedType({
+      typeName: entity.entityName,
+      description: entity.entityDescription.lines,
+      type: entity.type
+    })
   }
+}
