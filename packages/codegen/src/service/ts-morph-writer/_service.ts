@@ -11,7 +11,7 @@ export class TsMorpthWriter extends Effect.Service<TsMorpthWriter>()(
         "scrapper-out-dir"
       )
 
-      console.log("Initializing TsMorphWriter")
+      yield* Effect.logInfo("Initializing TsMorphWriter")
 
       yield* Effect.addFinalizer(() => Effect.logInfo("Closing TsMorpthWriter"))
 

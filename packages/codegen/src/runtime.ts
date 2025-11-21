@@ -8,8 +8,8 @@ import { OpenapiWriterService } from "./service/openapi-writer/_service"
 import { TsMorpthWriter } from "./service/ts-morph-writer/_service"
 
 const configProvider = ConfigProvider.fromJson({
-  "scrapper-out-dir": [__dirname, "..", "src"],
-  "openapi-out-dir": [__dirname, "..", "openapi"]
+  "scrapper-out-dir": ["..", "api"],
+  "openapi-out-dir": ["..", "api"]
 })
 
 export const BotApiCodegenRuntime = ManagedRuntime.make(
