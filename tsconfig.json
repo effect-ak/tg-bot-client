@@ -5,9 +5,9 @@
     "exactOptionalPropertyTypes": true,
     "types": ["node"],
     "target": "ES2022",
-    "module": "NodeNext",
+    "module": "esnext",
     "lib": ["ESNext", "DOM", "WebWorker"],
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
     "moduleDetection": "force",
     "baseUrl": ".",
     "skipLibCheck": true,
@@ -19,9 +19,7 @@
       "#/*": ["./src/*"],
       "#dist/*": ["./dist/*"],
       "#test/*": ["./test/*"],
-      "#codegen/*": ["./codegen/*"],
-      "#codegen-service/*": ["./codegen/service/*"],
-      "#scrape/*": ["./codegen/scrape/*"]
+      "codegen/*": ["./packages/codegen/src/*"],
     }
   }
 }
