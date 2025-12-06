@@ -14,10 +14,11 @@ export const HtmlPages = {
 export const getPageHtml = (page: HtmlPageName) =>
   Effect.tryPromise(async () => {
     const fileName = `input/${page}.html`
-
     const saved = await readFile(fileName).catch(() => undefined)
-
-    if (saved) return saved.toString("utf-8")
+    if (saved) {
+      console.log(`downloaded '${page}'`)
+      return saved.toString("utf-8")
+    }
 
     const content = await fetch(HtmlPages[page]).then((_) => _.text())
 

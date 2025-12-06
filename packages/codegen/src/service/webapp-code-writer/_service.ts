@@ -9,7 +9,7 @@ export class WebAppCodeWriterService extends Effect.Service<WebAppCodeWriterServ
   {
     effect: Effect.gen(function* () {
       const { createTsFile } = yield* TsMorpthWriter
-      const srcFile = yield* createTsFile("webapp", "webapp", "specification")
+      const srcFile = yield* createTsFile("webapp", "src", "specification")
 
       return {
         writeWebApp: writeWebApp(srcFile)

@@ -11,10 +11,11 @@ export class BotApiCodeWriterService extends Effect.Service<BotApiCodeWriterServ
 
       const typeSrcFile = yield* createTsFile(
         "types",
+        "src",
         "specification"
       )
 
-      const apiSrcFile = yield* createTsFile("api", "specification")
+      const apiSrcFile = yield* createTsFile("api", "src", "specification")
 
       return {
         writeTypes: writeTypes(typeSrcFile),

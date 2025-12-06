@@ -2,6 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "gen": "pnpm run gen:bot:api && pnpm run gen:webapp:api",
     "gen:bot:api": "MODULE_NAME=bot_api tsx ./src/main",
     "gen:webapp:api": "MODULE_NAME=webapp tsx ./src/main"
   },

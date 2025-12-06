@@ -1,7 +1,7 @@
 import * as Micro from "effect/Micro"
 import * as Context from "effect/Context"
 
-import type { Api } from "#/client/specification/api"
+import type { Api } from "@effect-ak/tg-bot-api/"
 import { executeTgBotMethod } from "./execute"
 import { TgBotApiToken } from "./config"
 import { GetFile, ClientFileService } from "./client-file"

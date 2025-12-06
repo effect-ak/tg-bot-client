@@ -1,0 +1,14 @@
+{
+  "name": "@effect-ak/tg-bot-api",
+  "version": "9.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/effect-ak/tg-bot-client",
+    "directory": "packages/api"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.mjs",
+    "dist/*.d.ts"
+  ],
+}

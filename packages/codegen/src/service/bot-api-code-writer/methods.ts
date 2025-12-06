@@ -17,7 +17,7 @@ export const writeMethods =
     const typeNamespace = "T"
 
     src.addImportDeclaration({
-      moduleSpecifier: "./types.js",
+      moduleSpecifier: "./types",
       namespaceImport: typeNamespace
     })
 

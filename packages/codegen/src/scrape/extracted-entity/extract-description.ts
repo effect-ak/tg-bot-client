@@ -5,7 +5,7 @@ import { mapPseudoTypeToTsType } from "codegen/scrape/normal-type/pseudo-type"
 import { isComplexType, startsWithUpperCase } from "codegen/scrape/types"
 import type { ExtractedEntityShape } from "./_model"
 import { new_entity_tag_set, returnTypeOverrides } from "./const"
-import { ExtractEntityError } from "./errors.js"
+import { ExtractEntityError } from "./errors"
 
 const description_split_regex = /(\.\s{1,})|(\.<br>)/g
 const contains_letters_regex = /\w{1,}/
