@@ -16,14 +16,6 @@ export const extractFromPage = (page: WebAppPage) => {
     })
   }
 
-  const nodes = page.node.querySelectorAll("h4")
-
-  if (nodes.length == 0) {
-    return ExtractEntityError.left("TypeDefinition:NotFound", {
-      entityName: "types"
-    })
-  }
-
   const types = extractWebAppEntities(page)
 
   if (types._tag == "Left") {
