@@ -9,11 +9,7 @@ export class BotApiCodeWriterService extends Effect.Service<BotApiCodeWriterServ
     effect: Effect.gen(function* () {
       const { createTsFile } = yield* TsMorpthWriter
 
-      const typeSrcFile = yield* createTsFile(
-        "types",
-        "src",
-        "specification"
-      )
+      const typeSrcFile = yield* createTsFile("types", "src", "specification")
 
       const apiSrcFile = yield* createTsFile("api", "src", "specification")
 

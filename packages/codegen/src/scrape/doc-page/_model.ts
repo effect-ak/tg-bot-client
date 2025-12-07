@@ -1,10 +1,6 @@
 import { Data, Either, pipe } from "effect"
 
-import {
-  HtmlElement,
-  parseStringToHtml,
-  HtmlPageDocumentation
-} from "~/types"
+import { HtmlElement, parseStringToHtml, HtmlPageDocumentation } from "~/types"
 import { ExtractedEntity } from "~/scrape/extracted-entity/_model"
 import { ExtractedType } from "~/scrape/extracted-type/_model"
 import { ExtractedMethod } from "~/scrape/extracted-method/_model"

@@ -7,7 +7,5 @@
   "sourcemap": false,
   "clean": true,
   "dts": true,
-  "noExternal": [
-    "effect"
-  ]
+  "noExternal": ["effect"]
 }

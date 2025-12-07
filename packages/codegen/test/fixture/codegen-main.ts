@@ -2,10 +2,7 @@ import { Effect, Logger, LogLevel } from "effect"
 import { test } from "vitest"
 
 import { DocPage } from "~/scrape/doc-page/_model"
-import {
-  BotApiCodeWriterService,
-  PageProviderService
-} from "~/service/index"
+import { BotApiCodeWriterService, PageProviderService } from "~/service/index"
 import { OpenapiWriterService } from "~/service/openapi-writer/_service"
 import { TsMorpthWriter } from "~/service/ts-morph-writer/_service"
 import { BotApiCodegenRuntime } from "~/runtime"

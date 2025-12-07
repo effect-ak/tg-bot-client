@@ -10,7 +10,7 @@ export class PageProviderService extends Effect.Service<PageProviderService>()(
     scoped: Effect.gen(function* () {
       yield* Effect.addFinalizer(() => Effect.logInfo("Closing scrapeDocPage"))
 
-      yield* Effect.logInfo('init page provider')
+      yield* Effect.logInfo("init page provider")
 
       return {
         api: getPageHtml("api").pipe(Effect.andThen(DocPage.fromHtmlString)),
