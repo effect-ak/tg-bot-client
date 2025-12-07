@@ -1,6 +1,6 @@
 import type { PropertySignatureStructure } from "ts-morph"
-import type { TsSourceFile } from "codegen/types"
-import type { ExtractedTypeShape } from "codegen/scrape/extracted-type/_model"
+import type { TsSourceFile } from "~/types"
+import type { ExtractedTypeShape } from "~/scrape/extracted-type/_model"
 
 export const writeTypes =
   (src: TsSourceFile) => (types: ExtractedTypeShape[]) => {

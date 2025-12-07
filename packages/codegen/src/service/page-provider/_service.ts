@@ -1,7 +1,7 @@
 import { Effect } from "effect"
 
-import { DocPage } from "codegen/scrape/doc-page/_model"
-import { WebAppPage } from "codegen/scrape/webapp/_model"
+import { DocPage } from "~/scrape/doc-page/_model"
+import { WebAppPage } from "~/scrape/webapp/_model"
 import { getPageHtml } from "./get-html"
 
 export class PageProviderService extends Effect.Service<PageProviderService>()(

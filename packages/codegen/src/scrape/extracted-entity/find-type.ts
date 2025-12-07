@@ -1,6 +1,6 @@
 import { Either } from "effect"
 
-import { HtmlElement } from "codegen/types"
+import { HtmlElement } from "~/types"
 import { ExtractEntityError } from "./errors"
 import { type_node_set } from "./const"
 

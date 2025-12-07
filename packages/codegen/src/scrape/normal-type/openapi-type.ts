@@ -1,5 +1,5 @@
 import type { OpenAPIV3_1 } from "openapi-types"
-import { isComplexType } from "codegen/scrape/types"
+import { isComplexType } from "~/scrape/types"
 import type { NormalTypeShape } from "./_model"
 
 export const makeOpenApiType = (

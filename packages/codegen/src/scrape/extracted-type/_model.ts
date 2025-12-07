@@ -1,6 +1,6 @@
 import { Data } from "effect"
 
-import { type ExtractedEntityShape } from "codegen/scrape/extracted-entity/_model"
+import { type ExtractedEntityShape } from "~/scrape/extracted-entity/_model"
 
 export interface ExtractedTypeShape {
   typeName: string

@@ -1,8 +1,8 @@
 import { Either, Array, Match, pipe } from "effect"
 
-import { HtmlElement } from "codegen/types"
-import { EntityFields } from "codegen/scrape/entity-fields/_model"
-import { NormalType } from "codegen/scrape/normal-type/_model"
+import { HtmlElement } from "~/types"
+import { EntityFields } from "~/scrape/entity-fields/_model"
+import { NormalType } from "~/scrape/normal-type/_model"
 import { ExtractEntityError } from "./errors"
 import { ExtractedEntityShape } from "./_model"
 import { extractFieldDescription } from "./extract-description"

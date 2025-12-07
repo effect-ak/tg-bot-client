@@ -1,8 +1,8 @@
 import { Effect } from "effect"
 import type { PropertySignatureStructure } from "ts-morph"
-import type { TsSourceFile } from "codegen/types"
-import { TsMorpthWriter } from "codegen/service/ts-morph-writer/_service"
-import { ExtractedWebApp } from "codegen/scrape/extracted-webapp/_model"
+import type { TsSourceFile } from "~/types"
+import { TsMorpthWriter } from "~/service/ts-morph-writer/_service"
+import { ExtractedWebApp } from "~/scrape/extracted-webapp/_model"
 
 export class WebAppCodeWriterService extends Effect.Service<WebAppCodeWriterService>()(
   "WebAppCodeWriterService",

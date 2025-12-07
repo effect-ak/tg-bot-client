@@ -1,5 +1,5 @@
 import { Effect } from "effect"
-import { TsMorpthWriter } from "codegen/service/ts-morph-writer/_service"
+import { TsMorpthWriter } from "~/service/ts-morph-writer/_service"
 import { writeTypes } from "./types"
 import { writeMethods } from "./methods"
 

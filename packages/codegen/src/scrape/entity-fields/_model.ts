@@ -1,7 +1,7 @@
 import { Array, Data, Option } from "effect"
 
 import { OpenAPIV3_1 } from "openapi-types"
-import { NormalType } from "codegen/scrape/normal-type/_model"
+import { NormalType } from "~/scrape/normal-type/_model"
 
 export interface EntityField {
   name: string

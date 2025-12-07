@@ -1,9 +1,9 @@
 import { Data } from "effect"
 
-import type { ExtractedType } from "codegen/scrape/extracted-type/_model"
-import { ExtractedEntityShape } from "codegen/scrape/extracted-entity/_model"
-import { EntityField } from "codegen/scrape/entity-fields/_model"
-import { WebAppPage } from "codegen/scrape/webapp/_model"
+import type { ExtractedType } from "~/scrape/extracted-type/_model"
+import { ExtractedEntityShape } from "~/scrape/extracted-entity/_model"
+import { EntityField } from "~/scrape/entity-fields/_model"
+import { WebAppPage } from "~/scrape/webapp/_model"
 import { extractFromPage } from "./extract"
 
 export interface ExtractedWebAppShape {

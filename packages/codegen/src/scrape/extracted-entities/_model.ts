@@ -1,9 +1,9 @@
 import { Data } from "effect"
 
-import type { ExtractedMethod } from "codegen/scrape/extracted-method/_model"
-import type { ExtractedType } from "codegen/scrape/extracted-type/_model"
+import type { ExtractedMethod } from "~/scrape/extracted-method/_model"
+import type { ExtractedType } from "~/scrape/extracted-type/_model"
 import { extractEntities } from "./extract"
-import { DocPage } from "codegen/scrape/doc-page/_model"
+import { DocPage } from "~/scrape/doc-page/_model"
 
 export interface ExtractedEntitiesShape {
   methods: ExtractedMethod[]

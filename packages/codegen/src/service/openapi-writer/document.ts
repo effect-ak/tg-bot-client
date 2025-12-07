@@ -1,8 +1,7 @@
 import type { OpenAPIV3_1 } from "openapi-types"
 
-import { ExtractedMethod } from "codegen/scrape/extracted-method/_model"
-import { ExtractedType } from "codegen/scrape/extracted-type/_model"
-import { TG_BOT_API_URL } from "#/const"
+import { ExtractedMethod } from "~/scrape/extracted-method/_model"
+import { ExtractedType } from "~/scrape/extracted-type/_model"
 import { responsesObject } from "./components"
 import { makePath } from "./paths"
 
@@ -33,17 +32,6 @@ export const makeOpenApiDocument = (input: {
         "[![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)"
       ].join("<br/>")
     },
-    servers: [
-      {
-        url: `${TG_BOT_API_URL}/bot{bot-token}`,
-        variables: {
-          "bot-token": {
-            default: "put-your-token",
-            description: "take from bot father"
-          }
-        }
-      }
-    ],
     tags: [],
     paths,
     components: {

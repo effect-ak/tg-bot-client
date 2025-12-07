@@ -1,11 +1,11 @@
 import { Either, String } from "effect"
 
-import type { ExtractEntityError } from "codegen/scrape/extracted-entity/errors"
-import type { DocPageError } from "codegen/scrape/doc-page/errors"
-import { isComplexType } from "codegen/scrape/types"
+import type { ExtractEntityError } from "~/scrape/extracted-entity/errors"
+import type { DocPageError } from "~/scrape/doc-page/errors"
+import { isComplexType } from "~/scrape/types"
 import type { ExtractedEntitiesShape } from "./_model"
 import { ExtractedEntitiesError } from "./errors"
-import type { HtmlPageDocumentation } from "codegen/types"
+import type { HtmlPageDocumentation } from "~/types"
 
 const method_type_name_regex = /^\w+$/
 

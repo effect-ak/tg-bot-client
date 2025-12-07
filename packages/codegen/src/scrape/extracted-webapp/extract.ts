@@ -1,7 +1,7 @@
 import { Either } from "effect"
-import { ExtractEntityError } from "codegen/scrape/extracted-entity/errors"
-import { WebAppPage } from "codegen/scrape/webapp/_model"
-import { extractEntities } from "codegen/scrape/extracted-entities/extract"
+import { ExtractEntityError } from "~/scrape/extracted-entity/errors"
+import { WebAppPage } from "~/scrape/webapp/_model"
+import { extractEntities } from "~/scrape/extracted-entities/extract"
 import { ExtractedWebApp } from "./_model"
 
 export const extractFromPage = (page: WebAppPage) => {

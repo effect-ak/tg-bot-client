@@ -1,8 +1,8 @@
 import { Either } from "effect"
 
-import type { ExtractedEntityShape } from "codegen/scrape/extracted-entity/_model"
-import { NormalType } from "codegen/scrape/normal-type/_model"
-import { ExtractEntityError } from "codegen/scrape/extracted-entity/errors"
+import type { ExtractedEntityShape } from "~/scrape/extracted-entity/_model"
+import { NormalType } from "~/scrape/normal-type/_model"
+import { ExtractEntityError } from "~/scrape/extracted-entity/errors"
 import type { ExtractedMethodShape } from "./_model"
 
 export const makeFrom = (

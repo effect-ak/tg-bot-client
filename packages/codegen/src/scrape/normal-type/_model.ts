@@ -1,7 +1,7 @@
 import { Data, Either, Array } from "effect"
 
 import type { OpenAPIV3_1 } from "openapi-types"
-import { ExtractedEntityField, isComplexType } from "codegen/scrape/types"
+import { ExtractedEntityField, isComplexType } from "~/scrape/types"
 import { makeFrom } from "./factory"
 import { mapPseudoTypeToTsType } from "./pseudo-type"
 import { makeOpenApiType } from "./openapi-type"

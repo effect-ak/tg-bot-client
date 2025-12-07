@@ -1,8 +1,8 @@
 import { Array, Either, pipe, Option } from "effect"
 
-import type { HtmlElement } from "codegen/types"
-import { mapPseudoTypeToTsType } from "codegen/scrape/normal-type/pseudo-type"
-import { isComplexType, startsWithUpperCase } from "codegen/scrape/types"
+import type { HtmlElement } from "~/types"
+import { mapPseudoTypeToTsType } from "~/scrape/normal-type/pseudo-type"
+import { isComplexType, startsWithUpperCase } from "~/scrape/types"
 import type { ExtractedEntityShape } from "./_model"
 import { new_entity_tag_set, returnTypeOverrides } from "./const"
 import { ExtractEntityError } from "./errors"

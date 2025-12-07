@@ -1,8 +1,8 @@
 import type { OpenAPIV3_1 } from "openapi-types"
 import { String } from "effect"
 
-import type { ExtractedMethodShape } from "codegen/scrape/extracted-method/_model"
-import { removeHtmlTags } from "codegen/scrape/extracted-entity/extract-description"
+import type { ExtractedMethodShape } from "~/scrape/extracted-method/_model"
+import { removeHtmlTags } from "~/scrape/extracted-entity/extract-description"
 import { errorResponseNames } from "./components"
 
 export const makePath = (

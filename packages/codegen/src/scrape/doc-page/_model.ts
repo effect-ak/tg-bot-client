@@ -4,11 +4,11 @@ import {
   HtmlElement,
   parseStringToHtml,
   HtmlPageDocumentation
-} from "codegen/types"
-import { ExtractedEntity } from "codegen/scrape/extracted-entity/_model"
-import { ExtractedType } from "codegen/scrape/extracted-type/_model"
-import { ExtractedMethod } from "codegen/scrape/extracted-method/_model"
-import { ExtractEntityError } from "codegen/scrape/extracted-entity/errors"
+} from "~/types"
+import { ExtractedEntity } from "~/scrape/extracted-entity/_model"
+import { ExtractedType } from "~/scrape/extracted-type/_model"
+import { ExtractedMethod } from "~/scrape/extracted-method/_model"
+import { ExtractEntityError } from "~/scrape/extracted-entity/errors"
 
 export class DocPage
   extends Data.Class<{

@@ -1,4 +1,4 @@
-import { INITIALING_MINI_APPS } from "codegen/scrape/extracted-entity/const"
+import { INITIALING_MINI_APPS } from "~/scrape/extracted-entity/const"
 import type { NormalTypeShape } from "./_model"
 
 const T = (T: string) => ({

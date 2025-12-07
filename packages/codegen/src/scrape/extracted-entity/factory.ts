@@ -1,8 +1,8 @@
 import { Either } from "effect"
 
-import type { HtmlElement } from "codegen/types"
+import type { HtmlElement } from "~/types"
 import type { ExtractedEntityShape } from "./_model"
-import { NormalType } from "codegen/scrape/normal-type/_model"
+import { NormalType } from "~/scrape/normal-type/_model"
 import { ExtractEntityError } from "./errors"
 import { findTypeNode } from "./find-type"
 import { extractEntityDescription } from "./extract-description"

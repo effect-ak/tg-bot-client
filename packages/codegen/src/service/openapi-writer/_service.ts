@@ -1,9 +1,9 @@
 import { Config, Effect } from "effect"
-
 import { dump as dumpYaml } from "js-yaml"
 import { writeFile } from "fs/promises"
-import { makeOpenApiDocument } from "./document"
 import * as Path from "path"
+
+import { makeOpenApiDocument } from "./document"
 
 export class OpenapiWriterService extends Effect.Service<OpenapiWriterService>()(
   "OpenapiWriterService",

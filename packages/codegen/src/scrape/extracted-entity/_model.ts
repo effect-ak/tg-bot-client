@@ -1,8 +1,8 @@
 import { Data, Either } from "effect"
 
-import type { HtmlElement } from "codegen/types"
-import type { NormalType, NormalTypeShape } from "codegen/scrape/normal-type/_model"
-import type { EntityFields } from "codegen/scrape/entity-fields/_model"
+import type { HtmlElement } from "~/types"
+import type { NormalType, NormalTypeShape } from "~/scrape/normal-type/_model"
+import type { EntityFields } from "~/scrape/entity-fields/_model"
 import { extractFromNode } from "./factory"
 
 export interface ExtractedEntityShape {

@@ -4,8 +4,8 @@ import type {
   MethodSignatureStructure,
   PropertySignatureStructure
 } from "ts-morph"
-import type { TsSourceFile } from "codegen/types"
-import type { ExtractedMethodShape } from "codegen/scrape/extracted-method/_model"
+import type { TsSourceFile } from "~/types"
+import type { ExtractedMethodShape } from "~/scrape/extracted-method/_model"
 
 export const writeMethods =
   (src: TsSourceFile) => (methods: ExtractedMethodShape[]) => {

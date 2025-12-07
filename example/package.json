@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "@effect-ak/tg-bot-client": "workspace:*",
+    "@effect-ak/tg-bot-api": "workspace:*"
+  }
+}
