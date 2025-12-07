@@ -4,9 +4,10 @@ import { loadConfig } from "./config"
 
 await Effect.gen(function* () {
   const config = yield* loadConfig()
+  const chatId = config.chatId
   yield* executeTgBotMethod("send_message", {
-    text: "hello",
-    chat_id: config.chatId
+    text: `hello, ${chatId}`,
+    chat_id: chatId
   }).pipe(
     Effect.provideService(TgBotApiToken, config.token)
   )

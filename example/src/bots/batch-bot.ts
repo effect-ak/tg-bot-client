@@ -1,7 +1,7 @@
 import { makeTgBotClient } from "@effect-ak/tg-bot-client"
 import { runTgChatBot } from "@effect-ak/tg-bot"
-import { loadConfig } from "../config"
 import { Effect } from "effect"
+import { loadConfig } from "../config"
 
 const config = await loadConfig().pipe(Effect.runPromise)
 

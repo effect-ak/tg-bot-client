@@ -1,6 +1,10 @@
 {
   "private": true,
   "type": "module",
+  "scripts": {
+    "client": "tsx ./src/client.ts",
+    "echo-bot": "tsx ./src/bots/echo-bot.ts"
+  },
   "dependencies": {
     "@effect-ak/tg-bot-client": "workspace:*",
     "@effect-ak/tg-bot-api": "workspace:*",
