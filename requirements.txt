@@ -1,0 +1,5 @@
+aiogram==3.4.1
+python-dotenv==1.0.0
+sqlite3
+phonenumbers==8.13.27
+email-validator==2.1.0
