@@ -1,13 +1,16 @@
-import { makeTgBotClient } from "#dist/index"
-import { runTgChatBot } from "#dist/bot"
-import config from "../../../config.json"
+import { makeTgBotClient } from "@effect-ak/tg-bot-client"
+import { runTgChatBot } from "@effect-ak/tg-bot"
+import { loadConfig } from "../config"
+import { Effect } from "effect"
+
+const config = await loadConfig().pipe(Effect.runPromise)
 
 const tgClient = makeTgBotClient({
-  bot_token: config.bot_token
+  bot_token: config.token
 })
 
 runTgChatBot({
-  bot_token: config.bot_token,
+  bot_token: config.token,
   poll: {
     log_level: "debug",
     batch_size: 100,
@@ -22,7 +25,7 @@ runTgChatBot({
       const messages = updates.map((_) => _.message).filter((_) => _ != null)
 
       await tgClient.execute("send_message", {
-        chat_id: config.chat_id,
+        chat_id: config.chatId,
         text: `I got ${messages.length} messages`
       })
 

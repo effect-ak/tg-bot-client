@@ -1,12 +1,16 @@
 import { executeTgBotMethod, TgBotApiToken } from "@effect-ak/tg-bot-client"
 import { Effect } from "effect"
+import { loadConfig } from "./config"
 
-import config from "../../config.json"
-
-executeTgBotMethod("send_message", {
-  text: "hello",
-  chat_id: config.chat_id
+await Effect.gen(function* () {
+  const config = yield* loadConfig()
+  yield* executeTgBotMethod("send_message", {
+    text: "hello",
+    chat_id: config.chatId
+  }).pipe(
+    Effect.provideService(TgBotApiToken, config.token)
+  )
 }).pipe(
-  Effect.provideService(TgBotApiToken, config.bot_token),
+  Effect.tapErrorCause(Effect.logError),
   Effect.runPromiseExit
 )

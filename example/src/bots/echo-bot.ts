@@ -1,7 +1,9 @@
-import { BotResponse, runTgChatBot, defineBot } from "#dist/bot"
-import { MESSAGE_EFFECTS } from "#dist/index"
+import { BotResponse, runTgChatBot, defineBot } from "@effect-ak/tg-bot"
+import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
 import { Effect, pipe } from "effect"
-import config from "../../../config.json"
+
+import { loadConfig } from "../config"
+const config = await loadConfig().pipe(Effect.runPromise)
 
 const ECHO_BOT = defineBot({
   on_message: async (msg) => {
@@ -72,7 +74,7 @@ const ECHO_BOT = defineBot({
 })
 
 runTgChatBot({
-  bot_token: config.bot_token,
+  bot_token: config.token,
   poll: {
     log_level: "debug",
     batch_size: 20,

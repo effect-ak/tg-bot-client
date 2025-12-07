@@ -1,10 +1,11 @@
 import { Effect, Micro, pipe } from "effect"
-import { BotResponse, launchBot } from "#dist/bot"
-import config from "../../../config.json"
+import { BotResponse, launchBot } from "@effect-ak/tg-bot"
 
+import { loadConfig } from "../config"
 Effect.gen(function* () {
+  const config = yield* loadConfig()
   const bot = yield* launchBot({
-    bot_token: config.bot_token,
+    bot_token: config.token,
     poll: {
       log_level: "debug",
       max_empty_responses: 3

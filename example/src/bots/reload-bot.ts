@@ -1,11 +1,14 @@
-import { BotResponse, runTgChatBot } from "#dist/bot"
-import config from "../../../config.json"
+import { BotResponse, runTgChatBot } from "@effect-ak/tg-bot"
+import { Effect } from "effect"
+
+import { loadConfig } from "../config"
 
 main()
 
 async function main() {
+  const config = await loadConfig().pipe(Effect.runPromise)
   const bot = await runTgChatBot({
-    bot_token: config.bot_token,
+    bot_token: config.token,
     mode: {
       type: "single",
       on_message: (msg) => {
