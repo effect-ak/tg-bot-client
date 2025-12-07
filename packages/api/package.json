@@ -2,8 +2,13 @@
   "name": "@effect-ak/tg-bot-api",
   "version": "0.9.2",
   "type": "module",
-  "description": "TypeScript types for Telegram Bot Api and Telegram.Webapp",
+  "description": "TypeScript types for Telegram Bot Api and Telegram Mini Apps",
   "license": "MIT",
+  "keywords": [
+    "telegram",
+    "mini-app",
+    "typescript"
+  ],
   "author": {
     "name": "Aleksandr Kondaurov",
     "email": "kondaurov.dev@gmail.com"
