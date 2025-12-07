@@ -6,6 +6,7 @@ import { isComplexType } from "~/scrape/types"
 import type { ExtractedEntitiesShape } from "./_model"
 import { ExtractedEntitiesError } from "./errors"
 import type { HtmlPageDocumentation } from "~/types"
+import { ExtractedType } from "../extracted-type/_model"
 
 const method_type_name_regex = /^\w+$/
 
@@ -40,12 +41,8 @@ export const extractEntities = (
     if (!title || !method_type_name_regex.test(title)) continue
 
     if (isComplexType(title)) {
-      // Is a Type
-
       const type = page.getType(title)
-
       if (type._tag == "Left") return Either.left(type.left)
-
       result.types.push(type.right)
       continue
     }
@@ -62,6 +59,35 @@ export const extractEntities = (
 
   result.methods.sort((a, b) => a.methodName.localeCompare(b.methodName))
   result.types.sort((a, b) => a.typeName.localeCompare(b.typeName))
+
+  return Either.right(result)
+}
+
+export const extractWebAppEntities = (
+  page: HtmlPageDocumentation
+): Either.Either<ExtractedType[], ExtractError> => {
+  const result: ExtractedType[] = []
+
+  const nodes = page.node.querySelectorAll("h4")
+
+  if (nodes.length == 0)
+    return Either.left(ExtractedEntitiesError.make("NodesNotFound"))
+
+  for (const node of nodes) {
+    const title = node.childNodes.at(1)?.text?.trim()
+
+    if (!title || !method_type_name_regex.test(title)) continue
+
+    if (isComplexType(title)) {
+      const type = page.getType(title)
+      if (type._tag == "Left") return Either.left(type.left)
+      result.push(type.right)
+      continue
+    }
+
+  }
+
+  result.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
   return Either.right(result)
 }

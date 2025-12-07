@@ -1,5 +1,5 @@
 import { describe, assert, expect } from "vitest"
-import { webappFixture } from "packages/codegen/test/fixture/codegen-webapp"
+import { webappFixture } from "~test/fixture/codegen-webapp"
 
 describe("extract type", () => {
   webappFixture(

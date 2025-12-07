@@ -1,7 +1,7 @@
 import { Effect, Logger, LogLevel } from "effect"
 import { test } from "vitest"
 
-import { PageProviderService } from "~/service/index.js"
+import { PageProviderService } from "~/service/page-provider/_service"
 import { WebAppPage } from "~/scrape/webapp/_model"
 
 import { WebAppCodegenRuntime } from "~/runtime"
@@ -24,7 +24,7 @@ const webappPromise = WebappDependencies.pipe(
 )
 
 export const webappFixture = test.extend<WebappFixture>({
-  webAppPage: async (_, use) => {
+  webAppPage: async ({}, use) => {
     use((await webappPromise).webAppPage)
   }
 })

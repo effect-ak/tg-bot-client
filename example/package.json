@@ -4,7 +4,6 @@
   "dependencies": {
     "@effect-ak/tg-bot-client": "workspace:*",
     "@effect-ak/tg-bot-api": "workspace:*",
-    "@effect-ak/tg-bot": "workspace:*",
-    "dotenv": "17.2.3"
+    "@effect-ak/tg-bot": "workspace:*"
   }
 }

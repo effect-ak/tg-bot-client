@@ -9,12 +9,6 @@ info:
   summary: >-
     [![NPM
     Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-client)](https://www.npmjs.com/package/@effect-ak/tg-bot-client)
-servers:
-  - url: https://api.telegram.org/bot{bot-token}
-    variables:
-      bot-token:
-        default: put-your-token
-        description: take from bot father
 tags: []
 paths:
   /addStickerToSet:
@@ -11120,7 +11114,12 @@ components:
       properties:
         topic_id:
           type: number
-          description: Unique identifier of the topic
+          description: >-
+            Unique identifier of the topic<br/>This number may have more than 32
+            significant bits and some programming languages may have
+            difficulty/silent defects in interpreting it<br/>But it has at most
+            52 significant bits, so a 64-bit integer or double-precision float
+            type are safe for storing this identifier.
         user:
           $ref: "#/components/schemas/User"
           description: >-
@@ -13942,12 +13941,14 @@ components:
         request_users:
           $ref: "#/components/schemas/KeyboardButtonRequestUsers"
           description: >-
-            Identifiers of selected users will be sent to the bot in a
+            If specified, pressing the button will open a list of suitable
+            users<br/>Identifiers of selected users will be sent to the bot in a
             “users_shared” service message<br/>Available in private chats only.
         request_chat:
           $ref: "#/components/schemas/KeyboardButtonRequestChat"
           description: >-
-            Tapping on a chat will send its identifier to the bot in a
+            If specified, pressing the button will open a list of suitable
+            chats<br/>Tapping on a chat will send its identifier to the bot in a
             “chat_shared” service message<br/>Available in private chats only.
         request_contact:
           type: boolean

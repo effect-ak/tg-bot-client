@@ -12,7 +12,7 @@ import { typeAliasOverrides } from "./const"
 export const extractFromNode = (
   node: HtmlElement
 ): Either.Either<ExtractedEntityShape, ExtractEntityError> => {
-  const entityName = node.lastChild?.text
+  const entityName = node.lastChild?.text?.trim()
 
   if (!entityName) return ExtractEntityError.left("NoTitle")
 

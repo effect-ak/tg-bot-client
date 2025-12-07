@@ -1,7 +1,7 @@
 import { Either } from "effect"
 import { ExtractEntityError } from "~/scrape/extracted-entity/errors"
 import { WebAppPage } from "~/scrape/webapp/_model"
-import { extractEntities } from "~/scrape/extracted-entities/extract"
+import { extractWebAppEntities } from "~/scrape/extracted-entities/extract"
 import { ExtractedWebApp } from "./_model"
 
 export const extractFromPage = (page: WebAppPage) => {
@@ -24,7 +24,7 @@ export const extractFromPage = (page: WebAppPage) => {
     })
   }
 
-  const types = extractEntities(page)
+  const types = extractWebAppEntities(page)
 
   if (types._tag == "Left") {
     return Either.left(types)
@@ -34,18 +34,7 @@ export const extractFromPage = (page: WebAppPage) => {
     new ExtractedWebApp({
       webapp: tgWebEvent.right,
       fields: tgWebEvent.right.type.fields,
-      types: types.right.types
+      types: types.right
     })
   )
 }
-
-// const extractTypes = (
-//   page: WebAppPage
-// ) => {
-
-//   const nodes = page.node.querySelectorAll("h3, h4");
-
-//   if (nodes.length == 0)
-//     return Either.left();
-
-// }

@@ -21,7 +21,9 @@ export class OpenapiWriterService extends Effect.Service<OpenapiWriterService>()
 
         const pathTo = Path.join(...writeToDir, "openapi.yaml")
 
-        return Effect.tryPromise(() => writeFile(pathTo, dumpYaml(doc)))
+        return Effect.tryPromise(() => writeFile(pathTo, dumpYaml(doc, {
+          quotingType: '"'
+        })))
       }
 
       return {

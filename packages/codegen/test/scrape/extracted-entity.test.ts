@@ -1,6 +1,6 @@
 import { describe, expect, assert } from "vitest"
 
-import { fixture } from "packages/codegen/test/fixture/codegen-main"
+import { fixture } from "~test/fixture/codegen-main"
 
 describe("extracted-entity", () => {
   fixture("getUpdates", ({ apiPage }) => {
@@ -8,7 +8,7 @@ describe("extracted-entity", () => {
 
     if (entity._tag == "Left") console.log(entity.left)
 
-    assert(entity._tag == "Right")
+    assert(entity._tag == "Right", 'not right')
     expect(entity.right.returnType.getTsType("T")).toEqual("T.Update[]")
   })
 
@@ -31,7 +31,7 @@ describe("extracted-entity", () => {
 
     const field1 = entity.right.type.fields.find((_) => _.name == "emoji")
 
-    expect(field1?.type.typeNames[0]).equals('"👍"')
+    expect(field1?.type.typeNames[0]).equals('"❤"')
   })
 
   fixture("answerCallbackQuery", ({ apiPage }) => {

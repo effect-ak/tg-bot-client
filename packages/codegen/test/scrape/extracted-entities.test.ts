@@ -1,7 +1,7 @@
 import { describe, expect, assert } from "vitest"
 
-import { fixture } from "packages/codegen/test/fixture/codegen-main"
-import { ExtractedEntities } from "#scrape/extracted-entities/_model"
+import { fixture } from "~test/fixture/codegen-main"
+import { ExtractedEntities } from "~/scrape/extracted-entities/_model"
 
 describe("extracted entities", () => {
   fixture("extract", async ({ apiPage }) => {

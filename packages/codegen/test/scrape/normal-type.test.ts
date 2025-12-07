@@ -1,10 +1,10 @@
 import { describe, expect, it, assert } from "vitest"
 import { OpenAPIV3_1 } from "openapi-types"
 
-import { makeNormalTypeFromPseudoTypes } from "~/scrape/normal-type/pseudo-type.js"
-import { makeOpenApiType } from "~/scrape/normal-type/openapi-type.js"
+import { makeNormalTypeFromPseudoTypes } from "~/scrape/normal-type/pseudo-type"
+import { makeOpenApiType } from "~/scrape/normal-type/openapi-type"
 import { NormalTypeShape } from "~/scrape/normal-type/_model.js"
-import { extractEnumFromTypeDescription } from "~/scrape/normal-type/enum.js"
+import { extractEnumFromTypeDescription } from "~/scrape/normal-type/enum"
 
 describe("normal type", () => {
   it("make normal type from pseudo types", async () => {

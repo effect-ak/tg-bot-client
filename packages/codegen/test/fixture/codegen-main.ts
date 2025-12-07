@@ -2,7 +2,8 @@ import { Effect, Logger, LogLevel } from "effect"
 import { test } from "vitest"
 
 import { DocPage } from "~/scrape/doc-page/_model"
-import { BotApiCodeWriterService, PageProviderService } from "~/service/index"
+import { PageProviderService } from "~/service/page-provider/_service"
+import { BotApiCodeWriterService } from "~/service/bot-api-code-writer/_service"
 import { OpenapiWriterService } from "~/service/openapi-writer/_service"
 import { TsMorpthWriter } from "~/service/ts-morph-writer/_service"
 import { BotApiCodegenRuntime } from "~/runtime"
@@ -32,19 +33,19 @@ const mainPromise = MainDependencies.pipe(
 )
 
 export const fixture = test.extend<Fixture>({
-  apiPage: async (_, use) => {
+  apiPage: async ({}, use) => {
     const { apiPage } = await mainPromise
     use(apiPage)
   },
-  codeWriter: async (_, use) => {
+  codeWriter: async ({}, use) => {
     const { codeWriter } = await mainPromise
     use(codeWriter)
   },
-  openApiWriter: async (_, use) => {
+  openApiWriter: async ({}, use) => {
     const { openApiWriter } = await mainPromise
     use(openApiWriter)
   },
-  tsMorph: async (_, use) => {
+  tsMorph: async ({}, use) => {
     const { tsMorph } = await mainPromise
     use(tsMorph)
   }
