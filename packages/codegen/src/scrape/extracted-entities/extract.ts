@@ -78,8 +78,6 @@ export const extractWebAppEntities = (
 
     if (!title || !method_type_name_regex.test(title)) continue
 
-    const a = 1
-
     if (isComplexType(title)) {
       const type = page.getType(title)
       if (type._tag == "Left") return Either.left(type.left)
