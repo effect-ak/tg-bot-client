@@ -3,11 +3,11 @@
     "isolatedModules": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,
-    "types": [ "node" ],
+    "types": ["node"],
     "target": "ES2022",
     "module": "NodeNext",
     "lib": ["ESNext", "DOM", "WebWorker"],
-    "moduleResolution": "NodeNext", 
+    "moduleResolution": "NodeNext",
     "moduleDetection": "force",
     "baseUrl": ".",
     "skipLibCheck": true,
@@ -21,7 +21,7 @@
       "#test/*": ["./test/*"],
       "#codegen/*": ["./codegen/*"],
       "#codegen-service/*": ["./codegen/service/*"],
-      "#scrape/*": ["./codegen/scrape/*"],
+      "#scrape/*": ["./codegen/scrape/*"]
     }
   }
 }

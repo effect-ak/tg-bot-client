@@ -1,28 +1,23 @@
-import { assert, describe, expect } from "vitest";
+import { assert, describe, expect } from "vitest"
 
-import { fixture } from "./fixture.js";
+import { fixture } from "./fixture.js"
 
 describe("telegram bot client, download file", () => {
+  fixture("get file content", async ({ client, chat_id }) => {
+    const document = await client.execute("send_document", {
+      chat_id,
+      document: {
+        file_content: Buffer.from("Hello!"),
+        file_name: "hello.txt"
+      }
+    })
 
-  fixture("get file content", async ({ client, chat_id, skip }) => {
+    const fileId = document.document?.file_id
 
-    const document =
-      await client.execute("send_document", {
-        chat_id,
-        document: {
-          file_content: Buffer.from("Hello!"),
-          file_name: "hello.txt"
-        }
-      });
+    assert(fileId, "file id is null")
 
-    const fileId = document.document?.file_id;
+    const response = await client.getFile({ fileId })
 
-    assert(fileId, "file id is null");
-
-    const response =
-      await client.getFile({ fileId });
-
-    expect(response).toBeDefined();
-  });
-
+    expect(response).toBeDefined()
+  })
 })

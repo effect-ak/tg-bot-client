@@ -22,10 +22,8 @@ await build({
 // bot module with dependencies
 await build({
   entry: {
-    "bot-bundle": "src/bot/index.ts",
+    "bot-bundle": "src/bot/index.ts"
   },
   ...common,
-  noExternal: [
-    "effect"
-  ]
+  noExternal: ["effect"]
 })

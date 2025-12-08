@@ -1,33 +1,23 @@
-import type { OpenAPIV3_1 } from "openapi-types";
+import type { OpenAPIV3_1 } from "openapi-types"
 
-import { ExtractedMethod } from "#scrape/extracted-method/_model.js";
-import { ExtractedType } from "#scrape/extracted-type/_model.js";
-import { TG_BOT_API_URL } from "#/const.js";
-import { responsesObject } from "./components.js";
-import { makePath } from "./paths.js";
+import { ExtractedMethod } from "#scrape/extracted-method/_model.js"
+import { ExtractedType } from "#scrape/extracted-type/_model.js"
+import { TG_BOT_API_URL } from "#/const.js"
+import { responsesObject } from "./components.js"
+import { makePath } from "./paths.js"
 
-export const makeOpenApiDocument =
-  (input: {
-    apiVersion: string,
-    types: ExtractedType[]
-    methods: ExtractedMethod[],
-  }): OpenAPIV3_1.Document => {
+export const makeOpenApiDocument = (input: {
+  apiVersion: string
+  types: ExtractedType[]
+  methods: ExtractedMethod[]
+}): OpenAPIV3_1.Document => {
+  const paths = Object.fromEntries(
+    input.methods.map((m) => [`/${m.methodName}`, makePath(m)])
+  )
 
-  const paths = 
-    Object.fromEntries(
-      input.methods.map(m => [
-        `/${m.methodName}`,
-        makePath(m)
-      ])
-    );
-
-  const schemas =
-    Object.fromEntries(
-      input.types.map(t => [
-        t.typeName,
-        t.type.getOpenApiType()
-      ])
-    )
+  const schemas = Object.fromEntries(
+    input.types.map((t) => [t.typeName, t.type.getOpenApiType()])
+  )
 
   return {
     openapi: "3.1.0",
@@ -62,6 +52,5 @@ export const makeOpenApiDocument =
       },
       schemas
     }
-  };
-
+  }
 }

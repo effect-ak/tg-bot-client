@@ -1,18 +1,14 @@
-import { describe, assert, expect } from "vitest";
+import { describe, assert, expect } from "vitest"
 
-import { ExtractedEntities } from "#codegen/scrape/extracted-entities/_model.js";
-import { fixture } from "../../fixture/codegen-main";
+import { ExtractedEntities } from "#codegen/scrape/extracted-entities/_model.js"
+import { fixture } from "../../fixture/codegen-main"
 
 describe("page provider service", () => {
+  fixture("extract all", async ({ apiPage }) => {
+    const all = ExtractedEntities.make(apiPage)
 
-  fixture("extract all", async ({ apiPage, skip }) => {    
+    assert(all._tag == "Right")
 
-    const all = ExtractedEntities.make(apiPage);
-
-    assert(all._tag == "Right");
-
-    expect(all.right.methods.length).greaterThan(100);
-
+    expect(all.right.methods.length).greaterThan(100)
   })
-
-});
+})

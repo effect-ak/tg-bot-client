@@ -1,35 +1,30 @@
-import { Effect, Logger, LogLevel } from "effect";
-import { test } from "vitest";
+import { Effect, Logger, LogLevel } from "effect"
+import { test } from "vitest"
 
-import { PageProviderService } from "#codegen/service/index.js";
-import { WebAppPage } from "#codegen/scrape/webapp/_model";
+import { PageProviderService } from "#codegen/service/index.js"
+import { WebAppPage } from "#codegen/scrape/webapp/_model"
 
-import { WebAppCodegenRuntime } from "#codegen/runtime";
+import { WebAppCodegenRuntime } from "#codegen/runtime"
 
-type WebappFixture = {
+interface WebappFixture {
   readonly webAppPage: WebAppPage
 }
 
-const WebappDependencies =
-  Effect.gen(function* () {
-    const htmlPageProvider = yield* PageProviderService;
-    const webAppPage = yield* htmlPageProvider.webapp;
-    
-    return { webAppPage } as const;
-  }).pipe(
-    Effect.provide(WebAppCodegenRuntime)
-  );
+const WebappDependencies = Effect.gen(function* () {
+  const htmlPageProvider = yield* PageProviderService
+  const webAppPage = yield* htmlPageProvider.webapp
 
-const webappPromise =
-  WebappDependencies.pipe(
-    Logger.withMinimumLogLevel(LogLevel.Debug),
-    Effect.tapErrorCause(Effect.logError),
-    Effect.runPromise
-  );
+  return { webAppPage } as const
+}).pipe(Effect.provide(WebAppCodegenRuntime))
 
-export const webappFixture =
-  test.extend<WebappFixture>({
-    webAppPage: async ({}, use) => {
-      use((await webappPromise).webAppPage);
-    }
-  });
+const webappPromise = WebappDependencies.pipe(
+  Logger.withMinimumLogLevel(LogLevel.Debug),
+  Effect.tapErrorCause(Effect.logError),
+  Effect.runPromise
+)
+
+export const webappFixture = test.extend<WebappFixture>({
+  webAppPage: async (_, use) => {
+    use((await webappPromise).webAppPage)
+  }
+})

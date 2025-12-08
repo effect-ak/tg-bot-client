@@ -1,5 +1,5 @@
-import { executeTgBotMethod, TgBotApiToken } from "#dist/index";
-import { Effect } from "effect";
+import { executeTgBotMethod, TgBotApiToken } from "#dist/index"
+import { Effect } from "effect"
 
 import config from "../config.json"
 

@@ -1,26 +1,20 @@
-import { describe, assert } from "vitest";
-import { Effect } from "effect";
+import { describe, assert } from "vitest"
+import { Effect } from "effect"
 
-import { fixture } from "../../fixture/codegen-main";
+import { fixture } from "../../fixture/codegen-main"
 
 describe("code writer service", () => {
+  fixture("create file and write one line", async ({ tsMorph, skip }) => {
+    skip()
 
-  fixture("create file and write one line", async ({ tsMorph, skip }) => {    
+    const src = tsMorph.createTsFile("test2")
 
-    skip();
+    assert(src._tag == "Right")
 
-    const src = tsMorph.createTsFile("test2");
+    src.right.addStatements((writer) => writer.writeLine("//** fist line"))
 
-    assert(src._tag == "Right");
-
-    src.right.addStatements(writer =>
-      writer.writeLine("//** fist line")
-    );
-
-    const saved = await tsMorph.saveFiles.pipe(Effect.runPromiseExit);
+    const saved = await tsMorph.saveFiles.pipe(Effect.runPromiseExit)
 
     assert(saved._tag == "Success")
-
   })
-
-});
+})

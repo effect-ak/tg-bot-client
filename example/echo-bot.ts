@@ -1,16 +1,15 @@
-import { BotResponse, runTgChatBot, defineBot } from "#dist/bot";
-import { MESSAGE_EFFECTS } from "#dist/index";
-import { Effect, pipe } from "effect";
+import { BotResponse, runTgChatBot, defineBot } from "#dist/bot"
+import { MESSAGE_EFFECTS } from "#dist/index"
+import { Effect, pipe } from "effect"
 import config from "../config.json"
 
 const ECHO_BOT = defineBot({
   on_message: async (msg) => {
-
     if (msg.text?.includes("+")) {
-      const numbers = msg.text.split("+");
-      let result = 0;
+      const numbers = msg.text.split("+")
+      let result = 0
       for (const num of numbers) {
-        result += parseInt(num);
+        result += parseInt(num)
       }
       return BotResponse.make({
         type: "document",
@@ -22,11 +21,12 @@ const ECHO_BOT = defineBot({
       })
     }
 
-    const commandEntity = msg.entities?.find(_ => _.type == "bot_command");
-    const command =
-      commandEntity ? msg.text?.slice(commandEntity?.offset, commandEntity?.length) : undefined;
+    const commandEntity = msg.entities?.find((_) => _.type == "bot_command")
+    const command = commandEntity
+      ? msg.text?.slice(commandEntity?.offset, commandEntity?.length)
+      : undefined
 
-    console.info("echo bot", { command });
+    console.info("echo bot", { command })
 
     if (command == "/bye") {
       return pipe(
@@ -54,7 +54,7 @@ const ECHO_BOT = defineBot({
     }
 
     if (command == "/error") {
-      throw new Error("boom");
+      throw new Error("boom")
     }
 
     if (msg.text) {
@@ -67,10 +67,9 @@ const ECHO_BOT = defineBot({
       })
     }
 
-    return BotResponse.ignore;
-
+    return BotResponse.ignore
   }
-});
+})
 
 runTgChatBot({
   bot_token: config.bot_token,
@@ -83,4 +82,4 @@ runTgChatBot({
     type: "single",
     ...ECHO_BOT
   }
-});
+})

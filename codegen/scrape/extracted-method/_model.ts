@@ -5,7 +5,7 @@ import type { EntityFields } from "../entity-fields/_model.js"
 import type { ExtractedEntityShape } from "../extracted-entity/_model.js"
 import { makeFrom } from "./factory.js"
 
-export type ExtractedMethodShape = {
+export interface ExtractedMethodShape {
   methodName: string
   returnType: NormalType
   methodDescription: string[]
@@ -13,14 +13,13 @@ export type ExtractedMethodShape = {
   groupName?: string
 }
 
-export class ExtractedMethod
-  extends Data.TaggedClass("ExtractedMethod")<ExtractedMethodShape> {
-
-    static makeFrom(input: ExtractedEntityShape) {
-      return pipe(
-        makeFrom(input),
-        Either.andThen(_ => new ExtractedMethod(_))
-      )
-    }
-
+export class ExtractedMethod extends Data.TaggedClass(
+  "ExtractedMethod"
+)<ExtractedMethodShape> {
+  static makeFrom(input: ExtractedEntityShape) {
+    return pipe(
+      makeFrom(input),
+      Either.andThen((_) => new ExtractedMethod(_))
+    )
   }
+}
