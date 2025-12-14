@@ -1,0 +1,43 @@
+{
+  "name": "@effect-ak/tg-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Telegram Bot runner",
+  "license": "MIT",
+  "author": {
+    "name": "Aleksandr Kondaurov",
+    "email": "kondaurov.dev@gmail.com"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/effect-ak/tg-bot-client",
+    "directory": "packages/bot"
+  },
+  "bugs": {
+    "url": "https://github.com/effect-ak/tg-bot-client/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.cjs",
+    "dist/*.d.ts"
+  ],
+  "dependencies": {
+    "@effect-ak/tg-bot-client": "workspace:*",
+    "@effect-ak/tg-bot-api": "workspace:*"
+  }
+}

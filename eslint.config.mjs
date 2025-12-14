@@ -11,6 +11,11 @@ export default defineConfig(
   tseslint.configs.stylistic,
   eslintConfigPrettier,
   {
-    ignores: ["src/client/specification", "src/webapp/specification", "dist", "example"]
+    ignores: [
+      "src/client/specification",
+      "src/webapp/specification",
+      "dist",
+      "example"
+    ]
   }
 )

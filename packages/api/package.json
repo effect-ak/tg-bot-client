@@ -1,0 +1,44 @@
+{
+  "name": "@effect-ak/tg-bot-api",
+  "version": "0.9.2",
+  "type": "module",
+  "description": "TypeScript types for Telegram Bot Api and Telegram Mini Apps",
+  "license": "MIT",
+  "keywords": [
+    "telegram",
+    "mini-app",
+    "typescript"
+  ],
+  "author": {
+    "name": "Aleksandr Kondaurov",
+    "email": "kondaurov.dev@gmail.com"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/effect-ak/tg-bot-client",
+    "directory": "packages/api"
+  },
+  "bugs": {
+    "url": "https://github.com/effect-ak/tg-bot-client/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.cjs",
+    "dist/*.d.ts"
+  ]
+}

@@ -1,8 +1,4 @@
-src/client/specification/*
-src/webapp/specification/*
-!src/webapp/event-handlers.ts
 node_modules
 dist
-config.json
 *.tgz
-/*.html
+.env
