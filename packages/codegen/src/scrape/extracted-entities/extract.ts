@@ -84,7 +84,6 @@ export const extractWebAppEntities = (
       result.push(type.right)
       continue
     }
-
   }
 
   result.sort((a, b) => a.typeName.localeCompare(b.typeName))

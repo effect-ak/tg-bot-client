@@ -8,7 +8,7 @@ describe("extracted-entity", () => {
 
     if (entity._tag == "Left") console.log(entity.left)
 
-    assert(entity._tag == "Right", 'not right')
+    assert(entity._tag == "Right", "not right")
     expect(entity.right.returnType.getTsType("T")).toEqual("T.Update[]")
   })
 

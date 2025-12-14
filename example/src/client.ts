@@ -8,10 +8,5 @@ await Effect.gen(function* () {
   yield* executeTgBotMethod("send_message", {
     text: `hello, ${chatId}`,
     chat_id: chatId
-  }).pipe(
-    Effect.provideService(TgBotApiToken, config.token)
-  )
-}).pipe(
-  Effect.tapErrorCause(Effect.logError),
-  Effect.runPromiseExit
-)
+  }).pipe(Effect.provideService(TgBotApiToken, config.token))
+}).pipe(Effect.tapErrorCause(Effect.logError), Effect.runPromiseExit)

@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { OpenAPIV3_1 } from "openapi-types"
-import {
-  EntityFields,
-  type EntityField
-} from "~/scrape/entity-fields/_model"
+import { EntityFields, type EntityField } from "~/scrape/entity-fields/_model"
 import { NormalType } from "~/scrape/normal-type/_model"
 
 describe("entity fields", () => {

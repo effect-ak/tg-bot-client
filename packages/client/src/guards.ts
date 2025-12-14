@@ -1,5 +1,3 @@
-import type { Update } from "@effect-ak/tg-bot-api"
-
 export interface FileContent {
   file_content: Uint8Array<ArrayBuffer>
   file_name: string
@@ -27,9 +25,3 @@ export const isTgBotApiResponse = (
   input != null &&
   "ok" in input &&
   typeof input.ok == "boolean"
-
-export const isTgBotApiUpdate = (input: unknown): input is Update =>
-  typeof input == "object" &&
-  input != null &&
-  "update_id" in input &&
-  typeof input.update_id == "number"
