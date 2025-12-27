@@ -1,14 +1,18 @@
-import * as Data from "effect/Data"
+type ErrorReason =
+  | { _tag: "NotOkResponse"; errorCode?: number; details?: string }
+  | { _tag: "UnexpectedResponse"; response: unknown }
+  | { _tag: "ClientInternalError"; cause: unknown }
+  | { _tag: "UnableToGetFile"; cause: unknown }
+  | { _tag: "BotHandlerError"; cause: unknown }
+  | { _tag: "NotJsonResponse"; response: unknown }
 
-type ErrorReason = Data.TaggedEnum<{
-  NotOkResponse: { errorCode?: number; details?: string }
-  UnexpectedResponse: { response: unknown }
-  ClientInternalError: { cause: unknown }
-  UnableToGetFile: { cause: unknown }
-  BotHandlerError: { cause: unknown }
-  NotJsonResponse: { response: unknown }
-}>
+export class TgBotClientError extends Error {
+  readonly _tag = "TgBotClientError"
+  readonly cause: ErrorReason
 
-export class TgBotClientError extends Data.TaggedError("TgBotClientError")<{
-  cause: ErrorReason
-}> {}
+  constructor(options: { cause: ErrorReason }) {
+    super(`TgBotClientError: ${options.cause._tag}`)
+    this.cause = options.cause
+    this.name = "TgBotClientError"
+  }
+}

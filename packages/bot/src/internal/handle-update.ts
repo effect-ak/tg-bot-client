@@ -1,9 +1,8 @@
 import * as Micro from "effect/Micro"
 import * as Data from "effect/Data"
 import * as Fn from "effect/Function"
-import { executeTgBotMethod } from "@effect-ak/tg-bot-client"
-import { Update } from "@effect-ak/tg-bot-api"
 import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
+import { Update } from "@effect-ak/tg-bot-api"
 import type {
   AvailableUpdateTypes,
   ExtractedUpdate,
@@ -14,7 +13,8 @@ import type {
 import {
   BotPollSettingsTag,
   BotUpdateHandlersTag,
-  PollSettings
+  PollSettings,
+  BotTgClientTag
 } from "./poll-settings"
 import { BotResponse } from "./bot-response"
 
@@ -95,7 +95,16 @@ export class HandleUpdateError extends Data.TaggedError("HandleUpdateError")<{
   name: "UnknownUpdate" | "HandlerNotDefined" | "BotHandlerError"
   update: Update
   cause?: unknown
-}> {}
+}> {
+  logInfo() {
+    return {
+      updateId: this.update.update_id,
+      updateKey: Object.keys(this.update).at(1),
+      name: this._tag,
+      ...(this.cause instanceof Error && { error: this.cause.message })
+    }
+  }
+}
 
 export const handleOneByOne = (
   updates: Update[],
@@ -107,14 +116,11 @@ export const handleOneByOne = (
     (update) =>
       handleOneUpdate(update, handlers).pipe(
         Micro.catchAll((error) => {
-          console.log("update handle error", {
-            updateId: update.update_id,
-            updateKey: Object.keys(update).at(1),
-            name: error._tag,
-            ...(error.cause instanceof Error
-              ? { error: error.cause.message }
-              : undefined)
-          })
+          if (error instanceof HandleUpdateError) {
+            console.warn("update handle error", error.logInfo())
+          } else {
+            console.warn("unknown error", error)
+          }
           return Micro.succeed(error)
         })
       ),
@@ -198,14 +204,7 @@ export const handleOneUpdate = (
       }),
       Micro.catchAll((error) => {
         handleUpdateError = error
-        console.log("error", {
-          updateId: updateObject.update_id,
-          updateKey: Object.keys(updateObject).at(1),
-          name: error._tag,
-          ...(error.cause instanceof Error
-            ? { error: error.cause.message }
-            : undefined)
-        })
+        console.warn("error", error.logInfo())
         return Micro.succeed(
           BotResponse.make({
             type: "message",
@@ -233,13 +232,16 @@ export const handleOneUpdate = (
     }
 
     if ("chat" in update && handleResult.response) {
-      const response = yield* executeTgBotMethod(
-        `send_${handleResult.response.type}`,
-        {
-          ...handleResult.response,
-          chat_id: update.chat.id
-        }
-      )
+      const client = yield* Micro.service(BotTgClientTag)
+      const responsePayload = handleResult.response
+      const response = yield* Micro.tryPromise({
+        try: () =>
+          client.execute(`send_${responsePayload.type}` as any, {
+            ...responsePayload,
+            chat_id: update.chat.id
+          } as any),
+        catch: (error) => error
+      })
       if (pollSettings.log_level == "debug" && "text") {
         console.debug("bot response", response)
       }

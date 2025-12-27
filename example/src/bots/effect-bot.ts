@@ -2,8 +2,10 @@ import { Effect, Micro, pipe } from "effect"
 import { BotResponse, launchBot } from "@effect-ak/tg-bot"
 
 import { loadConfig } from "../config"
+
+const config = await loadConfig()
 Effect.gen(function* () {
-  const config = yield* loadConfig()
+  
   const bot = yield* launchBot({
     bot_token: config.token,
     poll: {

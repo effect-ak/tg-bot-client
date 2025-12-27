@@ -39,5 +39,8 @@
   "dependencies": {
     "@effect-ak/tg-bot-client": "workspace:*",
     "@effect-ak/tg-bot-api": "workspace:*"
+  },
+  "peerDependencies": {
+    "effect": "^3.12.7"
   }
 }

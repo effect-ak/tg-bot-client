@@ -1,13 +1,10 @@
-import * as Context from "effect/Context"
-
 import { TG_BOT_API_URL } from "./const"
 
-export class TgBotApiBaseUrl extends Context.Reference<TgBotApiBaseUrl>()(
-  "TgBotApiBaseUrl",
-  { defaultValue: () => TG_BOT_API_URL }
-) {}
+export interface TgBotConfig {
+  botToken: string
+  baseUrl?: string
+}
 
-export class TgBotApiToken extends Context.Tag("TgBotApiToken")<
-  TgBotApiToken,
-  string
->() {}
+export const getBaseUrl = (config?: Pick<TgBotConfig, "baseUrl">): string => {
+  return config?.baseUrl ?? TG_BOT_API_URL
+}

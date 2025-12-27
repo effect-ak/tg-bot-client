@@ -1,10 +1,7 @@
-import * as Micro from "effect/Micro"
-import * as Context from "effect/Context"
-
 import type { Api } from "@effect-ak/tg-bot-api"
 import { executeTgBotMethod } from "./execute"
-import { TgBotApiToken } from "./config"
-import { GetFile, ClientFileService } from "./client-file"
+import type { TgBotConfig } from "./config"
+import { getFile as getFileImpl, type GetFile } from "./client-file"
 
 export interface TgBotClient {
   readonly execute: <M extends keyof Api>(
@@ -14,33 +11,24 @@ export interface TgBotClient {
   readonly getFile: (input: GetFile) => Promise<File>
 }
 
-interface MakeTgClient {
+export interface MakeTgClient {
   bot_token: string
+  base_url?: string
 }
 
 export function makeTgBotClient(config: MakeTgClient): TgBotClient {
-  return createEffect(config).pipe(Micro.runSync)
+  const tgConfig: TgBotConfig = {
+    botToken: config.bot_token,
+    ...(config.base_url ? { baseUrl: config.base_url } : {})
+  }
+
+  const execute = <M extends keyof Api>(
+    method: M,
+    input: Parameters<Api[M]>[0]
+  ) => executeTgBotMethod({ config: tgConfig, method, input })
+
+  return {
+    execute,
+    getFile: (input: GetFile) => getFileImpl(input, { config: tgConfig, execute })
+  }
 }
-
-const createEffect = ({ bot_token }: MakeTgClient) =>
-  Micro.gen(function* () {
-    const file = yield* Micro.service(ClientFileService)
-    const context = Context.make(TgBotApiToken, bot_token)
-
-    const execute = <M extends keyof Api>(
-      method: M,
-      input: Parameters<Api[M]>[0]
-    ) =>
-      executeTgBotMethod(method, input).pipe(
-        Micro.provideContext(context),
-        Micro.runPromise
-      )
-
-    const getFile = (input: GetFile) =>
-      file.getFile(input).pipe(Micro.provideContext(context), Micro.runPromise)
-
-    return {
-      execute,
-      getFile
-    }
-  }).pipe(Micro.provideContext(ClientFileService.live()))

@@ -3,7 +3,7 @@ import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
 import { Effect, pipe } from "effect"
 
 import { loadConfig } from "../config"
-const config = await loadConfig().pipe(Effect.runPromise)
+const config = await loadConfig()
 
 const ECHO_BOT = defineBot({
   on_message: async (msg) => {

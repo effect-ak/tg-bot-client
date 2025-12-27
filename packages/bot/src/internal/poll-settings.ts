@@ -1,10 +1,16 @@
 import * as Context from "effect/Context"
 import * as Data from "effect/Data"
+import type { TgBotClient } from "@effect-ak/tg-bot-client"
 import type { BotMode } from "./types"
 
 export class BotUpdateHandlersTag extends Context.Tag("BotUpdateHandlers")<
   BotUpdateHandlersTag,
   BotMode
+>() {}
+
+export class BotTgClientTag extends Context.Tag("BotTgClient")<
+  BotTgClientTag,
+  TgBotClient
 >() {}
 
 export interface PollSettings {
