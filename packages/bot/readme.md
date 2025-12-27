@@ -1,95 +1,500 @@
-## ChatBot runner
+# @effect-ak/tg-bot
 
-### How this library helps
+[![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot)](https://www.npmjs.com/package/@effect-ak/tg-bot)
+![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot?link=)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A chatbot is essentially a **function** that is triggered by every user message, whether it's a text message, a reaction, or a payment update. Lets name this function as **handler function**
+Effect-based Telegram bot runner that handles long polling, update processing, and error management automatically.
 
-This library handles the task of reading these **updates** from the Telegram Bot API's **message queue**. It then invokes the appropriate **handler function** with the received update.
+## Table of Contents
 
-### Playground
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Core Concepts](#core-concepts)
+  - [Single Mode](#single-mode)
+  - [Batch Mode](#batch-mode)
+  - [Bot Response](#bot-response)
+- [Usage Examples](#usage-examples)
+  - [Echo Bot](#echo-bot)
+  - [Command Handler](#command-handler)
+  - [Batch Processing](#batch-processing)
+  - [Using Effect](#using-effectjs)
+  - [Hot Reload](#hot-reload)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+- [How It Works](#how-it-works)
+- [Error Handling](#error-handling)
+- [Playground](#playground)
+- [Related Packages](#related-packages)
+- [License](#license)
 
-Develop/Run chat bots in your browser via **[Chat Bot Playground](https://effect-ak.github.io/telegram-bot-playground/)**
+## Features
 
-### Local run
+- **Effect-based**: Built on top of [Effect](https://effect.website/) for powerful functional programming patterns
+- **Two Processing Modes**: Handle updates one-by-one or in batches
+- **Automatic Long Polling**: Manages connection to Telegram servers
+- **Type-Safe Handlers**: Full TypeScript support for all update types
+- **Error Recovery**: Configurable error handling strategies
+- **Concurrent Processing**: Process multiple updates in parallel (up to 10 concurrent handlers)
+- **Hot Reload**: Reload bot handlers without restarting
+- **Built-in Logging**: Configurable logging levels
+- **No Public URL Required**: Uses pull model - run bots anywhere, even in a browser
 
-You can write the logic for your chatbot and **run it locally** and message to your bot via **Telegram** messenger.
+## Installation
 
-Take a look at examples [here](example)
+```bash
+npm install @effect-ak/tg-bot effect
+```
 
-### Setup Instructions
+```bash
+pnpm add @effect-ak/tg-bot effect
+```
 
-1. **Create `bot.js` and Implement Your Bot's Logic**
+```bash
+yarn add @effect-ak/tg-bot effect
+```
 
-   Create a file (for example `bot.js`) and add your bot's logic as shown below:
+**Note:** `effect` is a peer dependency and must be installed separately.
 
-   ```typescript
-   import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
-   import { runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot-client/bot"
+## Quick Start
 
-   const BOT = defineBot({
-      on_message: (msg) => {
+```typescript
+import { runTgChatBot, BotResponse } from "@effect-ak/tg-bot"
 
-      if (!msg.text) return BotResponse.ignore;
-
-      if (msg?.text === "bye") {
-        return BotResponse.make({
-          type: "message",
-          text: "See you later!",
-          message_effect_id: MESSAGE_EFFECTS["❤️"]
-        })
-      }
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  mode: {
+    type: "single",
+    on_message: (message) => {
+      if (!message.text) return BotResponse.ignore
 
       return BotResponse.make({
         type: "message",
-        text: "I'm a simple bot"
+        text: `You said: ${message.text}`
       })
-     }
-   })
+    }
+  }
+})
+```
 
-   runTgChatBot({
-     bot_token: "your-token" // PUT YOUR TOKEN HERE
-     mode: {
+## Core Concepts
+
+### Single Mode
+
+In single mode, the bot processes each update individually with a dedicated handler for each update type.
+
+**Available Handlers:**
+- `on_message` - New incoming message
+- `on_edited_message` - Message was edited
+- `on_channel_post` - New channel post
+- `on_edited_channel_post` - Channel post was edited
+- `on_inline_query` - Inline query
+- `on_chosen_inline_result` - Chosen inline result
+- `on_callback_query` - Callback query from inline keyboard
+- `on_shipping_query` - Shipping query
+- `on_pre_checkout_query` - Pre-checkout query
+- `on_poll` - Poll state update
+- `on_poll_answer` - User changed their answer in a poll
+- `on_my_chat_member` - Bot's chat member status changed
+- `on_chat_member` - Chat member status changed
+- `on_chat_join_request` - Request to join chat
+
+### Batch Mode
+
+In batch mode, the bot receives all updates as an array and processes them together.
+
+```typescript
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  mode: {
+    type: "batch",
+    on_batch: async (updates) => {
+      console.log(`Processing ${updates.length} updates`)
+      // Process updates...
+      return true // Continue polling
+    }
+  }
+})
+```
+
+### Bot Response
+
+Handlers return a `BotResponse` object that describes what to send back to the user.
+
+**Creating Responses:**
+
+```typescript
+import { BotResponse } from "@effect-ak/tg-bot"
+
+// Send a message
+BotResponse.make({
+  type: "message",
+  text: "Hello!"
+})
+
+// Send a photo
+BotResponse.make({
+  type: "photo",
+  photo: {
+    file_content: photoBuffer,
+    file_name: "image.jpg"
+  },
+  caption: "Check this out!"
+})
+
+// Ignore update (don't send anything)
+BotResponse.ignore
+```
+
+**Supported Response Types:**
+All Telegram `send_*` methods are supported: `message`, `photo`, `document`, `video`, `audio`, `voice`, `sticker`, `dice`, etc.
+
+## Usage Examples
+
+### Echo Bot
+
+```typescript
+import { runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot"
+
+const ECHO_BOT = defineBot({
+  on_message: (message) => {
+    if (!message.text) return BotResponse.ignore
+
+    return BotResponse.make({
+      type: "message",
+      text: message.text,
+      reply_parameters: {
+        message_id: message.message_id
+      }
+    })
+  }
+})
+
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  mode: {
+    type: "single",
+    ...ECHO_BOT
+  }
+})
+```
+
+### Command Handler
+
+```typescript
+import { runTgChatBot, BotResponse } from "@effect-ak/tg-bot"
+import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
+
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  mode: {
+    type: "single",
+    on_message: (msg) => {
+      const command = msg.entities?.find(e => e.type === "bot_command")
+      const commandText = command
+        ? msg.text?.slice(command.offset, command.length)
+        : undefined
+
+      switch (commandText) {
+        case "/start":
+          return BotResponse.make({
+            type: "message",
+            text: "Welcome! Send me any message.",
+            message_effect_id: MESSAGE_EFFECTS["🎉"]
+          })
+
+        case "/help":
+          return BotResponse.make({
+            type: "message",
+            text: "Available commands:\n/start - Start bot\n/help - Show help"
+          })
+
+        default:
+          return BotResponse.ignore
+      }
+    }
+  }
+})
+```
+
+### Batch Processing
+
+```typescript
+import { runTgChatBot } from "@effect-ak/tg-bot"
+import { makeTgBotClient } from "@effect-ak/tg-bot-client"
+
+const client = makeTgBotClient({ bot_token: "YOUR_BOT_TOKEN" })
+
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  poll: {
+    batch_size: 100,
+    poll_timeout: 60
+  },
+  mode: {
+    type: "batch",
+    on_batch: async (updates) => {
+      const messages = updates
+        .map(u => u.message)
+        .filter(m => m != null)
+
+      await client.execute("send_message", {
+        chat_id: "ADMIN_CHAT_ID",
+        text: `Processed ${messages.length} messages`
+      })
+
+      return true // Continue polling
+    }
+  }
+})
+```
+
+### Using Effect
+
+Advanced usage with Effect for composable async operations:
+
+```typescript
+import { Effect, Micro, pipe } from "effect"
+import { BotResponse, launchBot } from "@effect-ak/tg-bot"
+
+Effect.gen(function* () {
+  const bot = yield* launchBot({
+    bot_token: "YOUR_BOT_TOKEN",
+    poll: {
+      log_level: "debug"
+    },
+    mode: {
       type: "single",
-      ...BOT
-     }
-   })
-   ```
+      on_message: (message) => {
+        if (!message.text) return BotResponse.ignore
 
-2. **Run the Bot**
+        // Use Effect for async operations
+        return pipe(
+          Effect.sleep("2 seconds"),
+          Effect.andThen(() =>
+            BotResponse.make({
+              type: "message",
+              text: "Delayed response!"
+            })
+          ),
+          Effect.runPromise
+        )
+      }
+    }
+  })
 
-   To start your chatbot, execute the following command in your terminal:
+  // Access bot fiber for control
+  yield* pipe(
+    Micro.fiberAwait(bot.fiber()!),
+    Effect.andThen(Effect.logInfo("Bot stopped")),
+    Effect.forkDaemon
+  )
+}).pipe(Effect.runPromise)
+```
 
-   ```bash
-   node bot.js
-   ```
+### Hot Reload
 
-### How It Works: Pull Model
+```typescript
+import { Effect } from "effect"
+import { launchBot, BotResponse } from "@effect-ak/tg-bot"
 
-The Telegram bot supports both **push** and **pull** notification models for messages. This package uses the **pull** model for several reasons:
+Effect.gen(function* () {
+  const bot = yield* launchBot({
+    bot_token: "YOUR_BOT_TOKEN",
+    mode: {
+      type: "single",
+      on_message: (msg) => BotResponse.make({
+        type: "message",
+        text: "Version 1"
+      })
+    }
+  })
 
-- **Run chat bots anywhere without exposing public ports or URLs:** The Telegram **push** model requires you as a developer to specify a public URL where updates will be sent.  
-  For example, **pull** allows running chat bots in a web browser, which doesn't have a public URL.
-- **Leveraging Telegram's infrastructure:** Telegram keeps new updates for 24 hours and gives you plenty of time to process them.
+  // Later, reload with new handlers
+  await bot.reload({
+    type: "single",
+    on_message: (msg) => BotResponse.make({
+      type: "message",
+      text: "Version 2 - Hot reloaded!"
+    })
+  })
+}).pipe(Effect.runPromise)
+```
 
-#### Few details and clarifications
+## Configuration
 
-Developer is responsible only for **Handler Function**.
+### Poll Settings
 
-**ChatBot runner** reads updates from the queue and shifts **ID** of last proceeded update so that **handler function** won't be triggered multiple times for the same update.
+Configure how the bot polls for updates:
+
+```typescript
+runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  poll: {
+    log_level: "debug",        // "info" | "debug"
+    on_error: "continue",      // "stop" | "continue"
+    batch_size: 50,            // 10-100
+    poll_timeout: 30,          // 2-120 seconds
+    max_empty_responses: 5     // Stop after N empty responses
+  },
+  mode: { /* ... */ }
+})
+```
+
+**Options:**
+
+- `log_level` (default: `"info"`): Logging verbosity
+  - `"info"` - Basic logging (new messages, errors)
+  - `"debug"` - Detailed logging (all updates, responses)
+
+- `on_error` (default: `"stop"`): Error handling strategy
+  - `"stop"` - Stop bot on error
+  - `"continue"` - Continue polling after errors
+
+- `batch_size` (default: `10`): Number of updates to fetch per poll (10-100)
+
+- `poll_timeout` (default: `10`): Long polling timeout in seconds (2-120)
+
+- `max_empty_responses` (default: `undefined`): Stop after N consecutive empty responses (useful for testing)
+
+## API Reference
+
+### `runTgChatBot(input)`
+
+Starts the bot with long polling.
+
+**Parameters:**
+- `bot_token` (string, required): Bot token from @BotFather
+- `mode` (object, required): Bot mode configuration (single or batch)
+- `poll` (object, optional): Polling configuration
+
+**Returns:** `Promise<void>`
+
+### `launchBot(input)`
+
+Launches bot and returns a bot instance for advanced control.
+
+**Returns:** `Micro<BotInstance>`
+- `BotInstance.reload(mode)` - Hot reload handlers
+- `BotInstance.fiber()` - Access underlying Effect fiber
+
+### `defineBot(handlers)`
+
+Helper to define bot handlers with type checking and validation.
+
+**Parameters:**
+- `handlers` (object): Handler functions for different update types
+
+**Returns:** `BotUpdatesHandlers`
+
+### `BotResponse.make(response)`
+
+Creates a bot response.
+
+**Parameters:**
+- `response` (object): Response configuration with `type` and parameters
+
+**Returns:** `BotResponse`
+
+### `BotResponse.ignore`
+
+Singleton instance for ignoring updates (no response).
+
+## How It Works
+
+### Pull Model Architecture
+
+The Telegram bot API supports both **push** and **pull** notification models. This package uses the **pull** model for several key advantages:
+
+- **Run bots anywhere without public URLs:** No need to expose public ports or configure webhooks. You can run bots locally, in a browser, or behind firewalls.
+- **Leverage Telegram's infrastructure:** Telegram stores updates for 24 hours, giving you plenty of time to process them.
+- **Simpler deployment:** No SSL certificates, no webhook configuration, no reverse proxies required.
+
+### Architecture Diagram
 
 ```mermaid
 graph TD
-  HandlerFunction[/**Handler Function**/]
-  Library[**ChatBot runner**]
-  TgBot[Telegram chat bot]
-  MessageQueue[**Bot updates queue**<br>_api.telegram.org/bot/updates_]
-  User -->|Sends Update, e.g  a text message| TgBot
-  TgBot -->|Stores Update for 24 hours | MessageQueue
+  User[User] -->|Sends message| TgBot[Telegram Bot]
+  TgBot -->|Stores for 24h| Queue[Updates Queue<br/>api.telegram.org/bot/updates]
 
-  subgraph Pull Updates
-    Library -->|Fetches Update | MessageQueue
-    Library -->|Invokes| HandlerFunction
+  subgraph Your Code
+    Runner[Bot Runner<br/>@effect-ak/tg-bot]
+    Handler[Your Handler Function]
   end
 
-
+  Runner -->|Long polling| Queue
+  Runner -->|Invokes with update| Handler
+  Handler -->|Returns BotResponse| Runner
+  Runner -->|Sends response| TgBot
 ```
+
+**How it works:**
+1. User sends a message to your bot
+2. Telegram stores the update in a queue for 24 hours
+3. Bot runner polls the queue using long polling
+4. Runner invokes your handler function with the update
+5. Handler returns a `BotResponse`
+6. Runner sends the response back to Telegram
+7. Runner tracks the last processed update ID to avoid duplicates
+
+## Error Handling
+
+The bot automatically handles errors at different levels:
+
+### Update Handler Errors
+
+If a handler throws an error, the bot:
+1. Logs the error with update details
+2. Sends an error message to the user (in single mode)
+3. Continues processing other updates (if `on_error: "continue"`)
+
+```typescript
+on_message: (msg) => {
+  if (msg.text === "/error") {
+    throw new Error("Something went wrong!")
+  }
+  // Bot will catch this and send error message to user
+  return BotResponse.make({ type: "message", text: "OK" })
+}
+```
+
+### Batch Handler Errors
+
+In batch mode, returning `false` stops the bot:
+
+```typescript
+on_batch: async (updates) => {
+  try {
+    // Process updates
+    return true // Continue
+  } catch (error) {
+    console.error(error)
+    return false // Stop bot
+  }
+}
+```
+
+### Concurrent Processing
+
+In single mode, up to 10 updates are processed concurrently. If some handlers fail, others continue processing.
+
+## Playground
+
+Develop and test your bot directly in the browser:
+
+**[Chat Bot Playground](https://effect-ak.github.io/telegram-bot-playground/)**
+
+No installation required - perfect for quick prototyping and learning!
+
+## Related Packages
+
+This package is part of the `tg-bot-client` monorepo:
+
+- **[@effect-ak/tg-bot-client](../client)** - Type-safe HTTP client for Telegram Bot API
+- **[@effect-ak/tg-bot-api](../api)** - TypeScript types for Telegram Bot API and Mini Apps
+- **[@effect-ak/tg-bot-codegen](../codegen)** - Code generator that parses official documentation
+
+## License
+
+MIT © [Aleksandr Kondaurov](https://github.com/effect-ak)
