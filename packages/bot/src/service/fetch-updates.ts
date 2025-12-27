@@ -1,8 +1,8 @@
+import { executeTgBotMethod } from "@effect-ak/tg-bot-client"
 import * as Context from "effect/Context"
 import * as Data from "effect/Data"
 import * as Micro from "effect/Micro"
 import { BotPollSettingsTag } from "~/internal/poll-settings"
-import { executeTgBotMethod } from "@effect-ak/tg-bot-client"
 
 interface State {
   lastUpdateId: number | undefined

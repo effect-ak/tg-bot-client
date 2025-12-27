@@ -5,22 +5,25 @@ import { TgBotClientError } from "./errors"
 import { TgBotApiBaseUrl, TgBotApiToken } from "./config"
 import { executeTgBotMethod } from "./execute"
 
+interface GetFile {
+  fileId: string
+  type?: string
+}
+
+interface FileService {
+  getFile: (input: GetFile) => ReturnType<typeof getFile>
+  getFileBytes: (input: string) => ReturnType<typeof getFileBytes>
+}
+
 export class ClientFileService extends Context.Tag("ClientFileService")<
   ClientFileService,
-  {
-    getFile: (input: GetFile) => ReturnType<typeof getFile>
-  }
+  FileService
 >() {
   static live = () => {
     return ClientFileService.context({
-      getFile
+      getFile, getFileBytes
     })
   }
-}
-
-export interface GetFile {
-  fileId: string
-  type?: string
 }
 
 const getFile = ({ fileId, type }: GetFile) =>
