@@ -1,70 +1,73 @@
-import * as Micro from "effect/Micro"
-import * as Context from "effect/Context"
-
+import type { Api } from "@effect-ak/tg-bot-api"
 import { TgBotClientError } from "./errors"
-import { TgBotApiBaseUrl, TgBotApiToken } from "./config"
-import { executeTgBotMethod } from "./execute"
-
-export class ClientFileService extends Context.Tag("ClientFileService")<
-  ClientFileService,
-  {
-    getFile: (input: GetFile) => ReturnType<typeof getFile>
-  }
->() {
-  static live = () => {
-    return ClientFileService.context({
-      getFile
-    })
-  }
-}
+import type { TgBotConfig } from "./config"
+import { getBaseUrl } from "./config"
 
 export interface GetFile {
   fileId: string
   type?: string
 }
 
-const getFile = ({ fileId, type }: GetFile) =>
-  getFileBytes(fileId).pipe(
-    Micro.andThen(
-      ({ content, file_name }) =>
-        new File([content], file_name, {
-          ...(type ? { type } : undefined)
-        })
-    )
-  )
+export interface FileBytes {
+  content: ArrayBuffer
+  file_name: string
+  base64String: () => string
+}
 
-const getFileBytes = (fileId: string) =>
-  Micro.gen(function* () {
-    const response = yield* executeTgBotMethod("get_file", { file_id: fileId })
-    const file_path = response.file_path
+interface FileContext {
+  config: TgBotConfig
+  execute: <M extends keyof Api>(
+    method: M,
+    input: Parameters<Api[M]>[0]
+  ) => Promise<ReturnType<Api[M]>>
+}
 
-    if (!file_path || file_path.length == 0) {
-      return yield* Micro.fail(
-        new TgBotClientError({
-          cause: {
-            _tag: "UnableToGetFile",
-            cause: "File path not defined"
-          }
-        })
-      )
-    }
+export const getFileBytes = async (
+  fileId: string,
+  context: FileContext
+): Promise<FileBytes> => {
+  const { config, execute } = context
+  const response = await execute("get_file", { file_id: fileId })
+  const file_path = response.file_path
 
-    const file_name = file_path.replaceAll("/", "-")
-    const baseUrl = yield* Micro.service(TgBotApiBaseUrl)
-    const botToken = yield* Micro.service(TgBotApiToken)
-
-    const url = `${baseUrl}/file/bot${botToken}/${file_path}`
-
-    const content = yield* Micro.tryPromise({
-      try: () => fetch(url).then((_) => _.arrayBuffer()),
-      catch: (cause) =>
-        new TgBotClientError({
-          cause: { _tag: "UnableToGetFile", cause }
-        })
+  if (!file_path || file_path.length === 0) {
+    throw new TgBotClientError({
+      cause: {
+        _tag: "UnableToGetFile",
+        cause: "File path not defined"
+      }
     })
+  }
 
-    return {
-      content,
-      file_name
-    }
+  const file_name = file_path.replaceAll("/", "-")
+  const baseUrl = getBaseUrl(config)
+  const botToken = config.botToken
+  const url = `${baseUrl}/file/bot${botToken}/${file_path}`
+
+  let content: ArrayBuffer
+  try {
+    content = await fetch(url).then((_) => _.arrayBuffer())
+  } catch (cause) {
+    throw new TgBotClientError({
+      cause: { _tag: "UnableToGetFile", cause }
+    })
+  }
+
+  const base64String = () => Buffer.from(content).toString("base64")
+
+  return {
+    content,
+    file_name,
+    base64String
+  }
+}
+
+export const getFile = async (
+  input: GetFile,
+  context: FileContext
+): Promise<File> => {
+  const { content, file_name } = await getFileBytes(input.fileId, context)
+  return new File([content], file_name, {
+    ...(input.type ? { type: input.type } : {})
   })
+}

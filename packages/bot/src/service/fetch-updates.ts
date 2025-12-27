@@ -1,8 +1,7 @@
 import * as Context from "effect/Context"
 import * as Data from "effect/Data"
 import * as Micro from "effect/Micro"
-import { BotPollSettingsTag } from "~/internal/poll-settings"
-import { executeTgBotMethod } from "@effect-ak/tg-bot-client"
+import { BotPollSettingsTag, BotTgClientTag } from "~/internal/poll-settings"
 
 interface State {
   lastUpdateId: number | undefined
@@ -48,6 +47,7 @@ export class FetchUpdatesError extends Data.TaggedError("FetchUpdatesError")<{
 const _fetchUpdates = (pollState: State) =>
   Micro.gen(function* () {
     const pollSettings = yield* Micro.service(BotPollSettingsTag)
+    const client = yield* Micro.service(BotTgClientTag)
 
     if (
       pollSettings.max_empty_responses &&
@@ -64,9 +64,13 @@ const _fetchUpdates = (pollState: State) =>
       console.debug("getting updates", pollState)
     }
 
-    const updates = yield* executeTgBotMethod("get_updates", {
-      timeout: pollSettings.poll_timeout,
-      ...(updateId ? { offset: updateId } : undefined)
+    const updates = yield* Micro.tryPromise({
+      try: () =>
+        client.execute("get_updates", {
+          timeout: pollSettings.poll_timeout,
+          ...(updateId ? { offset: updateId } : undefined)
+        }),
+      catch: (error) => error
     }).pipe(Micro.andThen((_) => _.sort((_) => _.update_id)))
 
     if (updates.length) {
@@ -83,10 +87,16 @@ const _commitLastBatch = (pollState: State) =>
   Micro.gen(function* () {
     console.log("commit", { pollState })
     if (pollState.lastUpdateId) {
+      const client = yield* Micro.service(BotTgClientTag)
+      const offset = pollState.lastUpdateId
       // next batch
-      return yield* executeTgBotMethod("get_updates", {
-        offset: pollState.lastUpdateId,
-        limit: 0
+      return yield* Micro.tryPromise({
+        try: () =>
+          client.execute("get_updates", {
+            offset,
+            limit: 0
+          }),
+        catch: (error) => error
       }).pipe(
         Micro.andThen(
           Micro.andThen(Micro.service(BotPollSettingsTag), (pollSettings) => {

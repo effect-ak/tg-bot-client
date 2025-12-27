@@ -1,13 +1,12 @@
 import * as Context from "effect/Context"
 import * as Micro from "effect/Micro"
-import type { TgBotClientError } from "@effect-ak/tg-bot-client"
 import { BatchUpdateResult, handleUpdates } from "~/internal/handle-update"
 import { BotPollSettingsTag } from "~/internal/poll-settings"
-import { BotFetchUpdatesService, FetchUpdatesError } from "./fetch-updates"
+import { BotFetchUpdatesService } from "./fetch-updates"
 
 interface State {
   fiber:
-    | Micro.MicroFiber<BatchUpdateResult, TgBotClientError | FetchUpdatesError>
+    | Micro.MicroFiber<BatchUpdateResult, unknown>
     | undefined
 }
 

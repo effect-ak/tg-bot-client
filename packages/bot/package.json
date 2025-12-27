@@ -1,6 +1,6 @@
 {
   "name": "@effect-ak/tg-bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Telegram Bot runner",
   "license": "MIT",
@@ -37,7 +37,10 @@
     "dist/*.d.ts"
   ],
   "dependencies": {
-    "@effect-ak/tg-bot-client": "workspace:*",
-    "@effect-ak/tg-bot-api": "workspace:*"
+    "@effect-ak/tg-bot-client": "^1.1.0",
+    "@effect-ak/tg-bot-api": "0.9.2"
+  },
+  "peerDependencies": {
+    "effect": "^3.12.7"
   }
 }
