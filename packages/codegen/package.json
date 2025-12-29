@@ -4,7 +4,8 @@
   "scripts": {
     "gen": "pnpm run gen:bot:api && pnpm run gen:webapp:api",
     "gen:bot:api": "MODULE_NAME=bot_api tsx ./src/main",
-    "gen:webapp:api": "MODULE_NAME=webapp tsx ./src/main"
+    "gen:webapp:api": "MODULE_NAME=webapp tsx ./src/main",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "node-html-parser": "^7.0.1",

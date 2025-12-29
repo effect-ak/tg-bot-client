@@ -14,7 +14,8 @@
     "email": "kondaurov.dev@gmail.com"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "typecheck": "tsc"
   },
   "repository": {
     "type": "git",
