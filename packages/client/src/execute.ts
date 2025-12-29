@@ -2,23 +2,27 @@ import type { Api } from "@effect-ak/tg-bot-api"
 
 import { TgBotClientError } from "./errors"
 import { isFileContent, isTgBotApiResponse } from "./guards"
-import type { TgBotConfig } from "./config"
-import { getBaseUrl } from "./config"
 import { snakeToCamel } from "./utils"
+import type { TgClientConfig } from "./client"
 
-export async function executeTgBotMethod<M extends keyof Api>(params: {
-  config: TgBotConfig
-  method: M
+export type ExecuteMethod = <M extends keyof Api>(
+  method: M,
   input: Parameters<Api[M]>[0]
-}): Promise<ReturnType<Api[M]>> {
+) => Promise<ReturnType<Api[M]>>
+
+export async function executeTgBotMethod<M extends keyof Api>(
+  params: {
+    config: Required<TgClientConfig>
+    method: M
+    input: Parameters<Api[M]>[0]
+  }
+): Promise<ReturnType<Api[M]>> {
   const { config, method, input } = params
-  const baseUrl = getBaseUrl(config)
-  const botToken = config.botToken
 
   let httpResponse: Response
   try {
     httpResponse = await fetch(
-      `${baseUrl}/bot${botToken}/${snakeToCamel(method)}`,
+      `${config.base_url}/bot${config.bot_token}/${snakeToCamel(method)}`,
       {
         body: makePayload(input) ?? null,
         method: "POST"

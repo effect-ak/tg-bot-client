@@ -1,32 +1,23 @@
-import type { Api } from "@effect-ak/tg-bot-api"
 import { TgBotClientError } from "./errors"
-import type { TgBotConfig } from "./config"
-import { getBaseUrl } from "./config"
+import type { ExecuteMethod } from "./execute"
 
-export interface GetFile {
+export interface TgFile {
+  readonly content: ArrayBuffer
+  readonly file_name: string
+  readonly base64String: () => string
+  readonly file: () => File
+}
+
+export const getFile = async (params: {
   fileId: string
+  config: {
+    bot_token: string
+    base_url: string
+  }
   type?: string
-}
-
-export interface FileBytes {
-  content: ArrayBuffer
-  file_name: string
-  base64String: () => string
-}
-
-interface FileContext {
-  config: TgBotConfig
-  execute: <M extends keyof Api>(
-    method: M,
-    input: Parameters<Api[M]>[0]
-  ) => Promise<ReturnType<Api[M]>>
-}
-
-export const getFileBytes = async (
-  fileId: string,
-  context: FileContext
-): Promise<FileBytes> => {
-  const { config, execute } = context
+  execute: ExecuteMethod
+}): Promise<TgFile> => {
+  const { fileId, config, execute } = params
   const response = await execute("get_file", { file_id: fileId })
   const file_path = response.file_path
 
@@ -40,9 +31,7 @@ export const getFileBytes = async (
   }
 
   const file_name = file_path.replaceAll("/", "-")
-  const baseUrl = getBaseUrl(config)
-  const botToken = config.botToken
-  const url = `${baseUrl}/file/bot${botToken}/${file_path}`
+  const url = `${config.base_url}/file/bot${config.bot_token}/${file_path}`
 
   let content: ArrayBuffer
   try {
@@ -54,20 +43,15 @@ export const getFileBytes = async (
   }
 
   const base64String = () => Buffer.from(content).toString("base64")
+  const file = () =>
+    new File([content], file_name, {
+      ...(params.type ? { type: params.type } : {})
+    })
 
   return {
     content,
     file_name,
-    base64String
+    base64String,
+    file
   }
-}
-
-export const getFile = async (
-  input: GetFile,
-  context: FileContext
-): Promise<File> => {
-  const { content, file_name } = await getFileBytes(input.fileId, context)
-  return new File([content], file_name, {
-    ...(input.type ? { type: input.type } : {})
-  })
 }

@@ -1,4 +1,4 @@
-import { extractUpdate } from "../src"
+import { extractUpdate } from "~/index"
 import { describe, expect, it } from "vitest"
 
 describe("message handler", () => {

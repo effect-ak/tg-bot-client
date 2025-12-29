@@ -1,32 +1,27 @@
-import { describe, expect, assert, vi } from "vitest"
+import { describe, expect, vi } from "vitest"
 
 import { fixture } from "./fixture"
-import { MESSAGE_EFFECTS } from "../src/const"
-import { Micro } from "effect"
-import { executeTgBotMethod } from "../src/execute"
+import { MESSAGE_EFFECTS } from "~/const"
+import { executeTgBotMethod } from "~/execute"
 
 const fetchSpy = vi.spyOn(global, "fetch")
 
 describe("telegram bot client, execute method", () => {
-  fixture("send dice", async ({ chat_id, context }) => {
+  fixture("send dice", async ({ chat_id, client }) => {
     // skip();
 
-    const response = await executeTgBotMethod("send_dice", {
+    const response = await client.execute("send_dice", {
       chat_id,
       emoji: "🎲",
       message_effect_id: MESSAGE_EFFECTS["🔥"]
-    }).pipe(Micro.provideContext(context), Micro.runPromiseExit)
-
-    assert(response._tag == "Success")
+    })
 
     const url = fetchSpy.mock.calls[0][0] as string
     const lastPath = url.split("/").pop()
 
     expect(lastPath).toEqual("sendDice")
 
-    assert(response != null)
-
-    expect(response.value.chat.id).toBeDefined()
+    expect(response.chat.id).toBeDefined()
   })
 
   fixture("send message", async ({ chat_id, client, skip }) => {

@@ -1,18 +1,16 @@
 import { test } from "vitest"
-import { Context } from "effect"
 
-import { makeTgBotClient, TgBotClient } from "../src/client"
-import { TgBotApiToken } from "../src/config"
+import { makeTgBotClient, TgBotClient, TgClientConfig } from "~/client"
 
 interface Fixture {
   readonly token: string
   readonly client: TgBotClient
   readonly chat_id: string
-  readonly context: Context.Context<TgBotApiToken>
+  readonly config: Required<TgClientConfig>
 }
 
 export const fixture = test.extend<Fixture>({
-  token: async (_, use) => {
+  token: async ({}, use) => {
     const token = process.env["bot_token"]
     if (!token) throw Error("bot_token not defined in config.json")
     use(token)
@@ -24,12 +22,12 @@ export const fixture = test.extend<Fixture>({
     })
     use(client)
   },
-  chat_id: async (_, use) => {
+  chat_id: async ({}, use) => {
     const chatId = process.env["chat_id"]
     if (!chatId) throw Error("chat_id not defined in config.json")
     use(chatId)
   },
-  context: async ({ token }, use) => {
-    use(Context.make(TgBotApiToken, token))
+  config: async ({ client }, use) => {
+    use(client.config)
   }
 })
