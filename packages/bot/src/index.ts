@@ -1,4 +1,5 @@
 export * from "./internal/bot-response"
+export * from "./internal/bot-context"
 export * from "./internal/handle-update"
 export * from "./internal/launch"
 export * from "./internal/poll-settings"

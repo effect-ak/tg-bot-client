@@ -4,6 +4,16 @@ import * as Context from "effect/Context"
 import { BotRunService } from "~/service/run"
 import { makeTgBotClient } from "@effect-ak/tg-bot-client"
 import type { BotMode, RunBotInput } from "./types"
+
+// Extract BotMode from flat input
+const extractMode = (input: RunBotInput): BotMode => {
+  if (input.mode === "batch") {
+    return { type: "batch", on_batch: input.on_batch }
+  }
+  // single mode - collect all on_* handlers
+  const { bot_token, mode, poll, ...handlers } = input
+  return { type: "single", ...handlers }
+}
 import {
   BotPollSettings,
   BotPollSettingsTag,
@@ -20,8 +30,10 @@ export const launchBot = (input: RunBotInput) =>
     const client = makeTgBotClient({ bot_token: input.bot_token })
     const contextWithClient = Context.make(BotTgClientTag, client)
 
+    const mode = extractMode(input)
+
     yield* service.runBotInBackground.pipe(
-      Micro.provideService(BotUpdateHandlersTag, input.mode),
+      Micro.provideService(BotUpdateHandlersTag, mode),
       Micro.provideService(
         BotPollSettingsTag,
         BotPollSettings.make(input.poll ?? {})

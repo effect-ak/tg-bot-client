@@ -1,9 +1,13 @@
 {
+  "name": "example",
   "private": true,
   "type": "module",
   "scripts": {
     "client": "tsx ./src/client.ts",
-    "echo-bot": "tsx ./src/bots/echo-bot.ts"
+    "echo-bot": "tsx ./src/bots/echo-bot.ts",
+    "batch-bot": "tsx ./src/bots/batch-bot.ts",
+    "reload-bot": "tsx ./src/bots/reload-bot.ts",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@effect-ak/tg-bot-client": "workspace:*",

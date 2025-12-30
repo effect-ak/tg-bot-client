@@ -1,38 +1,29 @@
-import { BotResponse, runTgChatBot } from "@effect-ak/tg-bot"
+import { runTgChatBot } from "@effect-ak/tg-bot"
 
 import { loadConfig } from "../config"
 
 const config = await loadConfig()
-main()
 
-async function main() {
-  const bot = await runTgChatBot({
-    bot_token: config.token,
-    mode: {
-      type: "single",
-      on_message: (msg) => {
-        if (!msg.text) return BotResponse.ignore
-
-        return BotResponse.make({
-          type: "message",
-          text: "hey :)"
-        })
-      }
+const bot = await runTgChatBot({
+  bot_token: config.token,
+  mode: "single",
+  on_message: [
+    {
+      match: ({ update }) => !!update.text,
+      handle: ({ ctx }) => ctx.reply("hey :)")
     }
-  })
+  ]
+})
 
-  setTimeout(() => {
-    console.log("time to reload")
-    bot.reload({
-      type: "single",
-      on_message: (msg) => {
-        if (!msg.text) return BotResponse.ignore
-
-        return BotResponse.make({
-          type: "message",
-          text: "reloaded hey :)"
-        })
+setTimeout(() => {
+  console.log("time to reload")
+  bot.reload({
+    type: "single",
+    on_message: [
+      {
+        match: ({ update }) => !!update.text,
+        handle: ({ ctx }) => ctx.reply("reloaded hey :)")
       }
-    })
-  }, 5000)
-}
+    ]
+  })
+}, 5000)

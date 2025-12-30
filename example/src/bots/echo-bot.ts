@@ -1,87 +1,58 @@
-import { BotResponse, runTgChatBot, defineBot } from "@effect-ak/tg-bot"
+import { runTgChatBot, defineBot } from "@effect-ak/tg-bot"
 import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
-import { Effect, pipe } from "effect"
+import { Effect } from "effect"
 
 import { loadConfig } from "../config"
 const config = await loadConfig()
 
-const ECHO_BOT = defineBot({
-  on_message: async (msg) => {
-    if (msg.text?.includes("+")) {
-      const numbers = msg.text.split("+")
-      let result = 0
-      for (const num of numbers) {
-        result += parseInt(num)
-      }
-      return BotResponse.make({
-        type: "document",
-        caption: "sum result",
-        document: {
-          file_content: new TextEncoder().encode(`your sum is ${result}`),
-          file_name: "hello.txt"
-        }
-      })
-    }
-
-    const commandEntity = msg.entities?.find((_) => _.type == "bot_command")
-    const command = commandEntity
-      ? msg.text?.slice(commandEntity?.offset, commandEntity?.length)
-      : undefined
-
-    console.info("echo bot", { command })
-
-    if (command == "/bye") {
-      return pipe(
-        Effect.sleep("5 seconds"),
-        Effect.andThen(() =>
-          BotResponse.make({
-            type: "message",
-            text: "See you later!",
-            reply_parameters: {
-              message_id: msg.message_id
-            },
-            message_effect_id: MESSAGE_EFFECTS["❤️"]
-          })
-        ),
-        Effect.runPromise
-      )
-    }
-
-    if (command == "/echo") {
-      return BotResponse.make({
-        type: "message",
-        text: `<pre language="json">${JSON.stringify(msg, undefined, 2)}</pre>`,
-        parse_mode: "HTML"
-      })
-    }
-
-    if (command == "/error") {
-      throw new Error("boom")
-    }
-
-    if (msg.text) {
-      return BotResponse.make({
-        type: "message",
-        text: "hey :)",
-        reply_parameters: {
-          message_id: msg.message_id
-        }
-      })
-    }
-
-    return BotResponse.ignore
-  }
-})
-
 runTgChatBot({
   bot_token: config.token,
+  mode: "single",
   poll: {
     log_level: "debug",
     batch_size: 20,
     on_error: "continue"
   },
-  mode: {
-    type: "single",
-    ...ECHO_BOT
-  }
+  on_message: [
+    {
+      match: ({ update }) => update.text?.includes("+") ?? false,
+      handle: ({ update, ctx }) => {
+        const result = update.text!.split("+").reduce((sum, n) => sum + parseInt(n), 0)
+        return ctx.replyWithDocument(
+          {
+            file_content: new TextEncoder().encode(`your sum is ${result}`),
+            file_name: "hello.txt"
+          },
+          { caption: "sum result" }
+        )
+      }
+    },
+    {
+      match: ({ ctx }) => ctx.command === "/bye",
+      handle: async ({ ctx }) => {
+        await Effect.sleep("5 seconds").pipe(Effect.runPromise)
+        return ctx.reply("See you later!", {
+          message_effect_id: MESSAGE_EFFECTS["❤️"]
+        })
+      }
+    },
+    {
+      match: ({ ctx }) => ctx.command === "/echo",
+      handle: ({ update, ctx }) =>
+        ctx.reply(
+          `<pre language="json">${JSON.stringify(update, undefined, 2)}</pre>`,
+          { parse_mode: "HTML" }
+        )
+    },
+    {
+      match: ({ ctx }) => ctx.command === "/error",
+      handle: () => {
+        throw new Error("boom")
+      }
+    },
+    {
+      match: ({ update }) => !!update.text,
+      handle: ({ ctx }) => ctx.reply("hey :)")
+    }
+  ]
 })

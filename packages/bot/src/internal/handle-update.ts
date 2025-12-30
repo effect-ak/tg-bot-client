@@ -6,10 +6,13 @@ import { Update } from "@effect-ak/tg-bot-api"
 import type {
   AvailableUpdateTypes,
   ExtractedUpdate,
-  HandleUpdateFunction,
   BotUpdatesHandlers,
-  HandleBatchUpdateFunction
+  HandleBatchUpdateFunction,
+  UpdateHandler,
+  GuardedHandler,
+  BotContext
 } from "./types"
+import { createBotContext } from "./bot-context"
 import {
   BotPollSettingsTag,
   BotUpdateHandlersTag,
@@ -17,6 +20,55 @@ import {
   BotTgClientTag
 } from "./poll-settings"
 import { BotResponse } from "./bot-response"
+
+const isGuardedHandler = <U>(
+  handler: UpdateHandler<U>
+): handler is GuardedHandler<U> =>
+  typeof handler === "object" && handler !== null && "handle" in handler
+
+const executeSingleGuard = async <U>(
+  guard: GuardedHandler<U>,
+  update: U,
+  ctx: BotContext
+): Promise<BotResponse | null> => {
+  const input = { update, ctx }
+  if (guard.match) {
+    const matched = await guard.match(input)
+    if (!matched) return null
+  }
+  return await guard.handle(input)
+}
+
+const executeGuards = async <U>(
+  guards: GuardedHandler<U>[],
+  update: U,
+  ctx: BotContext
+): Promise<BotResponse> => {
+  for (const guard of guards) {
+    const result = await executeSingleGuard(guard, update, ctx)
+    if (result !== null) return result
+  }
+  return BotResponse.ignore
+}
+
+const executeHandler = <U>(
+  handler: UpdateHandler<U>,
+  update: U,
+  ctx: BotContext
+): BotResponse | PromiseLike<BotResponse> => {
+  if (typeof handler === "function") {
+    return handler(update)
+  }
+  if (Array.isArray(handler)) {
+    return executeGuards(handler, update, ctx)
+  }
+  if (isGuardedHandler(handler)) {
+    return executeSingleGuard(handler, update, ctx).then(
+      (r) => r ?? BotResponse.ignore
+    )
+  }
+  return BotResponse.ignore
+}
 
 export const extractUpdate = <U extends AvailableUpdateTypes>(
   input: Update
@@ -155,11 +207,9 @@ export const handleOneUpdate = (
       )
     }
 
-    const updateHandler = handlers[`on_${update.type}`] as HandleUpdateFunction<
-      typeof update
-    >
+    const handler = handlers[`on_${update.type}`] as UpdateHandler<typeof update>
 
-    if (!updateHandler) {
+    if (!handler) {
       return yield* Micro.fail(
         new HandleUpdateError({
           name: "HandlerNotDefined",
@@ -176,10 +226,12 @@ export const handleOneUpdate = (
       })
     }
 
+    const ctx = createBotContext(update)
+
     let handleUpdateError: HandleUpdateError | undefined
 
     const handleResult = yield* Micro.try({
-      try: () => updateHandler(update),
+      try: () => executeHandler(handler, update, ctx),
       catch: (error) =>
         new HandleUpdateError({
           name: "BotHandlerError",

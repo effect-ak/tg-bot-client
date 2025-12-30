@@ -60,21 +60,17 @@ yarn add @effect-ak/tg-bot effect
 ## Quick Start
 
 ```typescript
-import { runTgChatBot, BotResponse } from "@effect-ak/tg-bot"
+import { runTgChatBot } from "@effect-ak/tg-bot"
 
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
-  mode: {
-    type: "single",
-    on_message: (message) => {
-      if (!message.text) return BotResponse.ignore
-
-      return BotResponse.make({
-        type: "message",
-        text: `You said: ${message.text}`
-      })
+  mode: "single",
+  on_message: [
+    {
+      match: ({ update }) => !!update.text,
+      handle: ({ update, ctx }) => ctx.reply(`You said: ${update.text}`)
     }
-  }
+  ]
 })
 ```
 
@@ -83,6 +79,31 @@ runTgChatBot({
 ### Single Mode
 
 In single mode, the bot processes each update individually with a dedicated handler for each update type.
+
+**Handler Format (v2 with guards):**
+
+```typescript
+on_message: [
+  {
+    match: ({ update, ctx }) => ctx.command === "/start",  // optional filter
+    handle: ({ update, ctx }) => ctx.reply("Welcome!")     // handler
+  },
+  {
+    match: ({ update }) => !!update.text,
+    handle: ({ ctx }) => ctx.reply("Got your message!")
+  },
+  {
+    handle: ({ ctx }) => ctx.ignore  // fallback (no match = always runs)
+  }
+]
+```
+
+**Context helpers:**
+- `ctx.reply(text, options?)` - Send a message
+- `ctx.replyWithDocument(document, options?)` - Send a document
+- `ctx.replyWithPhoto(photo, options?)` - Send a photo
+- `ctx.command` - Parsed command (e.g., "/start", "/help")
+- `ctx.ignore` - Skip response
 
 **Available Handlers:**
 - `on_message` - New incoming message
@@ -100,6 +121,15 @@ In single mode, the bot processes each update individually with a dedicated hand
 - `on_chat_member` - Chat member status changed
 - `on_chat_join_request` - Request to join chat
 
+**Legacy format (v1 - still supported):**
+
+```typescript
+on_message: (message) => {
+  if (!message.text) return BotResponse.ignore
+  return BotResponse.make({ type: "message", text: "Hello!" })
+}
+```
+
 ### Batch Mode
 
 In batch mode, the bot receives all updates as an array and processes them together.
@@ -107,13 +137,11 @@ In batch mode, the bot receives all updates as an array and processes them toget
 ```typescript
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
-  mode: {
-    type: "batch",
-    on_batch: async (updates) => {
-      console.log(`Processing ${updates.length} updates`)
-      // Process updates...
-      return true // Continue polling
-    }
+  mode: "batch",
+  on_batch: async (updates) => {
+    console.log(`Processing ${updates.length} updates`)
+    // Process updates...
+    return true // Continue polling
   }
 })
 ```
@@ -155,66 +183,45 @@ All Telegram `send_*` methods are supported: `message`, `photo`, `document`, `vi
 ### Echo Bot
 
 ```typescript
-import { runTgChatBot, BotResponse, defineBot } from "@effect-ak/tg-bot"
+import { runTgChatBot, defineBot } from "@effect-ak/tg-bot"
 
 const ECHO_BOT = defineBot({
-  on_message: (message) => {
-    if (!message.text) return BotResponse.ignore
-
-    return BotResponse.make({
-      type: "message",
-      text: message.text,
-      reply_parameters: {
-        message_id: message.message_id
-      }
-    })
-  }
+  on_message: [
+    {
+      match: ({ update }) => !!update.text,
+      handle: ({ update, ctx }) => ctx.reply(update.text!)
+    }
+  ]
 })
 
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
-  mode: {
-    type: "single",
-    ...ECHO_BOT
-  }
+  mode: "single",
+  ...ECHO_BOT
 })
 ```
 
 ### Command Handler
 
 ```typescript
-import { runTgChatBot, BotResponse } from "@effect-ak/tg-bot"
+import { runTgChatBot } from "@effect-ak/tg-bot"
 import { MESSAGE_EFFECTS } from "@effect-ak/tg-bot-client"
 
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
-  mode: {
-    type: "single",
-    on_message: (msg) => {
-      const command = msg.entities?.find(e => e.type === "bot_command")
-      const commandText = command
-        ? msg.text?.slice(command.offset, command.length)
-        : undefined
-
-      switch (commandText) {
-        case "/start":
-          return BotResponse.make({
-            type: "message",
-            text: "Welcome! Send me any message.",
-            message_effect_id: MESSAGE_EFFECTS["🎉"]
-          })
-
-        case "/help":
-          return BotResponse.make({
-            type: "message",
-            text: "Available commands:\n/start - Start bot\n/help - Show help"
-          })
-
-        default:
-          return BotResponse.ignore
-      }
+  mode: "single",
+  on_message: [
+    {
+      match: ({ ctx }) => ctx.command === "/start",
+      handle: ({ ctx }) => ctx.reply("Welcome! Send me any message.", {
+        message_effect_id: MESSAGE_EFFECTS["🎉"]
+      })
+    },
+    {
+      match: ({ ctx }) => ctx.command === "/help",
+      handle: ({ ctx }) => ctx.reply("Available commands:\n/start - Start bot\n/help - Show help")
     }
-  }
+  ]
 })
 ```
 
@@ -228,24 +235,22 @@ const client = makeTgBotClient({ bot_token: "YOUR_BOT_TOKEN" })
 
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
+  mode: "batch",
   poll: {
     batch_size: 100,
     poll_timeout: 60
   },
-  mode: {
-    type: "batch",
-    on_batch: async (updates) => {
-      const messages = updates
-        .map(u => u.message)
-        .filter(m => m != null)
+  on_batch: async (updates) => {
+    const messages = updates
+      .map(u => u.message)
+      .filter(m => m != null)
 
-      await client.execute("send_message", {
-        chat_id: "ADMIN_CHAT_ID",
-        text: `Processed ${messages.length} messages`
-      })
+    await client.execute("send_message", {
+      chat_id: "ADMIN_CHAT_ID",
+      text: `Processed ${messages.length} messages`
+    })
 
-      return true // Continue polling
-    }
+    return true // Continue polling
   }
 })
 ```
@@ -256,32 +261,24 @@ Advanced usage with Effect for composable async operations:
 
 ```typescript
 import { Effect, Micro, pipe } from "effect"
-import { BotResponse, launchBot } from "@effect-ak/tg-bot"
+import { launchBot } from "@effect-ak/tg-bot"
 
 Effect.gen(function* () {
   const bot = yield* launchBot({
     bot_token: "YOUR_BOT_TOKEN",
+    mode: "single",
     poll: {
       log_level: "debug"
     },
-    mode: {
-      type: "single",
-      on_message: (message) => {
-        if (!message.text) return BotResponse.ignore
-
-        // Use Effect for async operations
-        return pipe(
-          Effect.sleep("2 seconds"),
-          Effect.andThen(() =>
-            BotResponse.make({
-              type: "message",
-              text: "Delayed response!"
-            })
-          ),
-          Effect.runPromise
-        )
+    on_message: [
+      {
+        match: ({ update }) => !!update.text,
+        handle: async ({ ctx }) => {
+          await Effect.sleep("2 seconds").pipe(Effect.runPromise)
+          return ctx.reply("Delayed response!")
+        }
       }
-    }
+    ]
   })
 
   // Access bot fiber for control
@@ -296,30 +293,31 @@ Effect.gen(function* () {
 ### Hot Reload
 
 ```typescript
-import { Effect } from "effect"
-import { launchBot, BotResponse } from "@effect-ak/tg-bot"
+import { runTgChatBot } from "@effect-ak/tg-bot"
 
-Effect.gen(function* () {
-  const bot = yield* launchBot({
-    bot_token: "YOUR_BOT_TOKEN",
-    mode: {
-      type: "single",
-      on_message: (msg) => BotResponse.make({
-        type: "message",
-        text: "Version 1"
-      })
+const bot = await runTgChatBot({
+  bot_token: "YOUR_BOT_TOKEN",
+  mode: "single",
+  on_message: [
+    {
+      match: ({ update }) => !!update.text,
+      handle: ({ ctx }) => ctx.reply("Version 1")
     }
-  })
+  ]
+})
 
-  // Later, reload with new handlers
-  await bot.reload({
+// Later, reload with new handlers
+setTimeout(() => {
+  bot.reload({
     type: "single",
-    on_message: (msg) => BotResponse.make({
-      type: "message",
-      text: "Version 2 - Hot reloaded!"
-    })
+    on_message: [
+      {
+        match: ({ update }) => !!update.text,
+        handle: ({ ctx }) => ctx.reply("Version 2 - Hot reloaded!")
+      }
+    ]
   })
-}).pipe(Effect.runPromise)
+}, 5000)
 ```
 
 ## Configuration
@@ -331,6 +329,7 @@ Configure how the bot polls for updates:
 ```typescript
 runTgChatBot({
   bot_token: "YOUR_BOT_TOKEN",
+  mode: "single",  // or "batch"
   poll: {
     log_level: "debug",        // "info" | "debug"
     on_error: "continue",      // "stop" | "continue"
@@ -338,7 +337,7 @@ runTgChatBot({
     poll_timeout: 30,          // 2-120 seconds
     max_empty_responses: 5     // Stop after N empty responses
   },
-  mode: { /* ... */ }
+  on_message: [/* ... */]  // handlers at top level
 })
 ```
 
@@ -366,10 +365,12 @@ Starts the bot with long polling.
 
 **Parameters:**
 - `bot_token` (string, required): Bot token from @BotFather
-- `mode` (object, required): Bot mode configuration (single or batch)
+- `mode` (`"single"` | `"batch"`, required): Processing mode
 - `poll` (object, optional): Polling configuration
+- `on_message`, `on_callback_query`, etc. (optional): Update handlers (for single mode)
+- `on_batch` (required for batch mode): Batch handler function
 
-**Returns:** `Promise<void>`
+**Returns:** `Promise<BotInstance>`
 
 ### `launchBot(input)`
 
@@ -450,13 +451,19 @@ If a handler throws an error, the bot:
 3. Continues processing other updates (if `on_error: "continue"`)
 
 ```typescript
-on_message: (msg) => {
-  if (msg.text === "/error") {
-    throw new Error("Something went wrong!")
+on_message: [
+  {
+    match: ({ ctx }) => ctx.command === "/error",
+    handle: () => {
+      throw new Error("Something went wrong!")
+      // Bot will catch this and send error message to user
+    }
+  },
+  {
+    match: ({ update }) => !!update.text,
+    handle: ({ ctx }) => ctx.reply("OK")
   }
-  // Bot will catch this and send error message to user
-  return BotResponse.make({ type: "message", text: "OK" })
-}
+]
 ```
 
 ### Batch Handler Errors
