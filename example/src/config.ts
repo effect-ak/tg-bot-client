@@ -15,8 +15,15 @@ export const loadConfig = () => {
     throw new Error("CHAT_ID environment variable is required and must be non-empty")
   }
 
+  const webhookUrl = process.env.WEBHOOK_URL
+
+  if (!webhookUrl || webhookUrl.trim() === "") {
+    throw new Error("WEBHOOK_URL environment variable is required and must be non-empty")
+  }
+
   return {
     token,
-    chatId
+    chatId,
+    webhookUrl
   }
 }

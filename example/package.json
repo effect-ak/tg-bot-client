@@ -7,11 +7,16 @@
     "echo-bot": "tsx ./src/bots/echo-bot.ts",
     "batch-bot": "tsx ./src/bots/batch-bot.ts",
     "reload-bot": "tsx ./src/bots/reload-bot.ts",
-    "typecheck": "tsc"
+    "set-webhook": "tsx ./src/set-webhook.ts",
+    "typecheck": "tsc",
+    "deploy:vercel": "tsup && vercel deploy dist --prod"
   },
   "dependencies": {
     "@effect-ak/tg-bot-client": "workspace:*",
     "@effect-ak/tg-bot-api": "workspace:*",
     "@effect-ak/tg-bot": "workspace:*"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.5.16"
   }
 }
