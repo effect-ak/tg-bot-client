@@ -10,7 +10,8 @@ This monorepo contains three packages:
 
 ### [@effect-ak/tg-bot-api](./packages/api)
 
-![Telegram Bot API](https://img.shields.io/badge/BotApi-9.2-blue)
+[![NPM Version](https://img.shields.io/npm/v/%40effect-ak%2Ftg-bot-api)](https://www.npmjs.com/package/@effect-ak/tg-bot-api)
+![Telegram Bot API](https://img.shields.io/badge/BotApi-9.3-blue)
 ![Telegram WebApp](https://img.shields.io/badge/Telegram.WebApp-9.1-blue)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-blue.svg)](https://effect-ak.github.io/telegram-bot-api/)
 ![NPM Downloads](https://img.shields.io/npm/dw/%40effect-ak%2Ftg-bot-api)

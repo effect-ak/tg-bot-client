@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: Telegram bot api
   description: Generated from official Telegram documentation
-  version: "9.2"
+  version: "9.3"
   contact:
     name: Aleksandr Kondaurov
     url: https://github.com/effect-ak/tg-bot-client/issues
@@ -705,8 +705,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -760,6 +761,11 @@ paths:
                     broadcasting limits for a fee of 0.1 Telegram Stars per
                     message<br/>The relevant Stars will be withdrawn from the
                     bot&#39;s balance
+                message_effect_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the message effect to be added to the
+                    message; only available when copying to private chats
                 suggested_post_parameters:
                   $ref: "#/components/schemas/SuggestedPostParameters"
                   description: >-
@@ -844,8 +850,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -1486,9 +1493,9 @@ paths:
       summary: delete_forum_topic
       description: >-
         Use this method to delete a forum topic along with all its messages in a
-        forum supergroup chat<br/>The bot must be an administrator in the chat
-        for this to work and must have the can_delete_messages administrator
-        rights
+        forum supergroup chat or a private chat with a user<br/>In the case of a
+        supergroup chat the bot must be an administrator in the chat for this to
+        work and must have the can_delete_messages administrator rights
       externalDocs:
         url: https://core.telegram.org/bots/api#deleteforumtopic
         description: telegram documentation
@@ -1896,9 +1903,10 @@ paths:
       summary: edit_forum_topic
       description: >-
         Use this method to edit name and icon of a topic in a forum supergroup
-        chat<br/>The bot must be an administrator in the chat for this to work
-        and must have the can_manage_topics administrator rights, unless it is
-        the creator of the topic
+        chat or a private chat with a user<br/>In the case of a supergroup chat
+        the bot must be an administrator in the chat for this to work and must
+        have the can_manage_topics administrator rights, unless it is the
+        creator of the topic
       externalDocs:
         url: https://core.telegram.org/bots/api#editforumtopic
         description: telegram documentation
@@ -2612,8 +2620,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -2633,6 +2642,11 @@ paths:
                   description: >-
                     Protects the contents of the forwarded message from
                     forwarding and saving
+                message_effect_id:
+                  type: string
+                  description: >-
+                    Unique identifier of the message effect to be added to the
+                    message; only available when forwarding to private chats
                 suggested_post_parameters:
                   $ref: "#/components/schemas/SuggestedPostParameters"
                   description: >-
@@ -2697,8 +2711,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -2790,14 +2805,25 @@ paths:
                   description: >-
                     Pass True to exclude gifts that can be purchased an
                     unlimited number of times
-                exclude_limited:
+                exclude_limited_upgradable:
                   type: boolean
                   description: >-
                     Pass True to exclude gifts that can be purchased a limited
-                    number of times
+                    number of times and can be upgraded to unique
+                exclude_limited_non_upgradable:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times and can&#39;t be upgraded to unique
                 exclude_unique:
                   type: boolean
                   description: Pass True to exclude unique gifts
+                exclude_from_blockchain:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that were assigned from the TON
+                    blockchain and can&#39;t be resold or transferred in
+                    Telegram
                 sort_by_price:
                   type: boolean
                   description: >-
@@ -2962,6 +2988,92 @@ paths:
                 items:
                   $ref: "#/components/schemas/ChatMember"
               example: ChatMember[]
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+  /getChatGifts:
+    post:
+      tags:
+        - available-methods
+      summary: get_chat_gifts
+      description: Returns the gifts owned by a chat
+      externalDocs:
+        url: https://core.telegram.org/bots/api#getchatgifts
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  oneOf:
+                    - type: number
+                    - type: string
+                  description: >-
+                    Unique identifier for the target chat or username of the
+                    target channel (in the format @channelusername)
+                exclude_unsaved:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that aren&#39;t saved to the
+                    chat&#39;s profile page<br/>Always True, unless the bot has
+                    the can_post_messages administrator right in the channel.
+                exclude_saved:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that are saved to the chat&#39;s
+                    profile page<br/>Always False, unless the bot has the
+                    can_post_messages administrator right in the channel.
+                exclude_unlimited:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased an
+                    unlimited number of times
+                exclude_limited_upgradable:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times and can be upgraded to unique
+                exclude_limited_non_upgradable:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times and can&#39;t be upgraded to unique
+                exclude_from_blockchain:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that were assigned from the TON
+                    blockchain and can&#39;t be resold or transferred in
+                    Telegram
+                exclude_unique:
+                  type: boolean
+                  description: Pass True to exclude unique gifts
+                sort_by_price:
+                  type: boolean
+                  description: >-
+                    Pass True to sort results by gift price instead of send
+                    date<br/>Sorting is applied before pagination.
+                offset:
+                  type: string
+                  description: >-
+                    Offset of the first entry to return as received from the
+                    previous request; use an empty string to get the first chunk
+                    of results
+                limit:
+                  type: number
+                  description: >-
+                    The maximum number of gifts to be returned;
+                    1-100<br/>Defaults to 100
+              required:
+                - chat_id
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnedGifts"
+              example: OwnedGifts
         "400":
           $ref: "#/components/responses/ErrorResponse"
   /getChatMember:
@@ -3606,6 +3718,76 @@ paths:
               example: UserChatBoosts
         "400":
           $ref: "#/components/responses/ErrorResponse"
+  /getUserGifts:
+    post:
+      tags:
+        - available-methods
+      summary: get_user_gifts
+      description: Returns the gifts owned and hosted by a user
+      externalDocs:
+        url: https://core.telegram.org/bots/api#getusergifts
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  description: Unique identifier of the user
+                exclude_unlimited:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased an
+                    unlimited number of times
+                exclude_limited_upgradable:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times and can be upgraded to unique
+                exclude_limited_non_upgradable:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that can be purchased a limited
+                    number of times and can&#39;t be upgraded to unique
+                exclude_from_blockchain:
+                  type: boolean
+                  description: >-
+                    Pass True to exclude gifts that were assigned from the TON
+                    blockchain and can&#39;t be resold or transferred in
+                    Telegram
+                exclude_unique:
+                  type: boolean
+                  description: Pass True to exclude unique gifts
+                sort_by_price:
+                  type: boolean
+                  description: >-
+                    Pass True to sort results by gift price instead of send
+                    date<br/>Sorting is applied before pagination.
+                offset:
+                  type: string
+                  description: >-
+                    Offset of the first entry to return as received from the
+                    previous request; use an empty string to get the first chunk
+                    of results
+                limit:
+                  type: number
+                  description: >-
+                    The maximum number of gifts to be returned;
+                    1-100<br/>Defaults to 100
+              required:
+                - user_id
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnedGifts"
+              example: OwnedGifts
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
   /getUserProfilePhotos:
     post:
       tags:
@@ -4034,7 +4216,9 @@ paths:
                   type: boolean
                   description: >-
                     Pass True if the administrator can restrict, ban or unban
-                    chat members, or access supergroup statistics
+                    chat members, or access supergroup statistics<br/>For
+                    backward compatibility, defaults to True for promotions of
+                    channel administrators
                 can_promote_members:
                   type: boolean
                   description: >-
@@ -4423,6 +4607,66 @@ paths:
               example: boolean
         "400":
           $ref: "#/components/responses/ErrorResponse"
+  /repostStory:
+    post:
+      tags:
+        - available-methods
+      summary: repost_story
+      description: >-
+        Reposts a story on behalf of a business account from another business
+        account<br/>Both business accounts must be managed by the same bot, and
+        the story on the source account must have been posted (or reposted) by
+        the bot<br/>Requires the can_manage_stories business bot right for both
+        business accounts
+      externalDocs:
+        url: https://core.telegram.org/bots/api#repoststory
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                business_connection_id:
+                  type: string
+                  description: Unique identifier of the business connection
+                from_chat_id:
+                  type: number
+                  description: >-
+                    Unique identifier of the chat which posted the story that
+                    should be reposted
+                from_story_id:
+                  type: number
+                  description: Unique identifier of the story that should be reposted
+                active_period:
+                  type: number
+                  description: >-
+                    Period after which the story is moved to the archive, in
+                    seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 *
+                    86400
+                post_to_chat_page:
+                  type: boolean
+                  description: Pass True to keep the story accessible after it expires
+                protect_content:
+                  type: boolean
+                  description: >-
+                    Pass True if the content of the story must be protected from
+                    forwarding and screenshotting
+              required:
+                - business_connection_id
+                - from_chat_id
+                - from_story_id
+                - active_period
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Story"
+              example: Story
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
   /restrictChatMember:
     post:
       tags:
@@ -4625,8 +4869,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -4791,8 +5036,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -4954,8 +5200,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread; for
-                    supergroups only
+                    Unique identifier for the target message thread or topic of
+                    a forum; for supergroups and private chats of bots with
+                    forum topic mode enabled only
               required:
                 - chat_id
                 - action
@@ -5070,8 +5317,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -5175,8 +5423,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -5294,8 +5543,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -5433,8 +5683,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 disable_notification:
                   type: boolean
                   description: >-
@@ -5499,7 +5750,9 @@ paths:
               properties:
                 gift_id:
                   type: string
-                  description: Identifier of the gift
+                  description: >-
+                    Identifier of the gift; limited gifts can&#39;t be sent to
+                    channel chats
                 user_id:
                   type: number
                   description: >-
@@ -5607,8 +5860,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -5804,8 +6058,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -5937,8 +6192,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6020,8 +6276,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6103,6 +6360,71 @@ paths:
               example: Message
         "400":
           $ref: "#/components/responses/ErrorResponse"
+  /sendMessageDraft:
+    post:
+      tags:
+        - available-methods
+      summary: send_message_draft
+      description: >-
+        Use this method to stream a partial message to a user while the message
+        is being generated; supported only for bots with forum topic mode
+        enabled
+      externalDocs:
+        url: https://core.telegram.org/bots/api#sendmessagedraft
+        description: telegram documentation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                chat_id:
+                  type: number
+                  description: Unique identifier for the target private chat
+                draft_id:
+                  type: number
+                  description: >-
+                    Unique identifier of the message draft; must be
+                    non-zero<br/>Changes of drafts with the same identifier are
+                    animated
+                text:
+                  type: string
+                  description: >-
+                    Text of the message to be sent, 1-4096 characters after
+                    entities parsing
+                message_thread_id:
+                  type: number
+                  description: Unique identifier for the target message thread
+                parse_mode:
+                  oneOf:
+                    - type: string
+                      enum:
+                        - HTML
+                        - MarkdownV2
+                  description: >-
+                    Mode for parsing entities in the message text<br/>See
+                    formatting options for more details.
+                entities:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/MessageEntity"
+                  description: >-
+                    A JSON-serialized list of special entities that appear in
+                    message text, which can be specified instead of parse_mode
+              required:
+                - chat_id
+                - draft_id
+                - text
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: boolean
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
   /sendPaidMedia:
     post:
       tags:
@@ -6133,7 +6455,7 @@ paths:
                   type: number
                   description: >-
                     The number of Telegram Stars that must be paid to buy access
-                    to the media; 1-10000
+                    to the media; 1-25000
                 media:
                   type: array
                   items:
@@ -6149,8 +6471,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6282,8 +6605,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6416,8 +6740,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 question_parse_mode:
                   oneOf:
                     - type: string
@@ -6586,8 +6911,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6697,8 +7023,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -6823,8 +7150,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -7003,8 +7331,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -7137,8 +7466,9 @@ paths:
                 message_thread_id:
                   type: number
                   description: >-
-                    Unique identifier for the target message thread (topic) of
-                    the forum; for forum supergroups only
+                    Unique identifier for the target message thread (topic) of a
+                    forum; for forum supergroups and private chats of bots with
+                    forum topic mode enabled only
                 direct_messages_topic_id:
                   type: number
                   description: >-
@@ -8886,9 +9216,11 @@ paths:
         - available-methods
       summary: unpin_all_forum_topic_messages
       description: >-
-        Use this method to clear the list of pinned messages in a forum
-        topic<br/>The bot must be an administrator in the chat for this to work
-        and must have the can_pin_messages administrator right in the supergroup
+        Use this method to clear the list of pinned messages in a forum topic in
+        a forum supergroup chat or a private chat with a user<br/>In the case of
+        a supergroup chat the bot must be an administrator in the chat for this
+        to work and must have the can_pin_messages administrator right in the
+        supergroup
       externalDocs:
         url: https://core.telegram.org/bots/api#unpinallforumtopicmessages
         description: telegram documentation
@@ -9230,11 +9562,15 @@ components:
         premium_subscription:
           type: boolean
           description: True, if a Telegram Premium subscription is accepted
+        gifts_from_channels:
+          type: boolean
+          description: True, if transfers of unique gifts from channels are accepted
       required:
         - unlimited_gifts
         - limited_gifts
         - unique_gifts
         - premium_subscription
+        - gifts_from_channels
     AffiliateInfo:
       type: object
       properties:
@@ -10380,6 +10716,19 @@ components:
         location:
           $ref: "#/components/schemas/ChatLocation"
           description: For supergroups, the location to which the supergroup is connected
+        rating:
+          $ref: "#/components/schemas/UserRating"
+          description: For private chats, the rating of the user if any
+        unique_gift_colors:
+          $ref: "#/components/schemas/UniqueGiftColors"
+          description: >-
+            The color scheme based on a unique gift that must be used for the
+            chat&#39;s name, message replies and link previews
+        paid_message_star_count:
+          type: number
+          description: >-
+            The number of Telegram Stars a general user have to pay to send a
+            message to the chat
       required:
         - id
         - type
@@ -10976,7 +11325,12 @@ components:
           $ref: "#/components/schemas/User"
           description: >-
             User that completed the task; omitted if the task wasn&#39;t
-            completed
+            completed by a user
+        completed_by_chat:
+          $ref: "#/components/schemas/Chat"
+          description: >-
+            Chat that completed the task; omitted if the task wasn&#39;t
+            completed by a chat
         completion_date:
           type: number
           description: >-
@@ -11419,6 +11773,11 @@ components:
         icon_custom_emoji_id:
           type: string
           description: Unique identifier of the custom emoji shown as the topic icon
+        is_name_implicit:
+          type: boolean
+          description: >-
+            True, if the name of the topic wasn&#39;t specified explicitly by
+            its creator and likely needs to be changed by the bot
       required:
         - message_thread_id
         - name
@@ -11438,6 +11797,11 @@ components:
         icon_custom_emoji_id:
           type: string
           description: Unique identifier of the custom emoji shown as the topic icon
+        is_name_implicit:
+          type: boolean
+          description: >-
+            True, if the name of the topic wasn&#39;t specified explicitly by
+            its creator and likely needs to be changed by the bot
       required:
         - name
         - icon_color
@@ -11531,16 +11895,44 @@ components:
           description: >-
             The number of Telegram Stars that must be paid to upgrade the gift
             to a unique one
+        is_premium:
+          type: boolean
+          description: >-
+            True, if the gift can only be purchased by Telegram Premium
+            subscribers
+        has_colors:
+          type: boolean
+          description: >-
+            True, if the gift can be used (after being upgraded) to customize a
+            user&#39;s appearance
         total_count:
           type: number
           description: >-
-            The total number of the gifts of this type that can be sent; for
-            limited gifts only
+            The total number of gifts of this type that can be sent by all
+            users; for limited gifts only
         remaining_count:
           type: number
           description: >-
-            The number of remaining gifts of this type that can be sent; for
-            limited gifts only
+            The number of remaining gifts of this type that can be sent by all
+            users; for limited gifts only
+        personal_total_count:
+          type: number
+          description: >-
+            The total number of gifts of this type that can be sent by the bot;
+            for limited gifts only
+        personal_remaining_count:
+          type: number
+          description: >-
+            The number of remaining gifts of this type that can be sent by the
+            bot; for limited gifts only
+        background:
+          $ref: "#/components/schemas/GiftBackground"
+          description: Background of the gift
+        unique_gift_variant_count:
+          type: number
+          description: >-
+            The total number of different unique gifts that can be obtained by
+            upgrading the gift
         publisher_chat:
           $ref: "#/components/schemas/Chat"
           description: Information about the chat that published the gift
@@ -11548,6 +11940,22 @@ components:
         - id
         - sticker
         - star_count
+    GiftBackground:
+      type: object
+      properties:
+        center_color:
+          type: number
+          description: Center color of the background in RGB format
+        edge_color:
+          type: number
+          description: Edge color of the background in RGB format
+        text_color:
+          type: number
+          description: Text color of the background in RGB format
+      required:
+        - center_color
+        - edge_color
+        - text_color
     GiftInfo:
       type: object
       properties:
@@ -11568,8 +11976,13 @@ components:
         prepaid_upgrade_star_count:
           type: number
           description: >-
-            Number of Telegram Stars that were prepaid by the sender for the
-            ability to upgrade the gift
+            Number of Telegram Stars that were prepaid for the ability to
+            upgrade the gift
+        is_upgrade_separate:
+          type: boolean
+          description: >-
+            True, if the gift&#39;s upgrade was purchased after the gift was
+            sent
         can_be_upgraded:
           type: boolean
           description: True, if the gift can be upgraded to a unique gift
@@ -11586,6 +11999,11 @@ components:
           description: >-
             True, if the sender and gift text are shown only to the gift
             receiver; otherwise, everyone will be able to see them
+        unique_gift_number:
+          type: number
+          description: >-
+            Unique number reserved for this gift when upgraded<br/>See the
+            number field in UniqueGift
       required:
         - gift
     Gifts:
@@ -14310,8 +14728,8 @@ components:
         message_thread_id:
           type: number
           description: >-
-            Unique identifier of a message thread to which the message belongs;
-            for supergroups only
+            Unique identifier of a message thread or forum topic to which the
+            message belongs; for supergroups and private chats only
         direct_messages_topic:
           $ref: "#/components/schemas/DirectMessagesTopic"
           description: >-
@@ -14356,7 +14774,9 @@ components:
           description: Information about the original message for forwarded messages
         is_topic_message:
           type: boolean
-          description: True, if the message is sent to a forum topic
+          description: >-
+            True, if the message is sent to a topic in a forum supergroup or a
+            private chat with the bot
         is_automatic_forward:
           type: boolean
           description: >-
@@ -14618,6 +15038,11 @@ components:
         unique_gift:
           $ref: "#/components/schemas/UniqueGiftInfo"
           description: "Service message: a unique gift was sent or received"
+        gift_upgrade_sent:
+          $ref: "#/components/schemas/GiftInfo"
+          description: >-
+            Service message: upgrade of a gift was purchased after the gift was
+            sent
         connected_website:
           type: string
           description: >-
@@ -15035,12 +15460,22 @@ components:
           description: >-
             Number of Telegram Stars that can be claimed by the receiver instead
             of the gift; omitted if the gift cannot be converted to Telegram
-            Stars
+            Stars; for gifts received on behalf of business accounts only
         prepaid_upgrade_star_count:
           type: number
           description: >-
-            Number of Telegram Stars that were paid by the sender for the
-            ability to upgrade the gift
+            Number of Telegram Stars that were paid for the ability to upgrade
+            the gift
+        is_upgrade_separate:
+          type: boolean
+          description: >-
+            True, if the gift&#39;s upgrade was purchased after the gift was
+            sent; for gifts received on behalf of business accounts only
+        unique_gift_number:
+          type: number
+          description: >-
+            Unique number reserved for this gift when upgraded<br/>See the
+            number field in UniqueGift
       required:
         - type
         - gift
@@ -16966,6 +17401,9 @@ components:
     UniqueGift:
       type: object
       properties:
+        gift_id:
+          type: string
+          description: Identifier of the regular gift from which the gift was upgraded
         base_name:
           type: string
           description: >-
@@ -16990,10 +17428,27 @@ components:
         backdrop:
           $ref: "#/components/schemas/UniqueGiftBackdrop"
           description: Backdrop of the gift
+        is_premium:
+          type: boolean
+          description: >-
+            True, if the original regular gift was exclusively purchaseable by
+            Telegram Premium subscribers
+        is_from_blockchain:
+          type: boolean
+          description: >-
+            True, if the gift is assigned from the TON blockchain and can&#39;t
+            be resold or transferred in Telegram
+        colors:
+          $ref: "#/components/schemas/UniqueGiftColors"
+          description: >-
+            The color scheme that can be used by the gift&#39;s owner for the
+            chat&#39;s name, replies to messages and link previews; for business
+            account gifts and gifts that are currently on sale only
         publisher_chat:
           $ref: "#/components/schemas/Chat"
           description: Information about the chat that published the gift
       required:
+        - gift_id
         - base_name
         - name
         - number
@@ -17038,6 +17493,38 @@ components:
         - edge_color
         - symbol_color
         - text_color
+    UniqueGiftColors:
+      type: object
+      properties:
+        model_custom_emoji_id:
+          type: string
+          description: Custom emoji identifier of the unique gift&#39;s model
+        symbol_custom_emoji_id:
+          type: string
+          description: Custom emoji identifier of the unique gift&#39;s symbol
+        light_theme_main_color:
+          type: number
+          description: Main color used in light themes; RGB format
+        light_theme_other_colors:
+          type: array
+          items:
+            type: number
+          description: List of 1-3 additional colors used in light themes; RGB format
+        dark_theme_main_color:
+          type: number
+          description: Main color used in dark themes; RGB format
+        dark_theme_other_colors:
+          type: array
+          items:
+            type: number
+          description: List of 1-3 additional colors used in dark themes; RGB format
+      required:
+        - model_custom_emoji_id
+        - symbol_custom_emoji_id
+        - light_theme_main_color
+        - light_theme_other_colors
+        - dark_theme_main_color
+        - dark_theme_other_colors
     UniqueGiftInfo:
       type: object
       properties:
@@ -17049,11 +17536,23 @@ components:
           description: >-
             Origin of the gift<br/>Currently, either “upgrade” for gifts
             upgraded from regular gifts, “transfer” for gifts transferred from
-            other users or channels, or “resale” for gifts bought from other
-            users
-        last_resale_star_count:
+            other users or channels, “resale” for gifts bought from other users,
+            “gifted_upgrade” for upgrades purchased after the gift was sent, or
+            “offer” for gifts bought or sold through gift purchase offers
+        last_resale_currency:
+          type: string
+          enum:
+            - XTR
+            - TON
+          description: >-
+            For gifts bought from other users, the currency in which the payment
+            for the gift was done<br/>Currently, one of “XTR” for Telegram Stars
+            or “TON” for toncoins.
+        last_resale_amount:
           type: number
-          description: For gifts bought from other users, the price paid for the gift
+          description: >-
+            For gifts bought from other users, the price paid for the gift in
+            either Telegram Stars or nanotoncoins
         owned_gift_id:
           type: string
           description: >-
@@ -17292,6 +17791,11 @@ components:
         has_main_web_app:
           type: boolean
           description: True, if the bot has a main Web App<br/>Returned only in getMe.
+        has_topics_enabled:
+          type: boolean
+          description: >-
+            True, if the bot has forum topic mode enabled in private
+            chats<br/>Returned only in getMe.
       required:
         - id
         - is_bot
@@ -17322,6 +17826,33 @@ components:
       required:
         - total_count
         - photos
+    UserRating:
+      type: object
+      properties:
+        level:
+          type: number
+          description: >-
+            Current level of the user, indicating their reliability when
+            purchasing digital goods and services<br/>A higher level suggests a
+            more trustworthy customer; a negative level is likely reason for
+            concern.
+        rating:
+          type: number
+          description: >-
+            Numerical value of the user&#39;s rating; the higher the rating, the
+            better
+        current_level_rating:
+          type: number
+          description: The rating value required to get the current level
+        next_level_rating:
+          type: number
+          description: >-
+            The rating value required to get to the next level; omitted if the
+            maximum level was reached
+      required:
+        - level
+        - rating
+        - current_level_rating
     UsersShared:
       type: object
       properties:

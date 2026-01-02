@@ -41,7 +41,7 @@ const writeWebApp =
       })
       .formatText()
 
-    extractedWebApp.types.filter((type) => {
+    extractedWebApp.types.forEach((type) => {
       if (type.type._tag == "EntityFields") {
         src
           .addInterface({

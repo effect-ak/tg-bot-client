@@ -74,7 +74,7 @@ export const extractWebAppEntities = (
     return Either.left(ExtractedEntitiesError.make("NodesNotFound"))
 
   for (const node of nodes) {
-    const title = node.childNodes.at(2)?.text?.trim()
+    const title = node.childNodes.at(1)?.text?.trim()
 
     if (!title || !method_type_name_regex.test(title)) continue
 

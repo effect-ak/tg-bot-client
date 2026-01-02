@@ -14,9 +14,6 @@ importers:
       '@types/node':
         specifier: ^22.10.1
         version: 22.10.2
-      '@vercel/node':
-        specifier: ^5.5.16
-        version: 5.5.16(rollup@4.41.1)
       dotenv:
         specifier: 17.2.3
         version: 17.2.3
@@ -62,6 +59,10 @@ importers:
       '@effect-ak/tg-bot-client':
         specifier: workspace:*
         version: link:../packages/client
+    devDependencies:
+      '@vercel/node':
+        specifier: ^5.5.16
+        version: 5.5.16(rollup@4.41.1)
 
   packages/api: {}
 
@@ -80,8 +81,8 @@ importers:
   packages/client:
     dependencies:
       '@effect-ak/tg-bot-api':
-        specifier: 0.9.2
-        version: 0.9.2
+        specifier: workspace:^
+        version: link:../api
 
   packages/codegen:
     dependencies:
